@@ -1,0 +1,83 @@
+# JetBrains Rider cache
+.idea/
+*.DotSettings.user
+Assets/Plugins/Editor/JetBrains*
+
+# VS Code
+.vscode/
+
+# Unity directories
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+*.log
+
+# System and temp files
+*.DS_Store
+Thumbs.db
+
+# Blender backup files
+*.blend1
+*.blend1.meta
+
+# Memory captures & recordings
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+
+# Auto-generated Unity tools
+Assets/AssetStoreTools*
+
+# Visual Studio and Gradle
+.vs/
+.gradle/
+
+# Auto-generated solution/project files
+ExportedObj/
+.consulo/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Unity meta files
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# Crash reports
+sysinfo.txt
+mono_crash.*
+
+# Builds and packages
+*.apk
+*.aab
+*.app
+*.unitypackage
+*.unitypackage.meta
+
+# Crashlytics
+crashlytics-build.properties
+
+# Addressables temp and data files
+/[Aa]ssets/AddressableAssetsData/*/*.bin*
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+
+# Visual Scripting generated files
+/[Aa]ssets/Unity.VisualScripting.Generated/**
+
+# Auto-generated test scenes
+/[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
