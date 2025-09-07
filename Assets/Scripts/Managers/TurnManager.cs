@@ -14,6 +14,7 @@ namespace Managers
     public class TurnManager : MonoBehaviour
     {
         private DiceManager _diceManager;
+        private PawnManager _pawnManager;
         private IMovement _mover;
         private bool _canEnterPawn;
         private bool _canMovePawn;
@@ -25,46 +26,26 @@ namespace Managers
             get => _players[_currentPlayerIndex];
             set { }
         }
+/*
+
+ subscribe move event in mover
+ define path
+ check last node in path to Move or Switch Turn or Capture
+ handle click on a factions
+ handle click on a pawn
+ enter a pawn to the game
+ get free node from the base
+ get pawn from the base
+ on dice rolled => decide the player can move or enter a pawn (6) and just move(any number except 6)
+ */
 
         private void Start()
         {
-            _diceManager = FindObjectOfType<DiceManager>();
-            _diceManager.OnDiceRolled += OnDiceRolled;
-            var pawnManager = FindObjectOfType<PawnManager>();
-
-            var factions = FindObjectsOfType<Faction>().ToList();
-
-            factions.ForEach(f => f.OnSelectFaction += OnSelectedFaction);
-
-            _players = CreatePlayerForTest(factions);
-
+            InitializeManagers();
+            var factions = InitializeFactions();
+            _players = CreatePlayer(factions);
             CurrentPlayer = _players[0];
 
-            foreach (var player in _players)
-            {
-                foreach (var faction in player.Factions)
-                {
-                    faction.Pawns = new List<IPawn>();
-
-                    faction.BaseNodes.ForEach(baseNode =>
-                    {
-                        var newPawn = pawnManager.CreatePawn(
-                            new PawnDataForCreate
-                            {
-                                Color = faction.Color,
-                                Position = baseNode.Position
-                            }
-                        );
-
-                        newPawn.OnSelectPawn += OnSelectedPawn;
-                        newPawn.Faction = faction;
-                        newPawn.Collider.enabled = false;
-                        newPawn.CurrentNode = baseNode;
-                        faction.Pawns.Add(newPawn);
-                        baseNode.IsEmpty = false;
-                    });
-                }
-            }
 
             _mover = new Mover(200, () =>
                 {
@@ -76,7 +57,13 @@ namespace Managers
             );
         }
 
-        private List<Player> CreatePlayerForTest(List<Faction> factions)
+        private void InitializeManagers()
+        {
+            _diceManager = FindObjectOfType<DiceManager>();
+            _diceManager.OnDiceRolled += OnDiceRolled;
+            _pawnManager = FindObjectOfType<PawnManager>();
+        }
+        private List<Player> CreatePlayer(List<Faction> factions)
         {
             var factionPlayer1 = factions.GetRange(0, 2);
             var factionPlayer2 = factions.GetRange(2, 2);
@@ -98,6 +85,41 @@ namespace Managers
             };
 
             return players;
+        }
+
+        private List<Faction> InitializeFactions()
+        {
+            var factions = FindObjectsOfType<Faction>().ToList();
+
+            factions.ForEach(f => f.OnSelectFaction += OnSelectedFaction);
+
+
+            foreach (var faction in factions)
+            {
+                faction.Pawns = new List<IPawn>();
+
+                faction.BaseNodes.ForEach(baseNode => { CreatePawn(faction, baseNode); });
+            }
+
+            return factions;
+        }
+
+        private void CreatePawn(Faction faction, INode baseNode)
+        {
+            var newPawn = _pawnManager.CreatePawn(
+                new PawnDataForCreate
+                {
+                    Color = faction.Color,
+                    Position = baseNode.Position
+                }
+            );
+
+            newPawn.OnSelectPawn += OnSelectedPawn;
+            newPawn.Faction = faction;
+            newPawn.Collider.enabled = false;
+            newPawn.CurrentNode = baseNode;
+            faction.Pawns.Add(newPawn);
+            baseNode.IsEmpty = false;
         }
 
         private List<INode> DefinePath(int? step, IPawn pawn)
@@ -240,7 +262,6 @@ namespace Managers
 
         private void OnDiceRolled(int? step)
         {
-            
             if (step == 6)
             {
                 _canEnterPawn = true;
