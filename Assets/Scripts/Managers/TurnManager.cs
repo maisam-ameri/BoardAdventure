@@ -91,35 +91,18 @@ namespace Managers
         {
             var factions = FindObjectsOfType<Faction>().ToList();
 
-            factions.ForEach(f => f.OnSelectFaction += OnSelectedFaction);
-
-
             foreach (var faction in factions)
             {
+                faction.OnSelectFaction += OnSelectedFaction;
                 faction.Pawns = new List<IPawn>();
-
-                faction.BaseNodes.ForEach(baseNode => { CreatePawn(faction, baseNode); });
+                faction.BaseNodes.ForEach(baseNode =>
+                {
+                    var newPawn = _pawnManager.CreatePawn(faction, baseNode);
+                    newPawn.OnSelectPawn += OnSelectedPawn;
+                });
             }
 
             return factions;
-        }
-
-        private void CreatePawn(Faction faction, INode baseNode)
-        {
-            var newPawn = _pawnManager.CreatePawn(
-                new PawnDataForCreate
-                {
-                    Color = faction.Color,
-                    Position = baseNode.Position
-                }
-            );
-
-            newPawn.OnSelectPawn += OnSelectedPawn;
-            newPawn.Faction = faction;
-            newPawn.Collider.enabled = false;
-            newPawn.CurrentNode = baseNode;
-            faction.Pawns.Add(newPawn);
-            baseNode.IsEmpty = false;
         }
 
         private List<INode> DefinePath(int? step, IPawn pawn)

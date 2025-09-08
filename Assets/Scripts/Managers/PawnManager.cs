@@ -1,4 +1,6 @@
-﻿using Pawns;
+﻿using Factions;
+using Nodes.Abstractions;
+using Pawns;
 using UnityEngine;
 
 namespace Managers
@@ -12,13 +14,18 @@ namespace Managers
         {
             _pawnFactory = new PawnFactory(pawnPrefab);
         }
-
-        public IPawn CreatePawn(PawnDataForCreate pawnData)
+        
+        public IPawn CreatePawn(Faction faction, INode baseNode)
         {
-            var newPawn = _pawnFactory.Create();
-            newPawn.Position = pawnData.Position;
-            newPawn.Color = pawnData.Color;
-            newPawn.State = "InBase";
+            var newPawn =  _pawnFactory.Create();
+
+            newPawn.Color = faction.Color;
+            newPawn.Position = baseNode.Position;
+            newPawn.Faction = faction;
+            newPawn.Collider.enabled = false;
+            newPawn.CurrentNode = baseNode;
+            faction.Pawns.Add(newPawn);
+            baseNode.IsEmpty = false;
 
             return newPawn;
         }
