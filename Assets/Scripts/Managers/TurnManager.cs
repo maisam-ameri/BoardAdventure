@@ -15,6 +15,7 @@ namespace Managers
     {
         private DiceManager _diceManager;
         private PawnManager _pawnManager;
+        private PathCalculator _pathCalculator;
         private IMovement _mover;
         private bool _canEnterPawn;
         private bool _canMovePawn;
@@ -62,6 +63,7 @@ namespace Managers
             _diceManager = FindObjectOfType<DiceManager>();
             _diceManager.OnDiceRolled += OnDiceRolled;
             _pawnManager = FindObjectOfType<PawnManager>();
+            _pathCalculator = new PathCalculator();
         }
         private List<Player> CreatePlayer(List<Faction> factions)
         {
@@ -105,62 +107,7 @@ namespace Managers
             return factions;
         }
 
-        private List<INode> DefinePath(int? step, IPawn pawn)
-        {
-            if (step == null) return null;
-
-            var path = new List<INode>();
-            var currentNode = pawn.CurrentNode;
-
-            var remainedSteps = step.Value;
-
-            while (remainedSteps > 0)
-            {
-                if (currentNode is Gateway gateway)
-                {
-                    if (pawn.Faction.GatewayNode == gateway)
-                    {
-                        currentNode = pawn.Faction.GoalNodes[0];
-                        path.Add(currentNode);
-                        remainedSteps--;
-                    }
-                    else
-                    {
-                        currentNode = gateway.NextNode?.NextNode;
-                        if (currentNode == null) break;
-                        path.Add(currentNode);
-                        remainedSteps--;
-                    }
-                }
-                else if (currentNode is Goal)
-                {
-                    var currentIndex = pawn.Faction.GoalNodes.IndexOf((Node) currentNode);
-                    var remainedStepsInGoalArea = (pawn.Faction.GoalNodes.Count - 1) - currentIndex;
-                    if (remainedSteps > remainedStepsInGoalArea)
-                        break;
-
-                    currentNode = currentNode.NextNode ?? currentNode;
-                    path.Add(currentNode);
-                    remainedSteps--;
-                }
-                else
-                {
-                    currentNode = currentNode.NextNode;
-
-                    if (currentNode == null) break;
-
-                    path.Add(currentNode);
-                    remainedSteps--;
-                }
-            }
-
-            var pathh = path.Distinct().ToList();
-
-            var canMove = CheckNodeStateToMove(pathh.Count > 0 ? pathh[^1] : null);
-            return canMove ? pathh : null;
-        }
-
-        private bool CheckNodeStateToMove(INode node)
+        private bool CanMoveToNode(INode node)
         {
             if (node == null) return false;
 
@@ -220,8 +167,8 @@ namespace Managers
                 return;
             }
 
-            var path = DefinePath(_diceManager.Step, pawn);
-            if (path is null)
+            var path =_pathCalculator.DefinePath(_diceManager.Step, pawn);
+            if (path.Count == 0 || !CanMoveToNode( path[^1]))
             {
                 Debug.Log("you can't move");
             }
