@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Abstractions;
 using Nodes.Abstractions;
 using Pawns;
-using Unity.VisualScripting;
 
 namespace Movement
 {
@@ -13,37 +10,29 @@ namespace Movement
     {
 
         private readonly int _delay;
-        private event Action OnMoveCompleted;
         
         
-        public Mover(int delay = 1000,Action onMoveCompleted = null)
+        public Mover(int delay = 1000)
         {
-            OnMoveCompleted = onMoveCompleted;
             _delay = delay;
         }
+
         public async Task Move(IPawn pawn, List<INode> path)
         {
-            var maxStep = path.Count ;
-            var currentStep = 0;
+            if (path == null || path.Count == 0) return;
 
-            path[currentStep].PrevNode.IsEmpty = true;
-            path[currentStep].PrevNode.Pawn = null;
-            
-            while (currentStep < maxStep)
+            pawn.CurrentNode.Pawn = null;
+            pawn.CurrentNode.IsEmpty = true;
+
+            foreach (var node in path)
             {
-                pawn.Position = path[currentStep].Position;
-                currentStep++;
-
+                pawn.Position = node.Position;
                 await Task.Delay(_delay);
             }
 
             pawn.CurrentNode = path[^1];
             pawn.CurrentNode.Pawn = pawn;
-            path[^1].IsEmpty = false;
-         
-            OnMoveCompleted?.Invoke();
-
-
+            pawn.CurrentNode.IsEmpty = false;
         }
     }
 }

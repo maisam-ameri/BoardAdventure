@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Abstractions;
 using Factions;
 using Movement;
-using Nodes;
 using Nodes.Abstractions;
 using Pawns;
 using Players;
@@ -29,9 +29,6 @@ namespace Managers
         }
 /*
 
- subscribe move event in mover
- define path
- check last node in path to Move or Switch Turn or Capture
  handle click on a factions
  handle click on a pawn
  enter a pawn to the game
@@ -47,15 +44,7 @@ namespace Managers
             _players = CreatePlayer(factions);
             CurrentPlayer = _players[0];
 
-
-            _mover = new Mover(200, () =>
-                {
-                    var emptyNodes = factions.Where(
-                        f => f.GoalNodes.Any(n => n.IsEmpty));
-
-                    if (!emptyNodes.Any()) Debug.Log($"{CurrentPlayer.Name} won");
-                }
-            );
+            _mover = new Mover(200);
         }
 
         private void InitializeManagers()
@@ -65,6 +54,7 @@ namespace Managers
             _pawnManager = FindObjectOfType<PawnManager>();
             _pathCalculator = new PathCalculator();
         }
+        
         private List<Player> CreatePlayer(List<Faction> factions)
         {
             var factionPlayer1 = factions.GetRange(0, 2);
@@ -159,6 +149,11 @@ namespace Managers
 
         private void OnSelectedPawn(IPawn pawn)
         {
+            _ = HandleSelectedPawnAsync(pawn);
+        }
+
+        private async Task HandleSelectedPawnAsync(IPawn pawn)
+        {
             if (CurrentPlayer.Factions.All(f => f != pawn.Faction)) return;
 
             if (!_canMovePawn)
@@ -176,10 +171,10 @@ namespace Managers
             {
                 _canEnterPawn = false;
                 _canMovePawn = false;
-                _mover.Move(pawn, path);
+                await _mover.Move(pawn, path);
             }
         }
-
+        
         private void EnterPawnToGame(Pawn pawn)
         {
             pawn.Position = pawn.Faction.StartNode.Position;
