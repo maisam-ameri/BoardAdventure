@@ -5,6 +5,7 @@ using Abstractions;
 using Factions;
 using Movement;
 using Nodes.Abstractions;
+using Path;
 using Pawns;
 using Players;
 using UnityEngine;
@@ -97,25 +98,6 @@ namespace Managers
             return factions;
         }
 
-        private bool CanMoveToNode(INode node)
-        {
-            if (node == null) return false;
-
-            if (node.Pawn is null)
-            {
-                return node.IsEmpty;
-            }
-
-            if (CurrentPlayer.Factions.Any(f => f == node.Pawn.Faction))
-            {
-                SwitchTurn();
-                return false;
-            }
-
-            Capture(node.Pawn);
-            return false;
-        }
-
         private void OnSelectedFaction(Faction faction)
         {
             if (CurrentPlayer.Factions.All(f => f != faction)) return;
@@ -163,7 +145,7 @@ namespace Managers
             }
 
             var path =_pathCalculator.DefinePath(_diceManager.Step, pawn);
-            if (path.Count == 0 || !CanMoveToNode( path[^1]))
+            if (path.Count == 0 || !PathValidator.CanMoveToNode( path[^1], CurrentPlayer))
             {
                 Debug.Log("you can't move");
             }
@@ -201,31 +183,9 @@ namespace Managers
         private void SwitchTurn()
         {
             Debug.LogWarning("The Turn switched");
-
             _currentPlayerIndex = _currentPlayerIndex < _players.Count ? _currentPlayerIndex++ : 0;
         }
-
-        private void Capture(IPawn pawn)
-        {
-            Debug.LogWarning($"Capture {pawn.Color}");
-            return;
-
-            var emptyBaseNode = GetEmptyNodeBase(pawn.Faction);
-
-            if (emptyBaseNode is null)
-            {
-                Debug.LogWarning("There is no empty node in the base");
-                return;
-            }
-
-            pawn.Position = emptyBaseNode.Position;
-            pawn.CurrentNode = emptyBaseNode;
-            emptyBaseNode.Pawn = pawn;
-            emptyBaseNode.IsEmpty = false;
-            pawn.Collider.enabled = false;
-            pawn.State = "InBase";
-        }
-
+        
         private INode GetEmptyNodeBase(Faction faction)
             => faction.BaseNodes.FirstOrDefault(p => p.IsEmpty);
 

@@ -4,7 +4,7 @@ using Nodes;
 using Nodes.Abstractions;
 using Pawns;
 
-namespace Managers
+namespace Path
 {
     public class PathCalculator
     {
