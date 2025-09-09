@@ -11,15 +11,14 @@ namespace Factions
     {
         public string Name;
         public Color Color = Color.red;
+        private Color _tempColor;
         public Node StartNode;
         public Node GatewayNode;
         public List<Node> GoalNodes;
         public List<Node> BaseNodes;
-        public bool IsCompletedGoals { get; private set; }
         public List<IPawn> Pawns { get; set; }
 
         public event Action<Faction> OnSelectFaction;
-        public event Action OnCompletedGoals;
 
         private void OnMouseDown()
         {
@@ -27,12 +26,20 @@ namespace Factions
             OnSelectFaction?.Invoke(this);
         }
 
-        public void CheckGoalCompletion()
+        public void SetActivate(bool isActive)
         {
-            if (!GoalNodes.Any(n => n.IsEmpty)) return;
-            
-            IsCompletedGoals = true;
-            OnCompletedGoals?.Invoke();
+            foreach (var node in BaseNodes.Cast<BaseNode>())
+            {
+                if (isActive)
+                {
+                    node.Color = _tempColor;
+                }
+                else
+                {
+                    _tempColor = Color;
+                    Color = Color.gray;
+                }
+            }
         }
     }
 }

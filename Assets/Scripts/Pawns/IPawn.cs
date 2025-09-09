@@ -12,7 +12,8 @@ namespace Pawns
         Vector2 Position { get; set; }
         Faction Faction { get; set; }
         INode CurrentNode { get; set; }
-        public Collider2D Collider { get; }
+        Collider2D Collider { get; }
+        bool IsActive { set; }
 
         event Action<IPawn> OnSelectPawn;
     }

@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Abstractions;
 using Factions;
@@ -18,25 +20,16 @@ namespace Managers
         private PawnManager _pawnManager;
         private PathCalculator _pathCalculator;
         private IMovement _mover;
-        private bool _canEnterPawn;
-        private bool _canMovePawn;
         private List<Player> _players;
         private int _currentPlayerIndex;
+        public Action OnTurnSwitched { get; set; }
+        public Action OnActionAfterRollCompleted { get; set; }
 
         public Player CurrentPlayer
         {
             get => _players[_currentPlayerIndex];
             set { }
         }
-/*
-
- handle click on a factions
- handle click on a pawn
- enter a pawn to the game
- get free node from the base
- get pawn from the base
- on dice rolled => decide the player can move or enter a pawn (6) and just move(any number except 6)
- */
 
         private void Start()
         {
@@ -55,7 +48,7 @@ namespace Managers
             _pawnManager = FindObjectOfType<PawnManager>();
             _pathCalculator = new PathCalculator();
         }
-        
+
         private List<Player> CreatePlayer(List<Faction> factions)
         {
             var factionPlayer1 = factions.GetRange(0, 2);
@@ -102,31 +95,14 @@ namespace Managers
         {
             if (CurrentPlayer.Factions.All(f => f != faction)) return;
 
-            if (!_canEnterPawn)
-            {
-                Debug.LogWarning($"{CurrentPlayer.Name} isn't allowed to bring pawns into the game");
-                return;
-            }
-
-
             if (!faction.StartNode.IsEmpty)
             {
-                Debug.LogWarning("the start node Dosn't empty ");
+                Debug.LogWarning("Start node isn't empty");
                 return;
             }
 
             var pawn = GetPawnFromBase(faction);
-
-            if (pawn == null)
-            {
-                Debug.LogWarning("Dosn't exist any pawns in the base");
-            }
-            else
-            {
-                _canEnterPawn = false;
-                _canMovePawn = false;
-                EnterPawnToGame((Pawn) pawn);
-            }
+            EnterPawnToGame((Pawn) pawn);
         }
 
         private void OnSelectedPawn(IPawn pawn)
@@ -136,27 +112,22 @@ namespace Managers
 
         private async Task HandleSelectedPawnAsync(IPawn pawn)
         {
-            if (CurrentPlayer.Factions.All(f => f != pawn.Faction)) return;
+            var path = CheckPathIsValid(pawn, _diceManager.Step);
+            if (path is null) return;
 
-            if (!_canMovePawn)
-            {
-                Debug.LogWarning($"{CurrentPlayer.Name} isn't allowed to move pawns");
-                return;
-            }
-
-            var path =_pathCalculator.DefinePath(_diceManager.Step, pawn);
-            if (path.Count == 0 || !PathValidator.CanMoveToNode( path[^1], CurrentPlayer))
-            {
-                Debug.Log("you can't move");
-            }
-            else
-            {
-                _canEnterPawn = false;
-                _canMovePawn = false;
-                await _mover.Move(pawn, path);
-            }
+            await _mover.Move(pawn, path);
         }
-        
+
+        private List<INode> CheckPathIsValid(IPawn pawn, int? step)
+        {
+            if (CurrentPlayer.Factions.All(f => f != pawn.Faction)) return null;
+
+            var path = _pathCalculator.DefinePath(step, pawn);
+
+            return path.Count != 0 && PathValidator.CanMoveToNode(path[^1], CurrentPlayer) ? path : null;
+        }
+
+
         private void EnterPawnToGame(Pawn pawn)
         {
             pawn.Position = pawn.Faction.StartNode.Position;
@@ -169,27 +140,100 @@ namespace Managers
 
         private void OnDiceRolled(int? step)
         {
-            if (step == 6)
+            switch (step)
             {
-                _canEnterPawn = true;
-                _canMovePawn = true;
+                case null:
+                    return;
+                case 6:
+
+                    var canEnterPawn = CheckToEnterPawn();
+                    var canMovePawn = CheckToMovePawn(step);
+                    
+                    if (canEnterPawn)
+                        Debug.LogWarning($"{CurrentPlayer.Name} can enter a pawn");
+
+                    if (canMovePawn)
+                        Debug.LogWarning($"{CurrentPlayer.Name} can move a pawn");
+
+                    if (!canEnterPawn && !canMovePawn)
+                    {
+                        SwitchTurn();
+                    }
+
+                    break;
+
+                default:
+                    if (CheckToMovePawn(step))
+                        Debug.LogWarning($"{CurrentPlayer.Name} can move a pawn");
+                    else
+                        SwitchTurn();
+
+                    break;
             }
-            else
+        }
+
+        private void UpdatePlayersVisual()
+        {
+            foreach (var player in _players)
             {
-                _canMovePawn = true;
+                var factions = player.Factions;
+                
+                if (player == CurrentPlayer)
+                {
+                    //factions.ForEach(f => f.SetActivate(true));
+                    factions.ForEach(f  => f.Pawns.ForEach(p => p.IsActive = true));
+                }
+                else
+                {
+                    //factions.ForEach(f => f.SetActivate(false));
+                    factions.ForEach(f  => f.Pawns.ForEach(p => p.IsActive = false));
+                }
             }
+        }
+
+        private bool CheckToMovePawn(int? step)
+        {
+            foreach (var faction in CurrentPlayer.Factions)
+            {
+                var pawn = GetPawnFromGame(faction);
+                if (pawn is not null)
+                {
+                    return CheckPathIsValid(pawn, step) is not null;
+                }
+            }
+
+            return false;
+        }
+
+        private bool CheckToEnterPawn()
+        {
+
+            foreach (var faction in CurrentPlayer.Factions)
+            {
+                var isExistPawnInBase = faction.Pawns.Any(p => p.State == "InBase");
+                var isStartNodeEmpty = faction.StartNode.IsEmpty;
+
+                if (isExistPawnInBase && isStartNodeEmpty)
+                    return true;
+            }
+
+            return false;
         }
 
         private void SwitchTurn()
         {
-            Debug.LogWarning("The Turn switched");
-            _currentPlayerIndex = _currentPlayerIndex < _players.Count ? _currentPlayerIndex++ : 0;
+            // a loop in the players
+            _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
+
+            Debug.LogWarning($"The Turn is {CurrentPlayer.Name}");
+            UpdatePlayersVisual();
+            OnTurnSwitched?.Invoke();
         }
-        
-        private INode GetEmptyNodeBase(Faction faction)
-            => faction.BaseNodes.FirstOrDefault(p => p.IsEmpty);
 
         private IPawn GetPawnFromBase(Faction faction)
             => faction.Pawns.FirstOrDefault(p => p.State == "InBase");
+
+        private IPawn GetPawnFromGame(Faction faction)
+            => faction.Pawns.FirstOrDefault(p => p.State == "InGame");
     }
 }
