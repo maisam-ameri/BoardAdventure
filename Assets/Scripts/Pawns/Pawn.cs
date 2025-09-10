@@ -27,7 +27,7 @@ namespace Pawns
         {
             set
             {
-                Color = value ? _tempColor.Value : Color = Color.gray;
+                Color = value ? _tempColor ?? Color : Color = Color.gray;
                 Collider.enabled = value;
             } 
         }
