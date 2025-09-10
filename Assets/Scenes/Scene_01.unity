@@ -1153,6 +1153,7 @@ GameObject:
   - component: {fileID: 223792172}
   - component: {fileID: 223792171}
   - component: {fileID: 223792170}
+  - component: {fileID: 223792174}
   m_Layer: 5
   m_Name: Dice
   m_TagString: Untagged
@@ -1195,6 +1196,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stepTxt: {fileID: 75379416}
   rollButton: {fileID: 223792171}
+  canvas: {fileID: 223792174}
 --- !u!114 &223792171
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1289,6 +1291,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 223792168}
   m_CullTransparentMesh: 1
+--- !u!225 &223792174
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 223792168}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &229216304
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3891,7 +3905,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -860.6669, y: -1.4423}
+  m_AnchoredPosition: {x: -860.6669, y: -1.4423218}
   m_SizeDelta: {x: -1736.8224, y: -157.3318}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1137271698

@@ -17,7 +17,7 @@ namespace Managers
     {
         private DiceManager _diceManager;
         private PawnManager _pawnManager;
-        private  _uiManager;
+        private UIManager  _uiManager;
         private PathCalculator _pathCalculator;
         private IMovement _mover;
         private List<Player> _players;
@@ -168,12 +168,15 @@ namespace Managers
 
         private void OnActionCompleted()
         {
+            _diceManager.SetActivateDice(true);
             SwitchTurn();
         }
 
         private void OnDiceRolled(int? step)
         {
             _isDiceRolled = true;
+            _diceManager.SetActivateDice(false);
+
             switch (step)
             {
                 case null:
@@ -197,7 +200,7 @@ namespace Managers
                     if (!canEnterPawn && !canMovePawn)
                     {
                         SwitchTurn();
-                        //UpdatePlayersVisual();
+                        _diceManager.SetActivateDice(true);
                     }
 
                     break;
@@ -208,7 +211,7 @@ namespace Managers
                     else
                     {
                         SwitchTurn();
-                        //UpdatePlayersVisual();
+                        _diceManager.SetActivateDice(true);
                     }
 
 

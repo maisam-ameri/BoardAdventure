@@ -20,17 +20,14 @@ namespace Managers
 
         public void RollDice()
         {
-            if (!IsActive)
-            {
-                Debug.Log("you don't allowed to roll");
-                return;
-            }
-
             Step = _dice.Roll();
             diceUI.RollDice(Step.Value);
             OnDiceRolled?.Invoke(Step);
         }
 
-        public bool IsActive { get; set; } = true;
+        public void SetActivateDice(bool isActive)
+        {
+            diceUI.SetActivateDice(isActive);
+        }
     }
 }

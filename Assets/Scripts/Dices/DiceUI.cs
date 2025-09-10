@@ -8,14 +8,16 @@ namespace Dices
     {
         [SerializeField] private TextMeshProUGUI stepTxt;
         [SerializeField] private Button rollButton;
+        [SerializeField] private CanvasGroup canvas;
         public void RollDice(int step)
         {
             stepTxt.text = step.ToString();
         }
 
-        public void ActivateRoll(bool isActive)
+        public void SetActivateDice(bool isActive)
         {
-            rollButton.enabled = isActive;
+            canvas.alpha = isActive ? 1f : 0.4f;
+            rollButton.interactable = isActive;
         }
         
     }

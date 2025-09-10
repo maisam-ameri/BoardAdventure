@@ -48,7 +48,7 @@ namespace Managers
             {
                 if (nodeCounter++ > allNodes.Count())
                 {
-                    Debug.LogError("SetupNodes stopped: possible infinite loop!");
+                    Debug.Log("SetupNodes stopped: possible infinite loop!");
                     break;
                 }
 
