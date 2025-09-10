@@ -17,7 +17,7 @@ namespace Managers
     {
         private DiceManager _diceManager;
         private PawnManager _pawnManager;
-        private UIManager _uiManager;
+        private  _uiManager;
         private PathCalculator _pathCalculator;
         private IMovement _mover;
         private List<Player> _players;
