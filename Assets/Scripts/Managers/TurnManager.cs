@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Abstractions;
 using Factions;
@@ -22,14 +21,17 @@ namespace Managers
         private IMovement _mover;
         private List<Player> _players;
         private int _currentPlayerIndex;
-        public Action OnTurnSwitched { get; set; }
-        public Action OnActionAfterRollCompleted { get; set; }
+        private bool _firstSix;
+        private bool _isDiceRolled;
 
+        public Action OnTurnSwitched { get; set; }
         public Player CurrentPlayer
         {
             get => _players[_currentPlayerIndex];
             set { }
         }
+        
+        
 
         private void Start()
         {
@@ -93,6 +95,12 @@ namespace Managers
 
         private void OnSelectedFaction(Faction faction)
         {
+            if (!_isDiceRolled)
+            {
+                Debug.LogWarning("please roll");
+                return;
+            }
+            
             if (CurrentPlayer.Factions.All(f => f != faction)) return;
 
             if (!faction.StartNode.IsEmpty)
@@ -107,6 +115,11 @@ namespace Managers
 
         private void OnSelectedPawn(IPawn pawn)
         {
+            if (!_isDiceRolled)
+            {
+                Debug.LogWarning("please roll");
+                return;
+            }
             _ = HandleSelectedPawnAsync(pawn);
         }
 
@@ -115,7 +128,7 @@ namespace Managers
             var path = CheckPathIsValid(pawn, _diceManager.Step);
             if (path is null) return;
 
-            await _mover.Move(pawn, path);
+            await _mover.Move(pawn, path, OnActionCompleted);
         }
 
         private List<INode> CheckPathIsValid(IPawn pawn, int? step)
@@ -127,7 +140,6 @@ namespace Managers
             return path.Count != 0 && PathValidator.CanMoveToNode(path[^1], CurrentPlayer) ? path : null;
         }
 
-
         private void EnterPawnToGame(Pawn pawn)
         {
             pawn.Position = pawn.Faction.StartNode.Position;
@@ -136,18 +148,27 @@ namespace Managers
             pawn.Faction.StartNode.IsEmpty = false;
             pawn.Collider.enabled = true;
             pawn.State = "InGame";
+            OnActionCompleted();
         }
 
-        private bool _firstSix;
+        private void OnActionCompleted()
+        {
+            SwitchTurn();
+        }
 
         private void OnDiceRolled(int? step)
         {
+            _isDiceRolled = true;
             switch (step)
             {
                 case null:
                     return;
                 case 6:
-                    if (!_firstSix) _firstSix = true;
+                    if (!_firstSix)
+                    {
+                        _firstSix = true;
+                        UpdatePlayersVisual();
+                    }
                     var canEnterPawn = CheckToEnterPawn();
                     var canMovePawn = CheckToMovePawn(step);
 
@@ -160,6 +181,7 @@ namespace Managers
                     if (!canEnterPawn && !canMovePawn)
                     {
                         SwitchTurn();
+                        //UpdatePlayersVisual();
                     }
 
                     break;
@@ -168,12 +190,16 @@ namespace Managers
                     if (CheckToMovePawn(step))
                         Debug.LogWarning($"{CurrentPlayer.Name} can move a pawn");
                     else
+                    {
                         SwitchTurn();
+                        //UpdatePlayersVisual();
+                    }
+
 
                     break;
             }
 
-                UpdatePlayersVisual();
+            //UpdatePlayersVisual();
         }
 
         private void DeactivatePlayersVisual()
@@ -189,8 +215,8 @@ namespace Managers
 
         private void UpdatePlayersVisual()
         {
-            if(!_firstSix) return;
-            
+            if (!_firstSix) return;
+
             foreach (var player in _players)
             {
                 var factions = player.Factions;
@@ -240,9 +266,10 @@ namespace Managers
         {
             // a loop in the players
             _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
-
-            Debug.LogWarning($"The Turn is {CurrentPlayer.Name}");
+            _isDiceRolled = false;
+            UpdatePlayersVisual();
             OnTurnSwitched?.Invoke();
+            Debug.LogWarning($"The Turn is {CurrentPlayer.Name}");
         }
 
         private IPawn GetPawnFromBase(Faction faction)

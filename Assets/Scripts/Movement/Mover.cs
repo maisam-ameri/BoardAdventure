@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Abstractions;
 using Nodes.Abstractions;
@@ -17,7 +18,7 @@ namespace Movement
             _delay = delay;
         }
 
-        public async Task Move(IPawn pawn, List<INode> path)
+        public async Task Move(IPawn pawn, List<INode> path, Action onCompleted = null)
         {
             if (path == null || path.Count == 0) return;
 
@@ -33,6 +34,8 @@ namespace Movement
             pawn.CurrentNode = path[^1];
             pawn.CurrentNode.Pawn = pawn;
             pawn.CurrentNode.IsEmpty = false;
+            onCompleted?.Invoke();
         }
+
     }
 }

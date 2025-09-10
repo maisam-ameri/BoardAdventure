@@ -26,7 +26,7 @@ namespace Managers
                 return;
             }
 
-            Step = 6;// _dice.Roll();
+            Step = _dice.Roll();
             diceUI.RollDice(Step.Value);
             OnDiceRolled?.Invoke(Step);
         }
