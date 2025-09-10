@@ -41,7 +41,7 @@ namespace Managers
             _players = CreatePlayer(factions);
             InitialPlayerUIs();
             CurrentPlayer = _players[0];
-            SwitchPlayerVisual();
+            UpdatePlayersVisual();
             DeactivatePlayersVisual();
             _mover = new Mover(200);
         }
@@ -185,7 +185,7 @@ namespace Managers
                     if (!_firstSix)
                     {
                         _firstSix = true;
-                        UpdatePlayersVisual();
+                        UpdateTurnVisual();
                     }
 
                     var canEnterPawn = CheckToEnterPawn();
@@ -232,9 +232,9 @@ namespace Managers
             }
         }
 
-        private void UpdatePlayersVisual()
+        private void UpdateTurnVisual()
         {
-            SwitchPlayerVisual();
+            UpdatePlayersVisual();
 
             if (!_firstSix) return;
 
@@ -255,7 +255,7 @@ namespace Managers
             }
         }
 
-        private void SwitchPlayerVisual()
+        private void UpdatePlayersVisual()
         {
             foreach (var player in _players)
             {
@@ -299,7 +299,7 @@ namespace Managers
             // a loop in the players
             _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
             _isDiceRolled = false;
-            UpdatePlayersVisual();
+            UpdateTurnVisual();
             OnTurnSwitched?.Invoke();
             Debug.LogWarning($"The Turn is {CurrentPlayer.Name}");
         }
