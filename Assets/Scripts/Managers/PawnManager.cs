@@ -22,7 +22,7 @@ namespace Managers
             newPawn.Color = faction.Color;
             newPawn.Position = baseNode.Position;
             newPawn.Faction = faction;
-            newPawn.Collider.enabled = false;
+            //newPawn.Collider.enabled = false;
             newPawn.CurrentNode = baseNode;
             faction.Pawns.Add(newPawn);
             baseNode.IsEmpty = false;

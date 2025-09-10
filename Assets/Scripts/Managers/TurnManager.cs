@@ -17,7 +17,7 @@ namespace Managers
     {
         private DiceManager _diceManager;
         private PawnManager _pawnManager;
-        private UIManager  _uiManager;
+        private UIManager _uiManager;
         private PathCalculator _pathCalculator;
         private IMovement _mover;
         private List<Player> _players;
@@ -95,7 +95,7 @@ namespace Managers
 
             foreach (var faction in factions)
             {
-                faction.OnSelectFaction += OnSelectedFaction;
+                //faction.OnSelectFaction += OnSelectedFaction;
                 faction.Pawns = new List<IPawn>();
                 faction.BaseNodes.ForEach(baseNode =>
                 {
@@ -107,25 +107,6 @@ namespace Managers
             return factions;
         }
 
-        private void OnSelectedFaction(Faction faction)
-        {
-            if (!_isDiceRolled)
-            {
-                Debug.LogWarning("please roll");
-                return;
-            }
-
-            if (CurrentPlayer.Factions.All(f => f != faction)) return;
-
-            if (!faction.StartNode.IsEmpty)
-            {
-                Debug.LogWarning("Start node isn't empty");
-                return;
-            }
-
-            var pawn = GetPawnFromBase(faction);
-            EnterPawnToGame((Pawn) pawn);
-        }
 
         private void OnSelectedPawn(IPawn pawn)
         {
@@ -135,7 +116,24 @@ namespace Managers
                 return;
             }
 
-            _ = HandleSelectedPawnAsync(pawn);
+            var faction = pawn.Faction;
+
+            if (pawn.State == "InBase" && _diceManager.Step is 6)
+            {
+                if (CurrentPlayer.Factions.All(f => f != faction)) return;
+
+                if (!faction.StartNode.IsEmpty)
+                {
+                    Debug.LogWarning("Start node isn't empty");
+                    return;
+                }
+
+                EnterPawnToGame((Pawn) pawn);
+            }
+            else if (pawn.State == "InGame")
+            {
+                _ = HandleSelectedPawnAsync(pawn);
+            }
         }
 
         private async Task HandleSelectedPawnAsync(IPawn pawn)
@@ -161,7 +159,7 @@ namespace Managers
             pawn.CurrentNode.IsEmpty = true;
             pawn.CurrentNode = pawn.Faction.StartNode;
             pawn.Faction.StartNode.IsEmpty = false;
-            pawn.Collider.enabled = true;
+            //pawn.Collider.enabled = true;
             pawn.State = "InGame";
             OnActionCompleted();
         }
