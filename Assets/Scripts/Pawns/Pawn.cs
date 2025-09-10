@@ -11,8 +11,13 @@ namespace Pawns
         public Color Color
         {
             get => GetComponent<SpriteRenderer>().color;
-            set => GetComponent<SpriteRenderer>().color = value;
+            set
+            {
+                _tempColor ??= value;
+                GetComponent<SpriteRenderer>().color = value;
+            }
         }
+
         public Vector2 Position
         {
             get => transform.position;
@@ -22,7 +27,7 @@ namespace Pawns
         {
             set
             {
-                Color = value ? _tempColor : Color = Color.gray;
+                Color = value ? _tempColor.Value : Color = Color.gray;
                 Collider.enabled = value;
             } 
         }
@@ -31,13 +36,9 @@ namespace Pawns
         public Collider2D Collider => GetComponent<Collider2D>();
 
         public event Action<IPawn> OnSelectPawn;
-        private Color _tempColor;
-
+        private Color? _tempColor;
         
-        private void Start()
-        {
-            _tempColor = Color;
-        }
+        
         private void OnMouseDown()
         {
             OnSelectPawn?.Invoke(this);

@@ -37,7 +37,7 @@ namespace Managers
             var factions = InitializeFactions();
             _players = CreatePlayer(factions);
             CurrentPlayer = _players[0];
-
+            DeactivatePlayersVisual();
             _mover = new Mover(200);
         }
 
@@ -138,6 +138,8 @@ namespace Managers
             pawn.State = "InGame";
         }
 
+        private bool _firstSix;
+
         private void OnDiceRolled(int? step)
         {
             switch (step)
@@ -145,10 +147,10 @@ namespace Managers
                 case null:
                     return;
                 case 6:
-
+                    if (!_firstSix) _firstSix = true;
                     var canEnterPawn = CheckToEnterPawn();
                     var canMovePawn = CheckToMovePawn(step);
-                    
+
                     if (canEnterPawn)
                         Debug.LogWarning($"{CurrentPlayer.Name} can enter a pawn");
 
@@ -170,23 +172,38 @@ namespace Managers
 
                     break;
             }
+
+                UpdatePlayersVisual();
         }
 
-        private void UpdatePlayersVisual()
+        private void DeactivatePlayersVisual()
         {
             foreach (var player in _players)
             {
                 var factions = player.Factions;
-                
+
+                //factions.ForEach(f => f.SetActivate(false));
+                factions.ForEach(f => f.Pawns.ForEach(p => p.IsActive = false));
+            }
+        }
+
+        private void UpdatePlayersVisual()
+        {
+            if(!_firstSix) return;
+            
+            foreach (var player in _players)
+            {
+                var factions = player.Factions;
+
                 if (player == CurrentPlayer)
                 {
                     //factions.ForEach(f => f.SetActivate(true));
-                    factions.ForEach(f  => f.Pawns.ForEach(p => p.IsActive = true));
+                    factions.ForEach(f => f.Pawns.ForEach(p => p.IsActive = true));
                 }
                 else
                 {
                     //factions.ForEach(f => f.SetActivate(false));
-                    factions.ForEach(f  => f.Pawns.ForEach(p => p.IsActive = false));
+                    factions.ForEach(f => f.Pawns.ForEach(p => p.IsActive = false));
                 }
             }
         }
@@ -207,7 +224,6 @@ namespace Managers
 
         private bool CheckToEnterPawn()
         {
-
             foreach (var faction in CurrentPlayer.Factions)
             {
                 var isExistPawnInBase = faction.Pawns.Any(p => p.State == "InBase");
@@ -226,7 +242,6 @@ namespace Managers
             _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
 
             Debug.LogWarning($"The Turn is {CurrentPlayer.Name}");
-            UpdatePlayersVisual();
             OnTurnSwitched?.Invoke();
         }
 
