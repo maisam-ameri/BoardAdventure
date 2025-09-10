@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Factions;
+using Players.UI;
 
 namespace Players
 {
@@ -7,6 +8,7 @@ namespace Players
     {
         public string Name { get; set; }
         public bool IsActive { get; set; }
+        public PlayerUI UI { get; set; }
         public List<Faction> Factions { get; set; } = new ();
     }
 }

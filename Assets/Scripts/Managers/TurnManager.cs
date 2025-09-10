@@ -17,6 +17,7 @@ namespace Managers
     {
         private DiceManager _diceManager;
         private PawnManager _pawnManager;
+        private UIManager _uiManager;
         private PathCalculator _pathCalculator;
         private IMovement _mover;
         private List<Player> _players;
@@ -25,20 +26,22 @@ namespace Managers
         private bool _isDiceRolled;
 
         public Action OnTurnSwitched { get; set; }
+
         public Player CurrentPlayer
         {
             get => _players[_currentPlayerIndex];
             set { }
         }
-        
-        
+
 
         private void Start()
         {
             InitializeManagers();
             var factions = InitializeFactions();
             _players = CreatePlayer(factions);
+            InitialPlayerUIs();
             CurrentPlayer = _players[0];
+            SwitchPlayerVisual();
             DeactivatePlayersVisual();
             _mover = new Mover(200);
         }
@@ -49,6 +52,7 @@ namespace Managers
             _diceManager.OnDiceRolled += OnDiceRolled;
             _pawnManager = FindObjectOfType<PawnManager>();
             _pathCalculator = new PathCalculator();
+            _uiManager = FindObjectOfType<UIManager>();
         }
 
         private List<Player> CreatePlayer(List<Faction> factions)
@@ -73,6 +77,16 @@ namespace Managers
             };
 
             return players;
+        }
+
+        private void InitialPlayerUIs()
+        {
+            foreach (var player in _players)
+            {
+                var ui = _uiManager.CreatePlayerUI();
+                ui.SetPlayerUI(player.Name, player.Factions.Select(f => f.Color).ToList());
+                player.UI = ui;
+            }
         }
 
         private List<Faction> InitializeFactions()
@@ -100,7 +114,7 @@ namespace Managers
                 Debug.LogWarning("please roll");
                 return;
             }
-            
+
             if (CurrentPlayer.Factions.All(f => f != faction)) return;
 
             if (!faction.StartNode.IsEmpty)
@@ -120,6 +134,7 @@ namespace Managers
                 Debug.LogWarning("please roll");
                 return;
             }
+
             _ = HandleSelectedPawnAsync(pawn);
         }
 
@@ -169,6 +184,7 @@ namespace Managers
                         _firstSix = true;
                         UpdatePlayersVisual();
                     }
+
                     var canEnterPawn = CheckToEnterPawn();
                     var canMovePawn = CheckToMovePawn(step);
 
@@ -215,6 +231,8 @@ namespace Managers
 
         private void UpdatePlayersVisual()
         {
+            SwitchPlayerVisual();
+
             if (!_firstSix) return;
 
             foreach (var player in _players)
@@ -231,6 +249,17 @@ namespace Managers
                     //factions.ForEach(f => f.SetActivate(false));
                     factions.ForEach(f => f.Pawns.ForEach(p => p.IsActive = false));
                 }
+            }
+        }
+
+        private void SwitchPlayerVisual()
+        {
+            foreach (var player in _players)
+            {
+                if (player == CurrentPlayer)
+                    CurrentPlayer.UI.SetActivate(true);
+                else
+                    player.UI.SetActivate(false);
             }
         }
 
