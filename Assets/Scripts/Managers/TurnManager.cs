@@ -166,9 +166,20 @@ namespace Managers
 
         private void OnActionCompleted()
         {
-            _diceManager.SetActivateDice(true);
-            SwitchTurn();
+            if (_hasReward)
+            {
+                // show delay to active dice
+                if (_hasReward) _hasReward = false;
+                _diceManager.SetActivateDice(true);
+            }
+            else
+            {
+                SwitchTurn();
+                _diceManager.SetActivateDice(true);
+            }
         }
+
+        private bool _hasReward;
 
         private void OnDiceRolled(int? step)
         {
@@ -180,6 +191,7 @@ namespace Managers
                 case null:
                     return;
                 case 6:
+                    _hasReward = !_hasReward;
                     if (!_firstSix)
                     {
                         _firstSix = true;
@@ -197,8 +209,16 @@ namespace Managers
 
                     if (!canEnterPawn && !canMovePawn)
                     {
-                        SwitchTurn();
-                        _diceManager.SetActivateDice(true);
+                        if (_hasReward)
+                        {
+                            // show delay to active dice
+                            _diceManager.SetActivateDice(true);
+                        }
+                        else
+                        {
+                            SwitchTurn();
+                            _diceManager.SetActivateDice(true);
+                        }
                     }
 
                     break;
@@ -268,10 +288,19 @@ namespace Managers
         {
             foreach (var faction in CurrentPlayer.Factions)
             {
-                var pawn = GetPawnFromGame(faction);
-                if (pawn is not null)
+                var pawns = GetPawnsFromGame(faction);
+                foreach (var pawn in pawns)
                 {
-                    return CheckPathIsValid(pawn, step) is not null;
+                    if (pawn is not null)
+                    {
+                        var path = CheckPathIsValid(pawn, step);
+                        
+                        if (path is null) continue;
+
+                        return true;
+                    }
+
+                    return false;
                 }
             }
 
@@ -305,7 +334,7 @@ namespace Managers
         private IPawn GetPawnFromBase(Faction faction)
             => faction.Pawns.FirstOrDefault(p => p.State == "InBase");
 
-        private IPawn GetPawnFromGame(Faction faction)
-            => faction.Pawns.FirstOrDefault(p => p.State == "InGame");
+        private IEnumerable<IPawn> GetPawnsFromGame(Faction faction)
+            => faction.Pawns.Where(p => p.State == "InGame");
     }
 }
