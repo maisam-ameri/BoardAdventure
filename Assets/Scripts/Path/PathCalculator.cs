@@ -23,6 +23,11 @@ namespace Path
                 {
                     if (pawn.Faction.GatewayNode == gateway)
                     {
+                        if (remainedSteps > pawn.Faction.GoalNodes.Count)
+                        {
+                            path.Clear();
+                            break;
+                        }
                         currentNode = pawn.Faction.GoalNodes[0];
                         path.Add(currentNode);
                         remainedSteps--;

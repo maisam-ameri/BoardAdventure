@@ -25,6 +25,14 @@ namespace Managers
             OnDiceRolled?.Invoke(Step);
         }
 
+        // for debugging
+        public void RollDice(int step)
+        {
+            Step = step;
+            diceUI.RollDice(Step.Value);
+            OnDiceRolled?.Invoke(Step);
+        }
+
         public void SetActivateDice(bool isActive)
         {
             diceUI.SetActivateDice(isActive);
