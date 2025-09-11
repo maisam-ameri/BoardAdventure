@@ -1,12 +1,19 @@
-# JetBrains Rider cache
+# ================= #
+# JetBrains Rider   #
+# ================= #
 .idea/
 *.DotSettings.user
 Assets/Plugins/Editor/JetBrains*
+ProjectSettings/RiderScriptEditorPersistedState.asset
 
-# VS Code
+# ================= #
+# VS Code           #
+# ================= #
 .vscode/
 
-# Unity directories
+# ================= #
+# Unity directories  #
+# ================= #
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
@@ -15,29 +22,25 @@ Assets/Plugins/Editor/JetBrains*
 [Ll]ogs/
 [Uu]ser[Ss]ettings/
 *.log
-
-# System and temp files
-*.DS_Store
-Thumbs.db
-
-# Blender backup files
-*.blend1
-*.blend1.meta
-
-# Memory captures & recordings
 /[Mm]emoryCaptures/
 /[Rr]ecordings/
 
-# Auto-generated Unity tools
+# ===================== #
+# Auto-generated Unity  #
+# ===================== #
 Assets/AssetStoreTools*
+ExportedObj/
+/.consulo/
+/[Aa]ssets/AddressableAssetsData/*/*.bin*
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+/[Aa]ssets/Unity.VisualScripting.Generated/**
+/[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 
-# Visual Studio and Gradle
+# ===================== #
+# Visual Studio & Gradle#
+# ===================== #
 .vs/
 .gradle/
-
-# Auto-generated solution/project files
-ExportedObj/
-.consulo/
 *.csproj
 *.unityproj
 *.sln
@@ -52,32 +55,29 @@ ExportedObj/
 *.mdb
 *.opendb
 *.VC.db
-
-# Unity meta files
 *.pidb.meta
 *.pdb.meta
 *.mdb.meta
 
-# Crash reports
+# ===================== #
+# System and temp files #
+# ===================== #
+*.DS_Store
+Thumbs.db
 sysinfo.txt
 mono_crash.*
 
-# Builds and packages
+# ===================== #
+# Builds & Packages     #
+# ===================== #
 *.apk
 *.aab
 *.app
 *.unitypackage
 *.unitypackage.meta
 
-# Crashlytics
-crashlytics-build.properties
-
-# Addressables temp and data files
-/[Aa]ssets/AddressableAssetsData/*/*.bin*
-/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
-
-# Visual Scripting generated files
-/[Aa]ssets/Unity.VisualScripting.Generated/**
-
-# Auto-generated test scenes
-/[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+# ===================== #
+# Blender backup files  #
+# ===================== #
+*.blend1
+*.blend1.meta
