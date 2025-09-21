@@ -37,5 +37,11 @@ namespace Managers
         {
             diceUI.SetActivateDice(isActive);
         }
+
+        public void Reset()
+        {
+            diceUI.Reset();
+            Step = null;
+        }
     }
 }

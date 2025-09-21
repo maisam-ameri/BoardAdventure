@@ -179,7 +179,7 @@ namespace Managers
                 SwitchTurn();
                 //CurrentPlayer.UI.StartTurnTimer(10);
             }
-
+            _diceManager.Reset();
             _diceManager.SetActivateDice(true);
         }
 
@@ -339,6 +339,7 @@ namespace Managers
             CurrentPlayer.UI.StopTimer();
             _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
             _isDiceRolled = false;
+            _diceManager.Reset();
             UpdateTurnVisual();
             CurrentPlayer.UI.StartTurnTimer(5);
             OnTurnSwitched?.Invoke();

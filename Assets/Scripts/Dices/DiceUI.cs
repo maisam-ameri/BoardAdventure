@@ -19,6 +19,11 @@ namespace Dices
             canvas.alpha = isActive ? 1f : 0.4f;
             rollButton.interactable = isActive;
         }
+
+        public void Reset()
+        {
+            stepTxt.text = "--";
+        }
         
     }
 }
