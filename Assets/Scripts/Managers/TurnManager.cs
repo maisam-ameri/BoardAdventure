@@ -9,6 +9,7 @@ using Nodes.Abstractions;
 using Path;
 using Pawns;
 using Players;
+using UI;
 using UnityEngine;
 
 namespace Managers
@@ -18,6 +19,7 @@ namespace Managers
         private DiceManager _diceManager;
         private PawnManager _pawnManager;
         private UIManager _uiManager;
+        private TurnVisualizer _turnVisualizer;
         private PathCalculator _pathCalculator;
         private IMovement _mover;
         private List<Player> _players;
@@ -33,6 +35,8 @@ namespace Managers
             set { }
         }
 
+        private Player _lastPlayer;
+
 
         private void Start()
         {
@@ -41,8 +45,10 @@ namespace Managers
             _players = CreatePlayer(factions);
             InitialPlayerUIs();
             CurrentPlayer = _players[0];
-            UpdatePlayersVisual();
-            DeactivatePlayersVisual();
+            _turnVisualizer.Initial(_players);
+            _turnVisualizer.DeactivateTurnVisuals();
+            _turnVisualizer.DeactivatePlayerVisuals();
+            _turnVisualizer.UpdatePlayersVisual(CurrentPlayer,_lastPlayer);
             _mover = new Mover(200);
         }
 
@@ -53,6 +59,7 @@ namespace Managers
             _pawnManager = FindObjectOfType<PawnManager>();
             _pathCalculator = new PathCalculator();
             _uiManager = FindObjectOfType<UIManager>();
+            _turnVisualizer = FindObjectOfType<TurnVisualizer>();
         }
 
         private List<Player> CreatePlayer(List<Faction> factions)
@@ -179,6 +186,7 @@ namespace Managers
                 SwitchTurn();
                 //CurrentPlayer.UI.StartTurnTimer(10);
             }
+
             _diceManager.Reset();
             _diceManager.SetActivateDice(true);
         }
@@ -192,7 +200,7 @@ namespace Managers
 
             CurrentPlayer.UI.StopTimer();
             CurrentPlayer.UI.StartTurnTimer(10);
-            
+
             switch (step)
             {
                 case null:
@@ -202,7 +210,8 @@ namespace Managers
                     if (!_firstSix)
                     {
                         _firstSix = true;
-                        UpdateTurnVisual();
+                        _turnVisualizer.UpdateTurn(CurrentPlayer, _lastPlayer);
+                        _turnVisualizer.UpdatePlayersVisual(CurrentPlayer, _lastPlayer);
                     }
 
                     var canEnterPawn = CheckToEnterPawn();
@@ -247,55 +256,6 @@ namespace Managers
             }
         }
 
-        private void DeactivatePlayersVisual()
-        {
-            foreach (var player in _players)
-            {
-                var factions = player.Factions;
-
-                //factions.ForEach(f => f.SetActivate(false));
-                factions.ForEach(f => f.Pawns.ForEach(p => p.IsActive = false));
-            }
-        }
-
-        private void UpdateTurnVisual()
-        {
-            UpdatePlayersVisual();
-
-            if (!_firstSix) return;
-
-            foreach (var player in _players)
-            {
-                var factions = player.Factions;
-
-                if (player == CurrentPlayer)
-                {
-                    //factions.ForEach(f => f.SetActivate(true));
-                    factions.ForEach(f => f.Pawns.ForEach(p => p.IsActive = true));
-                }
-                else
-                {
-                    //factions.ForEach(f => f.SetActivate(false));
-                    factions.ForEach(f => f.Pawns.ForEach(p => p.IsActive = false));
-                }
-            }
-        }
-
-        private void UpdatePlayersVisual()
-        {
-            foreach (var player in _players)
-            {
-                if (player == CurrentPlayer)
-                {
-                    CurrentPlayer.UI.SetActivate(true);
-                    CurrentPlayer.UI.StartTurnTimer(5);
-                }
-                else
-                {
-                    player.UI.SetActivate(false);
-                }
-            }
-        }
 
         private bool CheckToMovePawn(int? step)
         {
@@ -337,10 +297,16 @@ namespace Managers
         private void SwitchTurn()
         {
             CurrentPlayer.UI.StopTimer();
+            _lastPlayer = CurrentPlayer;
             _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
             _isDiceRolled = false;
             _diceManager.Reset();
-            UpdateTurnVisual();
+
+            _turnVisualizer.UpdatePlayersVisual(CurrentPlayer, _lastPlayer);
+            if (_firstSix)
+                _turnVisualizer.UpdateTurn(CurrentPlayer, _lastPlayer);
+            
+
             CurrentPlayer.UI.StartTurnTimer(5);
             OnTurnSwitched?.Invoke();
             Debug.LogWarning($"The Turn is {CurrentPlayer.Name}");
@@ -349,9 +315,6 @@ namespace Managers
         private void OnTurnTimerExpired()
         {
             SwitchTurn();
-//            _diceManager.SetActivateDice(true);
-            //          CurrentPlayer.UI.StartTurnTimer(10);
-            //        Debug.Log($"{CurrentPlayer.Name} turn is finished");
         }
 
         private IPawn GetPawnFromBase(Faction faction)
