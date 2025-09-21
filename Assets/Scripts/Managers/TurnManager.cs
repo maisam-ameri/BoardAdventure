@@ -84,7 +84,10 @@ namespace Managers
             foreach (var player in _players)
             {
                 var ui = _uiManager.CreatePlayerUI();
-                ui.SetPlayerUI(player.Name, player.Factions.Select(f => f.Color).ToList());
+                ui.SetPlayerUI(player.Name
+                    , player.Factions.Select(f => f.Color).ToList()
+                    , OnTurnTimerExpired);
+
                 player.UI = ui;
             }
         }
@@ -106,7 +109,6 @@ namespace Managers
 
             return factions;
         }
-
 
         private void OnSelectedPawn(IPawn pawn)
         {
@@ -169,14 +171,16 @@ namespace Managers
             if (_hasReward)
             {
                 // show delay to active dice
-                if (_hasReward) _hasReward = false;
-                _diceManager.SetActivateDice(true);
+                _hasReward = false;
+                CurrentPlayer.UI.StartTurnTimer(10);
             }
             else
             {
                 SwitchTurn();
-                _diceManager.SetActivateDice(true);
+                //CurrentPlayer.UI.StartTurnTimer(10);
             }
+
+            _diceManager.SetActivateDice(true);
         }
 
         private bool _hasReward;
@@ -186,6 +190,9 @@ namespace Managers
             _isDiceRolled = true;
             _diceManager.SetActivateDice(false);
 
+            CurrentPlayer.UI.StopTimer();
+            CurrentPlayer.UI.StartTurnTimer(10);
+            
             switch (step)
             {
                 case null:
@@ -225,7 +232,10 @@ namespace Managers
 
                 default:
                     if (CheckToMovePawn(step))
+                    {
+                        CurrentPlayer.UI.StartTurnTimer(10);
                         Debug.LogWarning($"{CurrentPlayer.Name} can move a pawn");
+                    }
                     else
                     {
                         SwitchTurn();
@@ -235,8 +245,6 @@ namespace Managers
 
                     break;
             }
-
-            //UpdatePlayersVisual();
         }
 
         private void DeactivatePlayersVisual()
@@ -278,9 +286,14 @@ namespace Managers
             foreach (var player in _players)
             {
                 if (player == CurrentPlayer)
+                {
                     CurrentPlayer.UI.SetActivate(true);
+                    CurrentPlayer.UI.StartTurnTimer(5);
+                }
                 else
+                {
                     player.UI.SetActivate(false);
+                }
             }
         }
 
@@ -294,7 +307,7 @@ namespace Managers
                     if (pawn is not null)
                     {
                         var path = CheckPathIsValid(pawn, step);
-                        
+
                         if (path is null) continue;
 
                         return true;
@@ -323,12 +336,21 @@ namespace Managers
 
         private void SwitchTurn()
         {
-            // a loop in the players
+            CurrentPlayer.UI.StopTimer();
             _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
             _isDiceRolled = false;
             UpdateTurnVisual();
+            CurrentPlayer.UI.StartTurnTimer(5);
             OnTurnSwitched?.Invoke();
             Debug.LogWarning($"The Turn is {CurrentPlayer.Name}");
+        }
+
+        private void OnTurnTimerExpired()
+        {
+            SwitchTurn();
+//            _diceManager.SetActivateDice(true);
+            //          CurrentPlayer.UI.StartTurnTimer(10);
+            //        Debug.Log($"{CurrentPlayer.Name} turn is finished");
         }
 
         private IPawn GetPawnFromBase(Faction faction)

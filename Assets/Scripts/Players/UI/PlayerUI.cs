@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Abstractions;
 using TMPro;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,8 +12,9 @@ namespace Players.UI
     {
         [SerializeField] private TextMeshProUGUI playerName;
         [SerializeField] private List<Image> images;
-        [SerializeField] private Slider timer;
+        [SerializeField] private TurnTimer timer;
 
+        private Action _onTurnTimerExpired;
         private CanvasGroup _canvas;
 
         private void Awake()
@@ -19,10 +22,11 @@ namespace Players.UI
             _canvas = GetComponent<CanvasGroup>();
         }
 
-        public void SetPlayerUI(string pName, List<Color> colors)
+        public void SetPlayerUI(string pName, List<Color> colors,Action onTurnTimerExpired)
         {
             playerName.text = pName;
-
+            _onTurnTimerExpired = onTurnTimerExpired;
+            
             for (var i = 0; i < images.Count; i++)
             {
                 if (i > colors.Count - 1)
@@ -34,6 +38,14 @@ namespace Players.UI
                 images[i].enabled = true;
                 images[i].color = colors[i];
             }
+
+            _onTurnTimerExpired = onTurnTimerExpired;
+            timer.TimerExpired += onTurnTimerExpired;
+        }
+
+        private void OnDisable()
+        {
+            timer.TimerExpired -= _onTurnTimerExpired;
         }
 
         public void SetActivate(bool isActive)
@@ -41,6 +53,16 @@ namespace Players.UI
             if (_canvas is null) return;
 
             _canvas.alpha = isActive ? 1f : 0.2f;
+        }
+
+        public void StartTurnTimer(float time)
+        {
+            timer.StartTimer(time);
+        }
+
+        public void StopTimer()
+        {
+            timer.StopTimer();
         }
     }
 }
