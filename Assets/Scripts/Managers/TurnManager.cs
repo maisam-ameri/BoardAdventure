@@ -48,7 +48,7 @@ namespace Managers
             _turnVisualizer.Initial(_players);
             _turnVisualizer.DeactivateTurnVisuals();
             _turnVisualizer.DeactivatePlayerVisuals();
-            _turnVisualizer.UpdatePlayersVisual(CurrentPlayer,_lastPlayer);
+            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer,_lastPlayer);
             _mover = new Mover(200);
         }
 
@@ -210,8 +210,8 @@ namespace Managers
                     if (!_firstSix)
                     {
                         _firstSix = true;
-                        _turnVisualizer.UpdateTurn(CurrentPlayer, _lastPlayer);
-                        _turnVisualizer.UpdatePlayersVisual(CurrentPlayer, _lastPlayer);
+                        _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, _lastPlayer);
+                        _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, _lastPlayer);
                     }
 
                     var canEnterPawn = CheckToEnterPawn();
@@ -302,9 +302,9 @@ namespace Managers
             _isDiceRolled = false;
             _diceManager.Reset();
 
-            _turnVisualizer.UpdatePlayersVisual(CurrentPlayer, _lastPlayer);
+            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, _lastPlayer);
             if (_firstSix)
-                _turnVisualizer.UpdateTurn(CurrentPlayer, _lastPlayer);
+                _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, _lastPlayer);
             
 
             CurrentPlayer.UI.StartTurnTimer(5);

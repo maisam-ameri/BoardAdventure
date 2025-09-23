@@ -14,13 +14,13 @@ namespace UI
             _players = players;
         }
 
-        public void UpdateTurn(Player currentPlayer, Player lastPlayer)
+        public void UpdatePawnHighlights(Player currentPlayer, Player lastPlayer)
         {
             lastPlayer?.Factions.ForEach(f => f.Pawns.ForEach(p => p.IsActive = false));
             currentPlayer.Factions.ForEach(f => f.Pawns.ForEach(p => p.IsActive = true));
         }
 
-        public void UpdatePlayersVisual(Player currentPlayer, Player lastPlayer)
+        public void UpdatePlayerPanels(Player currentPlayer, Player lastPlayer)
         {
             lastPlayer?.UI.SetActivate(false);
             currentPlayer.UI.SetActivate(true);
