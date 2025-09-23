@@ -166,9 +166,9 @@ namespace Managers
         {
             pawn.Position = pawn.Faction.StartNode.Position;
             pawn.CurrentNode.IsEmpty = true;
+            pawn.CurrentNode.Pawn = null;
             pawn.CurrentNode = pawn.Faction.StartNode;
             pawn.Faction.StartNode.IsEmpty = false;
-            //pawn.Collider.enabled = true;
             pawn.State = "InGame";
             OnActionCompleted();
         }
@@ -184,7 +184,6 @@ namespace Managers
             else
             {
                 SwitchTurn();
-                //CurrentPlayer.UI.StartTurnTimer(10);
             }
 
             _diceManager.Reset();
@@ -316,9 +315,6 @@ namespace Managers
         {
             SwitchTurn();
         }
-
-        private IPawn GetPawnFromBase(Faction faction)
-            => faction.Pawns.FirstOrDefault(p => p.State == "InBase");
 
         private IEnumerable<IPawn> GetPawnsFromGame(Faction faction)
             => faction.Pawns.Where(p => p.State == "InGame");

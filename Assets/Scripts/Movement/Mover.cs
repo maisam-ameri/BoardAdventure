@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Abstractions;
 using Nodes.Abstractions;
+using Path;
 using Pawns;
+using Unity.VisualScripting;
 
 namespace Movement
 {
@@ -27,6 +29,14 @@ namespace Movement
 
             foreach (var node in path)
             {
+
+                if (node.Equals(path[^2]))
+                {
+                    if (PathValidator.CheckNodeToCapture(pawn, path[^1]))
+                    {
+                        PathValidator.Capture(path[^1].Pawn);
+                    }
+                }
                 pawn.Position = node.Position;
                 await Task.Delay(_delay);
             }
