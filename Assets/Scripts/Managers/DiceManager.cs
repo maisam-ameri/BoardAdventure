@@ -21,7 +21,7 @@ namespace Managers
         public void RollDice()
         {
             Step = _dice.Roll();
-            diceUI.RollDice(Step.Value);
+            diceUI.ShowRoll(Step.Value);
             OnDiceRolled?.Invoke(Step);
         }
 
@@ -29,13 +29,13 @@ namespace Managers
         public void RollDice(int step)
         {
             Step = step;
-            diceUI.RollDice(Step.Value);
+            diceUI.ShowRoll(Step.Value);
             OnDiceRolled?.Invoke(Step);
         }
 
         public void SetActivateDice(bool isActive)
         {
-            diceUI.SetActivateDice(isActive);
+            diceUI.SetInteractable(isActive);
         }
 
         public void Reset()
