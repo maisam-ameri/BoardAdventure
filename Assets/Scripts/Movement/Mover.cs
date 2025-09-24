@@ -30,7 +30,7 @@ namespace Movement
             foreach (var node in path)
             {
 
-                if (node.Equals(path[^2]))
+                if (path.Count > 1 && node.Equals(path[^2]))
                 {
                     if (PathValidator.CheckNodeToCapture(pawn, path[^1]))
                     {

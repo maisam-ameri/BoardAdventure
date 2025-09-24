@@ -200,6 +200,15 @@ namespace Managers
             CurrentPlayer.UI.StopTimer();
             CurrentPlayer.UI.StartTurnTimer(10);
 
+            if (step is null) return;
+            
+            if(step == 6)
+                HandleSixRoll(step);
+            else
+            {
+                HandleNormalRoll(step);
+            }
+/*
             switch (step)
             {
                 case null:
@@ -252,6 +261,55 @@ namespace Managers
 
 
                     break;
+            }
+            */
+        }
+
+        private void HandleSixRoll(int? step)
+        {
+            _hasReward = !_hasReward;
+            if (!_firstSix)
+            {
+                _firstSix = true;
+                _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, _lastPlayer);
+                _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, _lastPlayer);
+            }
+
+            var canEnterPawn = CheckToEnterPawn();
+            var canMovePawn = CheckToMovePawn(step);
+
+            if (canEnterPawn)
+                Debug.LogWarning($"{CurrentPlayer.Name} can enter a pawn");
+
+            if (canMovePawn)
+                Debug.LogWarning($"{CurrentPlayer.Name} can move a pawn");
+
+            if (!canEnterPawn && !canMovePawn)
+            {
+                if (_hasReward)
+                {
+                    // show delay to active dice
+                    _diceManager.SetActivateDice(true);
+                }
+                else
+                {
+                    SwitchTurn();
+                    _diceManager.SetActivateDice(true);
+                }
+            }
+        }
+
+        private void HandleNormalRoll(int? step)
+        {
+            if (CheckToMovePawn(step))
+            {
+                CurrentPlayer.UI.StartTurnTimer(10);
+                Debug.LogWarning($"{CurrentPlayer.Name} can move a pawn");
+            }
+            else
+            {
+                SwitchTurn();
+                _diceManager.SetActivateDice(true);
             }
         }
 
