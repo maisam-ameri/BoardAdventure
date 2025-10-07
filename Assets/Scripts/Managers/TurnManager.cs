@@ -179,6 +179,7 @@ namespace Managers
 
         private void OnActionCompleted()
         {
+            _isDiceRolled = false;
 
             if (_hasReward)
             {
