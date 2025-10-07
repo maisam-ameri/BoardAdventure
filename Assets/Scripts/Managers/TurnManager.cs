@@ -19,6 +19,7 @@ namespace Managers
         private DiceManager _diceManager;
         private PawnManager _pawnManager;
         private UIManager _uiManager;
+        private UIMessageManager _uiMessageManager;
         private TurnVisualizer _turnVisualizer;
         private PathCalculator _pathCalculator;
         private IMovement _mover;
@@ -60,6 +61,7 @@ namespace Managers
             _pathCalculator = new PathCalculator();
             _uiManager = FindObjectOfType<UIManager>();
             _turnVisualizer = FindObjectOfType<TurnVisualizer>();
+            _uiMessageManager = FindObjectOfType<UIMessageManager>();
         }
 
         private List<Player> CreatePlayer(List<Faction> factions)
@@ -121,7 +123,8 @@ namespace Managers
         {
             if (!_isDiceRolled)
             {
-                Debug.LogWarning("please roll");
+                _uiMessageManager.ShowRollMessage();
+                //Debug.LogWarning("please roll");
                 return;
             }
 
@@ -133,7 +136,8 @@ namespace Managers
 
                 if (!faction.StartNode.IsEmpty)
                 {
-                    Debug.LogWarning("Start node isn't empty");
+                    _uiMessageManager.ShowStartNodeMessage();
+                    // Debug.LogWarning("Start node isn't empty");
                     return;
                 }
 
@@ -175,6 +179,7 @@ namespace Managers
 
         private void OnActionCompleted()
         {
+
             if (_hasReward)
             {
                 // show delay to active dice
@@ -279,10 +284,12 @@ namespace Managers
             var canMovePawn = CheckToMovePawn(step);
 
             if (canEnterPawn)
-                Debug.LogWarning($"{CurrentPlayer.Name} can enter a pawn");
+                _uiMessageManager.ShowEnterPawnMessage(CurrentPlayer.Name);
+                // Debug.LogWarning($"{CurrentPlayer.Name} can enter a pawn");
 
             if (canMovePawn)
-                Debug.LogWarning($"{CurrentPlayer.Name} can move a pawn");
+                _uiMessageManager.ShowMovePawnMessage(CurrentPlayer.Name);
+                // Debug.LogWarning($"{CurrentPlayer.Name} can move a pawn");
 
             if (!canEnterPawn && !canMovePawn)
             {
@@ -304,7 +311,8 @@ namespace Managers
             if (CheckToMovePawn(step))
             {
                 CurrentPlayer.UI.StartTurnTimer(10);
-                Debug.LogWarning($"{CurrentPlayer.Name} can move a pawn");
+                _uiMessageManager.ShowMovePawnMessage(CurrentPlayer.Name);
+                // Debug.LogWarning($"{CurrentPlayer.Name} can move a pawn");
             }
             else
             {
@@ -366,7 +374,8 @@ namespace Managers
 
             CurrentPlayer.UI.StartTurnTimer(5);
             OnTurnSwitched?.Invoke();
-            Debug.LogWarning($"The Turn is {CurrentPlayer.Name}");
+            //_uiMessageManager.ShowPlayerTurnMessage(CurrentPlayer.Name);
+            // Debug.LogWarning($"The Turn is {CurrentPlayer.Name}");
         }
 
         private void OnTurnTimerExpired()
