@@ -13,7 +13,7 @@ namespace GameLogic
     {
         public bool HasReward { get; set; }
 
-        private TurnDecision ProcessRoll(int? step, Player currentPlayer, bool canEnterPawn, bool canMovePawn)
+        public TurnDecision ProcessRoll(int? step, bool canEnterPawn, bool canMovePawn)
         {
             if (step == 6)
             {

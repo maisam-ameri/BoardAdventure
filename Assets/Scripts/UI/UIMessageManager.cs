@@ -11,7 +11,11 @@ namespace UI
         public void ShowStartNodeMessage() => ShowMessage("The start node isn't empty");
         public void ShowEnterPawnMessage(string playerName) => ShowMessage($"{playerName} can enter a pawn");
         public void ShowMovePawnMessage(string playerName) => ShowMessage($"{playerName} can move a pawn");
-        //public void ShowPlayerTurnMessage(string playerName) => ShowMessage($"The turn is {playerName}");
+        public void ShowActionAvailableMessage(string playerName, int step) =>
+            ShowMessage($"{playerName} rolled {step}! Choose a pawn to move or enter.");
+
+        public void ShowRewardMessage(string playerName) =>
+            ShowMessage($"{playerName} got 6! Roll again!");
         
         private void ShowMessage(string message, float duration = 1f)
         {

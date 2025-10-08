@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Abstractions;
 using Factions;
+using GameLogic;
 using Movement;
 using Nodes.Abstractions;
 using Path;
@@ -27,6 +28,7 @@ namespace Managers
         private int _currentPlayerIndex;
         private bool _firstSix;
         private bool _isDiceRolled;
+        private readonly TurnLogicService _turnLogicService = new ();
 
         public Action OnTurnSwitched { get; set; }
 
@@ -49,7 +51,7 @@ namespace Managers
             _turnVisualizer.Initial(_players);
             _turnVisualizer.DeactivateTurnVisuals();
             _turnVisualizer.DeactivatePlayerVisuals();
-            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer,_lastPlayer);
+            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, _lastPlayer);
             _mover = new Mover(200);
         }
 
@@ -107,7 +109,6 @@ namespace Managers
 
             foreach (var faction in factions)
             {
-                //faction.OnSelectFaction += OnSelectedFaction;
                 faction.Pawns = new List<IPawn>();
                 faction.BaseNodes.ForEach(baseNode =>
                 {
@@ -124,7 +125,6 @@ namespace Managers
             if (!_isDiceRolled)
             {
                 _uiMessageManager.ShowRollMessage();
-                //Debug.LogWarning("please roll");
                 return;
             }
 
@@ -137,7 +137,6 @@ namespace Managers
                 if (!faction.StartNode.IsEmpty)
                 {
                     _uiMessageManager.ShowStartNodeMessage();
-                    // Debug.LogWarning("Start node isn't empty");
                     return;
                 }
 
@@ -181,15 +180,15 @@ namespace Managers
         {
             _isDiceRolled = false;
 
-            if (_hasReward)
+            if (_turnLogicService.HasReward)
             {
                 // show delay to active dice
-                _hasReward = false;
                 CurrentPlayer.UI.StartTurnTimer(10);
             }
             else
             {
                 SwitchTurn();
+                return;
             }
 
             _diceManager.Reset();
@@ -200,126 +199,48 @@ namespace Managers
 
         private void OnDiceRolled(int? step)
         {
+            if (step is null) return;
+            
             _isDiceRolled = true;
+            
             _diceManager.SetActivateDice(false);
 
             CurrentPlayer.UI.StopTimer();
             CurrentPlayer.UI.StartTurnTimer(10);
 
-            if (step is null) return;
+            if(step == 6 )
+                HandleFirstSixVisual();
             
-            if(step == 6)
-                HandleSixRoll(step);
-            else
+            var canEnter = CheckToEnterPawn();
+            var canMove = CheckToMovePawn(step);
+
+            var decision = _turnLogicService.ProcessRoll(step, canEnter, canMove);
+
+            switch (decision)
             {
-                HandleNormalRoll(step);
-            }
-/*
-            switch (step)
-            {
-                case null:
-                    return;
-                case 6:
-                    _hasReward = !_hasReward;
-                    if (!_firstSix)
-                    {
-                        _firstSix = true;
-                        _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, _lastPlayer);
-                        _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, _lastPlayer);
-                    }
-
-                    var canEnterPawn = CheckToEnterPawn();
-                    var canMovePawn = CheckToMovePawn(step);
-
-                    if (canEnterPawn)
-                        Debug.LogWarning($"{CurrentPlayer.Name} can enter a pawn");
-
-                    if (canMovePawn)
-                        Debug.LogWarning($"{CurrentPlayer.Name} can move a pawn");
-
-                    if (!canEnterPawn && !canMovePawn)
-                    {
-                        if (_hasReward)
-                        {
-                            // show delay to active dice
-                            _diceManager.SetActivateDice(true);
-                        }
-                        else
-                        {
-                            SwitchTurn();
-                            _diceManager.SetActivateDice(true);
-                        }
-                    }
-
+                case TurnDecision.WaitForAction:
+                    _uiMessageManager.ShowActionAvailableMessage(CurrentPlayer.Name, step.Value);
+                    CurrentPlayer.UI.StartTurnTimer(10);
                     break;
-
-                default:
-                    if (CheckToMovePawn(step))
-                    {
-                        CurrentPlayer.UI.StartTurnTimer(10);
-                        Debug.LogWarning($"{CurrentPlayer.Name} can move a pawn");
-                    }
-                    else
-                    {
-                        SwitchTurn();
-                        _diceManager.SetActivateDice(true);
-                    }
-
-
-                    break;
-            }
-            */
-        }
-
-        private void HandleSixRoll(int? step)
-        {
-            _hasReward = !_hasReward;
-            if (!_firstSix)
-            {
-                _firstSix = true;
-                _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, _lastPlayer);
-                _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, _lastPlayer);
-            }
-
-            var canEnterPawn = CheckToEnterPawn();
-            var canMovePawn = CheckToMovePawn(step);
-
-            if (canEnterPawn)
-                _uiMessageManager.ShowEnterPawnMessage(CurrentPlayer.Name);
-                // Debug.LogWarning($"{CurrentPlayer.Name} can enter a pawn");
-
-            if (canMovePawn)
-                _uiMessageManager.ShowMovePawnMessage(CurrentPlayer.Name);
-                // Debug.LogWarning($"{CurrentPlayer.Name} can move a pawn");
-
-            if (!canEnterPawn && !canMovePawn)
-            {
-                if (_hasReward)
-                {
-                    // show delay to active dice
+                case TurnDecision.RollReward:
+                    _uiMessageManager.ShowRewardMessage(CurrentPlayer.Name);
                     _diceManager.SetActivateDice(true);
-                }
-                else
-                {
+                    break;
+
+                case TurnDecision.SwitchTurn:
                     SwitchTurn();
                     _diceManager.SetActivateDice(true);
-                }
+                    break;
             }
         }
 
-        private void HandleNormalRoll(int? step)
+        private void HandleFirstSixVisual()
         {
-            if (CheckToMovePawn(step))
-            {
-                CurrentPlayer.UI.StartTurnTimer(10);
-                _uiMessageManager.ShowMovePawnMessage(CurrentPlayer.Name);
-                // Debug.LogWarning($"{CurrentPlayer.Name} can move a pawn");
-            }
-            else
-            {
-                SwitchTurn();
-                _diceManager.SetActivateDice(true);
-            }
+            if (_firstSix) return;
+            
+            _firstSix = true;
+            _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, _lastPlayer);
+            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, _lastPlayer);
         }
 
 
@@ -365,18 +286,19 @@ namespace Managers
             CurrentPlayer.UI.StopTimer();
             _lastPlayer = CurrentPlayer;
             _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
+
             _isDiceRolled = false;
             _diceManager.Reset();
+            _diceManager.SetActivateDice(true);
+
 
             _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, _lastPlayer);
             if (_firstSix)
                 _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, _lastPlayer);
-            
+
 
             CurrentPlayer.UI.StartTurnTimer(5);
             OnTurnSwitched?.Invoke();
-            //_uiMessageManager.ShowPlayerTurnMessage(CurrentPlayer.Name);
-            // Debug.LogWarning($"The Turn is {CurrentPlayer.Name}");
         }
 
         private void OnTurnTimerExpired()
