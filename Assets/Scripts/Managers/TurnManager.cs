@@ -28,7 +28,8 @@ namespace Managers
         private int _currentPlayerIndex;
         private bool _firstSix;
         private bool _isDiceRolled;
-        private readonly TurnLogicService _turnLogicService = new();
+        private TurnLogicService _turnLogicService;
+        private PlayerActionValidator _actionValidator;
 
         public Action OnTurnSwitched { get; set; }
 
@@ -64,6 +65,8 @@ namespace Managers
             _uiManager = FindObjectOfType<UIManager>();
             _turnVisualizer = FindObjectOfType<TurnVisualizer>();
             _uiMessageManager = FindObjectOfType<UIMessageManager>();
+            _turnLogicService = new TurnLogicService();
+            _actionValidator = new PlayerActionValidator(_pathCalculator);
         }
 
         private List<Player> CreatePlayer(List<Faction> factions)
@@ -150,20 +153,12 @@ namespace Managers
 
         private async Task HandleSelectedPawnAsync(IPawn pawn)
         {
-            var path = CheckPathIsValid(pawn, _diceManager.Step);
+            var path = _actionValidator.CheckPathIsValid(CurrentPlayer, pawn, _diceManager.Step);
             if (path is null) return;
 
             await _mover.Move(pawn, path, OnActionCompleted);
         }
 
-        private List<INode> CheckPathIsValid(IPawn pawn, int? step)
-        {
-            if (CurrentPlayer.Factions.All(f => f != pawn.Faction)) return null;
-
-            var path = _pathCalculator.DefinePath(step, pawn);
-
-            return path.Count != 0 && PathValidator.CanMoveToNode(path[^1], CurrentPlayer) ? path : null;
-        }
 
         private void EnterPawnToGame(Pawn pawn)
         {
@@ -195,8 +190,6 @@ namespace Managers
             _diceManager.SetActivateDice(true);
         }
 
-        private bool _hasReward;
-
         private void OnDiceRolled(int? step)
         {
             if (step is null) return;
@@ -211,8 +204,8 @@ namespace Managers
             if (step == 6)
                 HandleFirstSixVisual();
 
-            var canEnter = CheckToEnterPawn();
-            var canMove = CheckToMovePawn(step);
+            var canEnter =_actionValidator.CheckToEnterPawn(CurrentPlayer);
+            var canMove = _actionValidator.CheckToMovePawn(CurrentPlayer, step);
 
             var decision = _turnLogicService.ProcessRoll(step, canEnter, canMove);
 
@@ -244,31 +237,6 @@ namespace Managers
         }
 
 
-        private bool CheckToMovePawn(int? step)
-        {
-            return CurrentPlayer.Factions
-                .SelectMany(GetPawnsFromGame)
-                .Any(pawn =>
-                {
-                    var path = CheckPathIsValid(pawn, step);
-                    return path is not null && path.Count > 0;
-                });
-        }
-
-        private bool CheckToEnterPawn()
-        {
-            foreach (var faction in CurrentPlayer.Factions)
-            {
-                var isExistPawnInBase = faction.Pawns.Any(p => p.State == "InBase");
-                var isStartNodeEmpty = faction.StartNode.IsEmpty;
-
-                if (isExistPawnInBase && isStartNodeEmpty)
-                    return true;
-            }
-
-            return false;
-        }
-
         private void SwitchTurn()
         {
             CurrentPlayer.UI.StopTimer();
@@ -293,8 +261,5 @@ namespace Managers
         {
             SwitchTurn();
         }
-
-        private IEnumerable<IPawn> GetPawnsFromGame(Faction faction)
-            => faction.Pawns.Where(p => p.State == "InGame");
     }
 }
