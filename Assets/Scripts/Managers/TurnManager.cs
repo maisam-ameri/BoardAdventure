@@ -30,6 +30,7 @@ namespace Managers
         private bool _isDiceRolled;
         private TurnLogicService _turnLogicService;
         private PlayerActionValidator _actionValidator;
+        private GameFlowService _gameFlowService;
 
         public Action OnTurnSwitched { get; set; }
 
@@ -67,7 +68,29 @@ namespace Managers
             _uiMessageManager = FindObjectOfType<UIMessageManager>();
             _turnLogicService = new TurnLogicService();
             _actionValidator = new PlayerActionValidator(_pathCalculator);
+            _gameFlowService = new GameFlowService(_uiMessageManager);
+            _gameFlowService.OnTurnStarted += HandleTurnStarted;
+            _gameFlowService.OnTurnEnded += HandleTurnEnded;
+            _gameFlowService.OnRewardGranted += HandleRewardGranted;
         }
+
+        private void HandleTurnStarted(Player player)
+        {
+            _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, _lastPlayer);
+            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, _lastPlayer);
+            player.UI.StartTurnTimer(10);
+        }
+
+        private void HandleTurnEnded(Player player)
+        {
+            player.UI.StopTimer();
+        }
+
+        private void HandleRewardGranted(Player player)
+        {
+            _diceManager.SetActivateDice(true);
+        }
+
 
         private List<Player> CreatePlayer(List<Faction> factions)
         {
@@ -174,20 +197,17 @@ namespace Managers
         private void OnActionCompleted()
         {
             _isDiceRolled = false;
+            _diceManager.Reset();
 
             if (_turnLogicService.HasReward)
             {
-                // show delay to active dice
-                CurrentPlayer.UI.StartTurnTimer(10);
+                _gameFlowService.GrantReward(CurrentPlayer);
             }
             else
             {
+                _gameFlowService.EndTurn(CurrentPlayer);
                 SwitchTurn();
-                return;
             }
-
-            _diceManager.Reset();
-            _diceManager.SetActivateDice(true);
         }
 
         private void OnDiceRolled(int? step)
@@ -204,7 +224,7 @@ namespace Managers
             if (step == 6)
                 HandleFirstSixVisual();
 
-            var canEnter =_actionValidator.CheckToEnterPawn(CurrentPlayer);
+            var canEnter = _actionValidator.CheckToEnterPawn(CurrentPlayer);
             var canMove = _actionValidator.CheckToMovePawn(CurrentPlayer, step);
 
             var decision = _turnLogicService.ProcessRoll(step, canEnter, canMove);
@@ -222,7 +242,6 @@ namespace Managers
 
                 case TurnDecision.SwitchTurn:
                     SwitchTurn();
-                    _diceManager.SetActivateDice(true);
                     break;
             }
         }
@@ -237,23 +256,18 @@ namespace Managers
         }
 
 
-        private void SwitchTurn()
+        private async void SwitchTurn()
         {
             CurrentPlayer.UI.StopTimer();
             _lastPlayer = CurrentPlayer;
             _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
-
             _isDiceRolled = false;
+
+            await _gameFlowService.DelayBetweenTurns(1000);
+
             _diceManager.Reset();
+            _gameFlowService.StartTurn(CurrentPlayer);
             _diceManager.SetActivateDice(true);
-
-
-            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, _lastPlayer);
-            if (_firstSix)
-                _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, _lastPlayer);
-
-
-            CurrentPlayer.UI.StartTurnTimer(5);
             OnTurnSwitched?.Invoke();
         }
 
