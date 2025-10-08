@@ -28,7 +28,7 @@ namespace Managers
         private int _currentPlayerIndex;
         private bool _firstSix;
         private bool _isDiceRolled;
-        private readonly TurnLogicService _turnLogicService = new ();
+        private readonly TurnLogicService _turnLogicService = new();
 
         public Action OnTurnSwitched { get; set; }
 
@@ -200,17 +200,17 @@ namespace Managers
         private void OnDiceRolled(int? step)
         {
             if (step is null) return;
-            
+
             _isDiceRolled = true;
-            
+
             _diceManager.SetActivateDice(false);
 
             CurrentPlayer.UI.StopTimer();
             CurrentPlayer.UI.StartTurnTimer(10);
 
-            if(step == 6 )
+            if (step == 6)
                 HandleFirstSixVisual();
-            
+
             var canEnter = CheckToEnterPawn();
             var canMove = CheckToMovePawn(step);
 
@@ -237,7 +237,7 @@ namespace Managers
         private void HandleFirstSixVisual()
         {
             if (_firstSix) return;
-            
+
             _firstSix = true;
             _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, _lastPlayer);
             _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, _lastPlayer);
@@ -246,25 +246,13 @@ namespace Managers
 
         private bool CheckToMovePawn(int? step)
         {
-            foreach (var faction in CurrentPlayer.Factions)
-            {
-                var pawns = GetPawnsFromGame(faction);
-                foreach (var pawn in pawns)
+            return CurrentPlayer.Factions
+                .SelectMany(GetPawnsFromGame)
+                .Any(pawn =>
                 {
-                    if (pawn is not null)
-                    {
-                        var path = CheckPathIsValid(pawn, step);
-
-                        if (path is null) continue;
-
-                        return true;
-                    }
-
-                    return false;
-                }
-            }
-
-            return false;
+                    var path = CheckPathIsValid(pawn, step);
+                    return path is not null && path.Count > 0;
+                });
         }
 
         private bool CheckToEnterPawn()
