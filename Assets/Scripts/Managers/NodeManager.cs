@@ -47,10 +47,7 @@ namespace Managers
             while (true)
             {
                 if (nodeCounter++ > allNodes.Count())
-                {
-                    Debug.Log("SetupNodes stopped: possible infinite loop!");
                     break;
-                }
 
                 var currentNode = _nodes[^1];
 
