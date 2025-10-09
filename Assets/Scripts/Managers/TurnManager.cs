@@ -31,6 +31,7 @@ namespace Managers
         private TurnLogicService _turnLogicService;
         private PlayerActionValidator _actionValidator;
         private GameFlowService _gameFlowService;
+        private PawnMovementService _movementService;
 
         public Action OnTurnSwitched { get; set; }
 
@@ -54,7 +55,6 @@ namespace Managers
             _turnVisualizer.DeactivateTurnVisuals();
             _turnVisualizer.DeactivatePlayerVisuals();
             _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, _lastPlayer);
-            _mover = new Mover(200);
         }
 
         private void InitializeManagers()
@@ -69,10 +69,14 @@ namespace Managers
             _turnLogicService = new TurnLogicService();
             _actionValidator = new PlayerActionValidator(_pathCalculator);
             _gameFlowService = new GameFlowService(_uiMessageManager);
+            _mover = new Mover(200);
+            _movementService = new PawnMovementService(_actionValidator, _mover, _uiMessageManager);
             _gameFlowService.OnTurnStarted += HandleTurnStarted;
             _gameFlowService.OnTurnEnded += HandleTurnEnded;
             _gameFlowService.OnRewardGranted += HandleRewardGranted;
+
         }
+        
 
         private void HandleTurnStarted(Player player)
         {
@@ -156,7 +160,7 @@ namespace Managers
 
             var faction = pawn.Faction;
 
-            if (pawn.State == "InBase" && _diceManager.Step is 6)
+            if (pawn.State == "InBase" && _diceManager.Step == 6)
             {
                 if (CurrentPlayer.Factions.All(f => f != faction)) return;
 
@@ -176,10 +180,7 @@ namespace Managers
 
         private async Task HandleSelectedPawnAsync(IPawn pawn)
         {
-            var path = _actionValidator.CheckPathIsValid(CurrentPlayer, pawn, _diceManager.Step);
-            if (path is null) return;
-
-            await _mover.Move(pawn, path, OnActionCompleted);
+            await _movementService.MovePawn(CurrentPlayer, pawn,_diceManager.Step, OnActionCompleted);
         }
 
 

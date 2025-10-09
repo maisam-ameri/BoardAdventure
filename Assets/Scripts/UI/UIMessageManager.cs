@@ -23,6 +23,9 @@ namespace UI
         public void ShowRewardMessage(string playerName) =>
             ShowMessage($"{playerName} got 6! Roll again!");
 
+        public void ShowAvoidToMovement(string playerName)=>
+            ShowMessage($"{playerName} can't move!");
+
         private void ShowMessage(string message, float duration = 1f)
         {
             var uiMsg = GetUiMessage();
@@ -35,6 +38,7 @@ namespace UI
             uiMsg.name = "uiMessage";
             return uiMsg;
         }
+
 
     }
 }
