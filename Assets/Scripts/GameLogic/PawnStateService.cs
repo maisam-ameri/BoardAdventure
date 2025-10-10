@@ -1,0 +1,48 @@
+﻿using System;
+using System.Linq;
+using Abstractions;
+using Factions;
+using Nodes.Abstractions;
+using Pawns;
+
+namespace GameLogic
+{
+    public class PawnStateService: IPawnStateService
+    {
+
+        public event Action<IPawn> OnPawnEntered;
+        public event Action<IPawn> OnPawnReturned;
+        
+        
+        public void EnterPawnToGame(IPawn pawn,Action onPawnEntered)
+        {
+            pawn.Position = pawn.Faction.StartNode.Position;
+            pawn.CurrentNode.IsEmpty = true;
+            pawn.CurrentNode.Pawn = null;
+            pawn.CurrentNode = pawn.Faction.StartNode;
+            pawn.Faction.StartNode.IsEmpty = false;
+            pawn.State = "InGame";
+            onPawnEntered?.Invoke();
+        }
+
+        public void ReturnPawnToBase(IPawn pawn)
+        {
+            var emptyBaseNode = GetEmptyBaseNode(pawn.Faction);
+            
+            if (emptyBaseNode is null)
+                return;
+            
+            pawn.Position = emptyBaseNode.Position;
+            pawn.CurrentNode.Pawn = null;
+            pawn.CurrentNode.IsEmpty = true;
+            pawn.CurrentNode = emptyBaseNode;
+            emptyBaseNode.Pawn = pawn;
+            emptyBaseNode.IsEmpty = false;
+            pawn.State = "InBase";
+        }
+        
+        private static INode GetEmptyBaseNode(Faction faction) =>
+            faction.BaseNodes.FirstOrDefault(n => n.IsEmpty);
+
+    }
+}

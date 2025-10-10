@@ -1,10 +1,10 @@
-﻿using Factions;
+﻿using Abstractions;
 using Pawns;
 using UnityEngine;
 
 namespace Managers
 {
-    public class PawnFactory
+    public class PawnFactory: IPawnFactory
     {
         private readonly Pawn _pawn;
 

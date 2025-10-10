@@ -6,7 +6,6 @@ using Abstractions;
 using Factions;
 using GameLogic;
 using Movement;
-using Nodes.Abstractions;
 using Path;
 using Pawns;
 using Players;
@@ -42,6 +41,7 @@ namespace Managers
         }
 
         private Player _lastPlayer;
+        [SerializeField] private Pawn pawnPrefab;
 
 
         private void Start()
@@ -61,7 +61,7 @@ namespace Managers
         {
             _diceManager = FindObjectOfType<DiceManager>();
             _diceManager.OnDiceRolled += OnDiceRolled;
-            _pawnManager = FindObjectOfType<PawnManager>();
+            _pawnManager = new PawnManager(new PawnFactory(pawnPrefab), new PawnStateService());
             _pathCalculator = new PathCalculator();
             _uiManager = FindObjectOfType<UIManager>();
             _turnVisualizer = FindObjectOfType<TurnVisualizer>();
@@ -70,13 +70,19 @@ namespace Managers
             _actionValidator = new PlayerActionValidator(_pathCalculator);
             _gameFlowService = new GameFlowService(_uiMessageManager);
             _mover = new Mover(200);
+            _mover.OnCaptured += HandleCapturePawn;
             _movementService = new PawnMovementService(_actionValidator, _mover, _uiMessageManager);
             _gameFlowService.OnTurnStarted += HandleTurnStarted;
             _gameFlowService.OnTurnEnded += HandleTurnEnded;
             _gameFlowService.OnRewardGranted += HandleRewardGranted;
 
         }
-        
+
+        private void HandleCapturePawn(IPawn pawn)
+        {
+            _pawnManager.ReturnPawnToBase(pawn);
+        }
+
 
         private void HandleTurnStarted(Player player)
         {
@@ -170,7 +176,7 @@ namespace Managers
                     return;
                 }
 
-                EnterPawnToGame((Pawn) pawn);
+                _pawnManager.EnterPawnToGame(pawn, OnActionCompleted);
             }
             else if (pawn.State == "InGame")
             {
@@ -181,18 +187,6 @@ namespace Managers
         private async Task HandleSelectedPawnAsync(IPawn pawn)
         {
             await _movementService.MovePawn(CurrentPlayer, pawn,_diceManager.Step, OnActionCompleted);
-        }
-
-
-        private void EnterPawnToGame(Pawn pawn)
-        {
-            pawn.Position = pawn.Faction.StartNode.Position;
-            pawn.CurrentNode.IsEmpty = true;
-            pawn.CurrentNode.Pawn = null;
-            pawn.CurrentNode = pawn.Faction.StartNode;
-            pawn.Faction.StartNode.IsEmpty = false;
-            pawn.State = "InGame";
-            OnActionCompleted();
         }
 
         private void OnActionCompleted()

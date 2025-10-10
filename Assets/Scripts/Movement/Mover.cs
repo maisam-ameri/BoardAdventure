@@ -5,7 +5,6 @@ using Abstractions;
 using Nodes.Abstractions;
 using Path;
 using Pawns;
-using Unity.VisualScripting;
 
 namespace Movement
 {
@@ -13,12 +12,14 @@ namespace Movement
     {
 
         private readonly int _delay;
+        public event Action<IPawn> OnCaptured;
         
         
         public Mover(int delay = 1000)
         {
             _delay = delay;
         }
+
 
         public async Task Move(IPawn pawn, List<INode> path, Action onCompleted = null)
         {
@@ -34,7 +35,8 @@ namespace Movement
                 {
                     if (PathValidator.CheckNodeToCapture(pawn, path[^1]))
                     {
-                        PathValidator.Capture(path[^1].Pawn);
+                        OnCaptured?.Invoke(path[^1].Pawn);
+                        //_pawnStateService.ReturnPawnToBase(path[^1].Pawn,null);
                     }
                 }
                 pawn.Position = node.Position;

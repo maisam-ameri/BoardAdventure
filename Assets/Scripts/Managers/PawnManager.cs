@@ -1,18 +1,21 @@
-﻿using Factions;
+﻿using System;
+using Abstractions;
+using Factions;
 using Nodes.Abstractions;
 using Pawns;
-using UnityEngine;
 
 namespace Managers
 {
-    public class PawnManager : MonoBehaviour
+    public class PawnManager
     {
-        [SerializeField] private Pawn pawnPrefab;
-        private PawnFactory _pawnFactory;
+        private readonly IPawnFactory _pawnFactory;
+        private readonly IPawnStateService _pawnStateService;
 
-        private void Start()
+        public PawnManager(IPawnFactory pawnFactory, IPawnStateService pawnStateService)
         {
-            _pawnFactory = new PawnFactory(pawnPrefab);
+            _pawnFactory = pawnFactory;
+            _pawnStateService = pawnStateService;
+            
         }
         
         public IPawn CreatePawn(Faction faction, INode baseNode)
@@ -22,12 +25,21 @@ namespace Managers
             newPawn.Color = faction.Color;
             newPawn.Position = baseNode.Position;
             newPawn.Faction = faction;
-            //newPawn.Collider.enabled = false;
             newPawn.CurrentNode = baseNode;
             faction.Pawns.Add(newPawn);
             baseNode.IsEmpty = false;
 
             return newPawn;
+        }
+
+        public void EnterPawnToGame(IPawn pawn, Action onPawnEntered)
+        {
+            _pawnStateService.EnterPawnToGame(pawn, onPawnEntered);
+        }
+
+        public void ReturnPawnToBase(IPawn pawn)
+        {
+            _pawnStateService.ReturnPawnToBase(pawn);
         }
     }
 }

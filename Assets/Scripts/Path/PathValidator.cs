@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using Factions;
+using GameLogic;
+using Managers;
 using Nodes.Abstractions;
 using Pawns;
 using Players;
@@ -19,26 +21,15 @@ namespace Path
         public static bool CheckNodeToCapture(IPawn pawn, INode targetNode)
         => targetNode.Pawn is not null && (targetNode.Pawn.Color != pawn.Color);
 
-        public static void Capture(IPawn pawn)
-        {
-            var emptyBaseNode = GetEmptyBaseNode(pawn.Faction);
-            
-            if (emptyBaseNode is null)
-            {
-                Debug.LogWarning("There is no empty node in the base");
-                return;
-            }
-            
-            pawn.Position = emptyBaseNode.Position;
-            pawn.CurrentNode = emptyBaseNode;
-            emptyBaseNode.Pawn = pawn;
-            emptyBaseNode.IsEmpty = false;
-            pawn.State = "InBase";
-        }
-
-        private static INode GetEmptyBaseNode(Faction faction)
-        {
-            return faction.BaseNodes.FirstOrDefault(n => n.IsEmpty);
-        }
+        // public static void Capture(IPawn pawn)
+        // {
+        //     PawnLifecycleService pawnService = new PawnLifecycleService(null);
+        //     pawnService.ReturnPawnToBase(pawn);
+        // }
+        //
+        // private static INode GetEmptyBaseNode(Faction faction)
+        // {
+        //     return faction.BaseNodes.FirstOrDefault(n => n.IsEmpty);
+        // }
     }
 }
