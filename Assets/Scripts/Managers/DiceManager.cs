@@ -1,8 +1,9 @@
 ﻿using System;
-using Dices;
+using BoardAdventures.Core.Dices;
+using BoardAdventures.UI.Dices;
 using UnityEngine;
 
-namespace Managers
+namespace BoardAdventures.Managers
 {
     public class DiceManager : MonoBehaviour
     {

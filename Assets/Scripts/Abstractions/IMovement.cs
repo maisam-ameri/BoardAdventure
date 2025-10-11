@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Nodes.Abstractions;
-using Pawns;
+using BoardAdventures.GameObjects.Nodes.Abstractions;
+using BoardAdventures.GameObjects.Pawns.Abstractions;
 
-
-namespace Abstractions
+namespace BoardAdventures.Abstractions
 {
     public interface IMovement
     {

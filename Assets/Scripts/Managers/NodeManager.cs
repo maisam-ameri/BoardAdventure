@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Factions;
-using Nodes;
-using Nodes.Abstractions;
+using BoardAdventures.GameObjects.Factions;
+using BoardAdventures.GameObjects.Nodes;
+using BoardAdventures.GameObjects.Nodes.Abstractions;
 using UnityEngine;
 
-namespace Managers
+namespace BoardAdventures.Managers
 {
     public class NodeManager : MonoBehaviour
     {

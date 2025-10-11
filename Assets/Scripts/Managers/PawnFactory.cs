@@ -1,8 +1,9 @@
-﻿using Abstractions;
-using Pawns;
+﻿using BoardAdventures.Abstractions;
+using BoardAdventures.GameObjects.Pawns;
+using BoardAdventures.GameObjects.Pawns.Abstractions;
 using UnityEngine;
 
-namespace Managers
+namespace BoardAdventures.Managers
 {
     public class PawnFactory: IPawnFactory
     {

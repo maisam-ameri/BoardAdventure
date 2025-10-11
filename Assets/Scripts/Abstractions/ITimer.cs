@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Abstractions
+namespace BoardAdventures.Abstractions
 {
     public interface ITimer
     {

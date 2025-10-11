@@ -1,11 +1,12 @@
-﻿using Abstractions;
-using GameLogic;
-using Movement;
-using Path;
-using UI;
+﻿using BoardAdventures.Abstractions;
+using BoardAdventures.Core.GameLogic;
+using BoardAdventures.Core.Movement;
+using BoardAdventures.Core.Path;
+using BoardAdventures.UI;
+using BoardAdventures.UI.Common;
 using UnityEngine;
 
-namespace Managers
+namespace BoardAdventures.Managers
 {
     public static class GameServices
     {

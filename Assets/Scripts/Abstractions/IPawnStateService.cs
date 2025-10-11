@@ -1,14 +1,10 @@
 ﻿using System;
-using Factions;
-using Nodes.Abstractions;
-using Pawns;
+using BoardAdventures.GameObjects.Pawns.Abstractions;
 
-namespace Abstractions
+namespace BoardAdventures.Abstractions
 {
     public interface IPawnStateService
     {
-       // public IPawn CreatePawn(Faction faction, INode baseNode);
-
         public void EnterPawnToGame(IPawn pawn, Action onPawnEntered);
 
         public void ReturnPawnToBase(IPawn pawn);

@@ -2,17 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Abstractions;
-using Factions;
-using GameLogic;
-using Movement;
-using Path;
-using Pawns;
-using Players;
-using UI;
+using BoardAdventures.Abstractions;
+using BoardAdventures.Core.GameLogic;
+using BoardAdventures.Core.Players;
+using BoardAdventures.GameObjects.Factions;
+using BoardAdventures.GameObjects.Pawns.Abstractions;
+using BoardAdventures.UI;
+using BoardAdventures.UI.Common;
 using UnityEngine;
 
-namespace Managers
+namespace BoardAdventures.Managers
 {
     public class TurnManager : MonoBehaviour
     {

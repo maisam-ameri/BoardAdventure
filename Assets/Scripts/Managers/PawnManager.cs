@@ -1,12 +1,12 @@
 ﻿using System;
-using Abstractions;
-using Factions;
-using GameLogic;
-using Nodes.Abstractions;
-using Pawns;
+using BoardAdventures.Abstractions;
+using BoardAdventures.GameObjects.Factions;
+using BoardAdventures.GameObjects.Nodes.Abstractions;
+using BoardAdventures.GameObjects.Pawns;
+using BoardAdventures.GameObjects.Pawns.Abstractions;
 using UnityEngine;
 
-namespace Managers
+namespace BoardAdventures.Managers
 {
     public class PawnManager : MonoBehaviour
     {

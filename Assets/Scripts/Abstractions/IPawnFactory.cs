@@ -1,6 +1,6 @@
-﻿using Pawns;
+﻿using BoardAdventures.GameObjects.Pawns.Abstractions;
 
-namespace Abstractions
+namespace BoardAdventures.Abstractions
 {
     public interface IPawnFactory
     {
