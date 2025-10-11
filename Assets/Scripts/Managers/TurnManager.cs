@@ -69,6 +69,7 @@ namespace Managers
             _movementService = GameServices.PawnMovementService;
             _mover = GameServices.Mover;
 
+            _pawnManager.Initialize(new PawnFactory(),new PawnStateService());
             _diceManager.OnDiceRolled += OnDiceRolled;
             _mover.OnCaptured += HandleCapturePawn;
             _gameFlowService.OnTurnStarted += HandleTurnStarted;

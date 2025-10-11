@@ -13,6 +13,11 @@ namespace Managers
             _pawn = pawn;
         }
 
+        public PawnFactory()
+        {
+            
+        }
+
         public IPawn Create() => Object.Instantiate(_pawn);
     }
 }

@@ -14,12 +14,12 @@ namespace Managers
         private IPawnFactory _pawnFactory;
         private IPawnStateService _pawnStateService;
 
-       
 
-        private void Start()
+        public void Initialize(IPawnFactory pawnFactory, IPawnStateService pawnStateService)
         {
+            _pawnFactory = pawnFactory;
             _pawnFactory = new PawnFactory(pawnPrefab);
-            _pawnStateService = new PawnStateService();
+            _pawnStateService = pawnStateService;
         }
 
         public IPawn CreatePawn(Faction faction, INode baseNode)
