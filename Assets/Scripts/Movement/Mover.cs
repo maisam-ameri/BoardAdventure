@@ -15,7 +15,7 @@ namespace Movement
         public event Action<IPawn> OnCaptured;
         
         
-        public Mover(int delay = 1000)
+        public Mover(int delay = 2000)
         {
             _delay = delay;
         }

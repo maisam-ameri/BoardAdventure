@@ -21,14 +21,13 @@ namespace Managers
         private UIManager _uiManager;
         private UIMessageManager _uiMessageManager;
         private TurnVisualizer _turnVisualizer;
-        private PathCalculator _pathCalculator;
         private IMovement _mover;
         private List<Player> _players;
         private int _currentPlayerIndex;
         private bool _firstSix;
         private bool _isDiceRolled;
         private TurnLogicService _turnLogicService;
-        private PlayerActionValidator _actionValidator;
+        private PlayerActionValidator _playerActionValidator;
         private GameFlowService _gameFlowService;
         private PawnMovementService _movementService;
 
@@ -41,7 +40,6 @@ namespace Managers
         }
 
         private Player _lastPlayer;
-        [SerializeField] private Pawn pawnPrefab;
 
 
         private void Start()
@@ -59,23 +57,23 @@ namespace Managers
 
         private void InitializeManagers()
         {
-            _diceManager = FindObjectOfType<DiceManager>();
+            GameServices.Initialize();
+            _diceManager = GameServices.DiceManager;
+            _pawnManager = GameServices.PawnManager;
+            _uiManager = GameServices.UIManager;
+            _turnVisualizer = GameServices.TurnVisualizer;
+            _uiMessageManager = GameServices.UIMessageManager;
+            _playerActionValidator = GameServices.PlayerActionValidator;
+            _turnLogicService = GameServices.TurnLogicService;
+            _gameFlowService = GameServices.GameFlowService;
+            _movementService = GameServices.PawnMovementService;
+            _mover = GameServices.Mover;
+
             _diceManager.OnDiceRolled += OnDiceRolled;
-            _pawnManager = new PawnManager(new PawnFactory(pawnPrefab), new PawnStateService());
-            _pathCalculator = new PathCalculator();
-            _uiManager = FindObjectOfType<UIManager>();
-            _turnVisualizer = FindObjectOfType<TurnVisualizer>();
-            _uiMessageManager = FindObjectOfType<UIMessageManager>();
-            _turnLogicService = new TurnLogicService();
-            _actionValidator = new PlayerActionValidator(_pathCalculator);
-            _gameFlowService = new GameFlowService(_uiMessageManager);
-            _mover = new Mover(200);
             _mover.OnCaptured += HandleCapturePawn;
-            _movementService = new PawnMovementService(_actionValidator, _mover, _uiMessageManager);
             _gameFlowService.OnTurnStarted += HandleTurnStarted;
             _gameFlowService.OnTurnEnded += HandleTurnEnded;
             _gameFlowService.OnRewardGranted += HandleRewardGranted;
-
         }
 
         private void HandleCapturePawn(IPawn pawn)
@@ -186,7 +184,7 @@ namespace Managers
 
         private async Task HandleSelectedPawnAsync(IPawn pawn)
         {
-            await _movementService.MovePawn(CurrentPlayer, pawn,_diceManager.Step, OnActionCompleted);
+            await _movementService.MovePawn(CurrentPlayer, pawn, _diceManager.Step, OnActionCompleted);
         }
 
         private void OnActionCompleted()
@@ -219,8 +217,8 @@ namespace Managers
             if (step == 6)
                 HandleFirstSixVisual();
 
-            var canEnter = _actionValidator.CheckToEnterPawn(CurrentPlayer);
-            var canMove = _actionValidator.CheckToMovePawn(CurrentPlayer, step);
+            var canEnter = _playerActionValidator.CheckToEnterPawn(CurrentPlayer);
+            var canMove = _playerActionValidator.CheckToMovePawn(CurrentPlayer, step);
 
             var decision = _turnLogicService.ProcessRoll(step, canEnter, canMove);
 

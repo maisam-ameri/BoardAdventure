@@ -1,23 +1,27 @@
 ﻿using System;
 using Abstractions;
 using Factions;
+using GameLogic;
 using Nodes.Abstractions;
 using Pawns;
+using UnityEngine;
 
 namespace Managers
 {
-    public class PawnManager
+    public class PawnManager : MonoBehaviour
     {
-        private readonly IPawnFactory _pawnFactory;
-        private readonly IPawnStateService _pawnStateService;
+        [SerializeField] private Pawn pawnPrefab;
+        private IPawnFactory _pawnFactory;
+        private IPawnStateService _pawnStateService;
 
-        public PawnManager(IPawnFactory pawnFactory, IPawnStateService pawnStateService)
+       
+
+        private void Start()
         {
-            _pawnFactory = pawnFactory;
-            _pawnStateService = pawnStateService;
-            
+            _pawnFactory = new PawnFactory(pawnPrefab);
+            _pawnStateService = new PawnStateService();
         }
-        
+
         public IPawn CreatePawn(Faction faction, INode baseNode)
         {
             var newPawn =  _pawnFactory.Create();
