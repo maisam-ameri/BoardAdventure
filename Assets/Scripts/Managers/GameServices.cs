@@ -2,6 +2,7 @@
 using BoardAdventures.Core.GameLogic;
 using BoardAdventures.Core.Movement;
 using BoardAdventures.Core.Path;
+using BoardAdventures.Core.Players;
 using BoardAdventures.UI;
 using BoardAdventures.UI.Common;
 using UnityEngine;
@@ -20,6 +21,7 @@ namespace BoardAdventures.Managers
         public static PawnMovementService PawnMovementService { get; private set; }
         public static IMovement Mover { get; private set; }
         public static GameFlowService GameFlowService { get; private set; }
+        public static PlayerSetupService PlayerSetupService { get; private set; }
 
         
         public static void Initialize()
@@ -36,6 +38,7 @@ namespace BoardAdventures.Managers
             PawnMovementService = new PawnMovementService(PlayerActionValidator, Mover, UIMessageManager);
             GameFlowService = new GameFlowService(UIMessageManager);
             TurnLogicService = new TurnLogicService();
+            PlayerSetupService = new PlayerSetupService();
         }
     }
 }

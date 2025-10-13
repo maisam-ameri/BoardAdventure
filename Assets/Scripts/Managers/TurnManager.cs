@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using BoardAdventures.Abstractions;
 using BoardAdventures.Core.GameLogic;
 using BoardAdventures.Core.Players;
-using BoardAdventures.GameObjects.Factions;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
 using BoardAdventures.UI;
 using BoardAdventures.UI.Common;
@@ -29,6 +28,7 @@ namespace BoardAdventures.Managers
         private PlayerActionValidator _playerActionValidator;
         private GameFlowService _gameFlowService;
         private PawnMovementService _movementService;
+        private PlayerSetupService _playerSetupService;
 
         public Action OnTurnSwitched { get; set; }
 
@@ -44,9 +44,8 @@ namespace BoardAdventures.Managers
         private void Start()
         {
             InitializeManagers();
-            var factions = InitializeFactions();
-            _players = CreatePlayer(factions);
-            InitialPlayerUIs();
+    
+            _players = _playerSetupService.Players;
             CurrentPlayer = _players[0];
             _turnVisualizer.Initial(_players);
             _turnVisualizer.DeactivateTurnVisuals();
@@ -66,14 +65,19 @@ namespace BoardAdventures.Managers
             _turnLogicService = GameServices.TurnLogicService;
             _gameFlowService = GameServices.GameFlowService;
             _movementService = GameServices.PawnMovementService;
+            _playerSetupService = GameServices.PlayerSetupService;
             _mover = GameServices.Mover;
-
-            _pawnManager.Initialize(new PawnFactory(),new PawnStateService());
+            
+            _playerSetupService.OnTurnTimerExpired += OnTurnTimerExpired;
+            _playerSetupService.OnSelectedPawn += OnSelectedPawn;
             _diceManager.OnDiceRolled += OnDiceRolled;
             _mover.OnCaptured += HandleCapturePawn;
             _gameFlowService.OnTurnStarted += HandleTurnStarted;
             _gameFlowService.OnTurnEnded += HandleTurnEnded;
             _gameFlowService.OnRewardGranted += HandleRewardGranted;
+            
+            _pawnManager.Initialize(new PawnFactory(),new PawnStateService());
+            _playerSetupService.Initialize(_uiManager,_pawnManager);
         }
 
         private void HandleCapturePawn(IPawn pawn)
@@ -97,61 +101,6 @@ namespace BoardAdventures.Managers
         private void HandleRewardGranted(Player player)
         {
             _diceManager.SetActivateDice(true);
-        }
-
-
-        private List<Player> CreatePlayer(List<Faction> factions)
-        {
-            var factionPlayer1 = factions.GetRange(0, 2);
-            var factionPlayer2 = factions.GetRange(2, 2);
-
-            var players = new List<Player>
-            {
-                new()
-                {
-                    Name = "mesi",
-                    IsActive = true,
-                    Factions = factionPlayer1
-                },
-                new()
-                {
-                    Name = "keren",
-                    IsActive = true,
-                    Factions = factionPlayer2
-                }
-            };
-
-            return players;
-        }
-
-        private void InitialPlayerUIs()
-        {
-            foreach (var player in _players)
-            {
-                var ui = _uiManager.CreatePlayerUI();
-                ui.SetPlayerUI(player.Name
-                    , player.Factions.Select(f => f.Color).ToList()
-                    , OnTurnTimerExpired);
-
-                player.UI = ui;
-            }
-        }
-
-        private List<Faction> InitializeFactions()
-        {
-            var factions = FindObjectsOfType<Faction>().ToList();
-
-            foreach (var faction in factions)
-            {
-                faction.Pawns = new List<IPawn>();
-                faction.BaseNodes.ForEach(baseNode =>
-                {
-                    var newPawn = _pawnManager.CreatePawn(faction, baseNode);
-                    newPawn.OnSelectPawn += OnSelectedPawn;
-                });
-            }
-
-            return factions;
         }
 
         private void OnSelectedPawn(IPawn pawn)
