@@ -5,6 +5,7 @@ using BoardAdventures.Core.Path;
 using BoardAdventures.Core.Players;
 using BoardAdventures.UI;
 using BoardAdventures.UI.Common;
+using BoardAdventures.UI.Players;
 using UnityEngine;
 
 namespace BoardAdventures.Managers
@@ -38,7 +39,8 @@ namespace BoardAdventures.Managers
             PawnMovementService = new PawnMovementService(PlayerActionValidator, Mover, UIMessageManager);
             GameFlowService = new GameFlowService(UIMessageManager);
             TurnLogicService = new TurnLogicService();
-            PlayerSetupService = new PlayerSetupService();
+            var playerUIFactory = new PlayerUIFactory(UIManager.PlayerUIPrefab, UIManager.PlayerUIParent);
+            PlayerSetupService = new PlayerSetupService(PawnManager,playerUIFactory);
         }
     }
 }

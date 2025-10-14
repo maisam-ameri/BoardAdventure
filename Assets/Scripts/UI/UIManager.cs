@@ -7,10 +7,8 @@ namespace BoardAdventures.UI
     {
         [SerializeField] private PlayerUI playerUIPrefab;
         [SerializeField] private RectTransform playerUIParent;
-        public PlayerUI CreatePlayerUI()
-        {
-            var ui =Instantiate(playerUIPrefab, playerUIParent, true);
-            return ui;
-        }
+
+        public PlayerUI PlayerUIPrefab => playerUIPrefab;
+        public RectTransform PlayerUIParent => playerUIParent;
     }
 }

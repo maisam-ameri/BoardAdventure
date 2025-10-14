@@ -1,27 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BoardAdventures.Abstractions;
 using BoardAdventures.GameObjects.Factions;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
 using BoardAdventures.Managers;
-using BoardAdventures.UI;
 
 namespace BoardAdventures.Core.Players
 {
     public class PlayerSetupService
     {
-        private UIManager _uiManager;
-        private PawnManager _pawnManager;
+        private readonly PawnManager _pawnManager;
+        private readonly IPlayerUIFactory _playerUIFactory;
         public List<Player>  Players { get; private set; }
         public event Action OnTurnTimerExpired;
         public event Action<IPawn> OnSelectedPawn;
 
-        
-        public void Initialize(UIManager uiManager, PawnManager pawnManager)
+        public PlayerSetupService(PawnManager pawnManager, IPlayerUIFactory playerUIFactory)
         {
-            _uiManager = uiManager;
             _pawnManager = pawnManager;
-            
+            _playerUIFactory = playerUIFactory;
+        }
+        public void Initialize()
+        {
             var factions = InitializeFactions();
             Players = CreatePlayer(factions);
             InitialPlayerUIs();
@@ -54,11 +55,9 @@ namespace BoardAdventures.Core.Players
         {
             foreach (var player in Players)
             {
-                var ui = _uiManager.CreatePlayerUI();
-                ui.SetPlayerUI(player.Name
-                    , player.Factions.Select(f => f.Color).ToList()
+                var ui = _playerUIFactory.Create(player.Name, player.Factions.Select(f => f.Color).ToList()
                     , OnTurnTimerExpired);
-
+                
                 player.UI = ui;
             }
         }

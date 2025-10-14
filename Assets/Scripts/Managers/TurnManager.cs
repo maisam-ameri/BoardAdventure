@@ -77,7 +77,7 @@ namespace BoardAdventures.Managers
             _gameFlowService.OnRewardGranted += HandleRewardGranted;
             
             _pawnManager.Initialize(new PawnFactory(),new PawnStateService());
-            _playerSetupService.Initialize(_uiManager,_pawnManager);
+            _playerSetupService.Initialize();
         }
 
         private void HandleCapturePawn(IPawn pawn)
