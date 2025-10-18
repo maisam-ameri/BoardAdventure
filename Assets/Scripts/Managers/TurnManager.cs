@@ -138,7 +138,7 @@ namespace BoardAdventures.Managers
             CurrentPlayer.UI.StartTurnTimer(10);
 
 
-            var canEnter = _playerActionValidator.CheckToEnterPawn(CurrentPlayer);
+            var canEnter = _playerActionValidator.CheckToEnterPawn(CurrentPlayer, step);
             var canMove = _playerActionValidator.CheckToMovePawn(CurrentPlayer, step);
 
             var decision = _turnLogicService.ProcessRoll(step, canEnter, canMove);

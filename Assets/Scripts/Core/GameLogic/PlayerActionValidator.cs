@@ -37,8 +37,10 @@ namespace BoardAdventures.Core.GameLogic
             return path.Count != 0 && PathValidator.CanMoveToNode(path[^1], player) ? path : null;
         }
 
-        public bool CheckToEnterPawn(Player player)
+        public bool CheckToEnterPawn(Player player, int? step)
         {
+            if(step is not 6) return false;
+            
             foreach (var faction in player.Factions)
             {
                 var isExistPawnInBase = faction.Pawns.Any(p => p.State == "InBase");
