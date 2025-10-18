@@ -16,8 +16,6 @@ namespace BoardAdventures.Core.GameLogic
         private readonly TurnVisualizer _turnVisualizer;
         private List<Player> _players;
         public event Action<Player> OnTurnSwitched;
-        public event Action OnTurnStarted;
-        public event Action OnTurnEnded;
 
         public TurnFlowService(TurnVisualizer turnVisualizer)
         {
@@ -37,13 +35,6 @@ namespace BoardAdventures.Core.GameLogic
         internal void StartTurn(Player current)
         {
             HandleTurnStarted(current);
-            OnTurnStarted?.Invoke();
-        }
-
-        internal void EndTurn()
-        {
-            HandleTurnEnded(CurrentPlayer);
-            OnTurnEnded?.Invoke();
         }
 
         private void HandleTurnStarted(Player player)
@@ -51,11 +42,6 @@ namespace BoardAdventures.Core.GameLogic
             _turnVisualizer.UpdatePawnHighlights(player, _lastPlayer);
             _turnVisualizer.UpdatePlayerPanels(player, _lastPlayer);
             player.UI.StartTurnTimer(10);
-        }
-
-        private void HandleTurnEnded(Player player)
-        {
-            player.UI.StopTimer();
         }
 
         internal void SwitchTurn()
