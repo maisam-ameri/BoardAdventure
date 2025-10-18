@@ -51,7 +51,7 @@ namespace BoardAdventures.Core.GameLogic
 
         private async void HandleSwitchTurn(Player player)
         {
-            await Task.Delay(100);
+            await Task.Delay(1000);
             _diceManager.Reset();
             _diceManager.SetActivateDice(true);
             StartTurn(player);
