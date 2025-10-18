@@ -23,6 +23,7 @@ namespace BoardAdventures.Managers
         public static IMovement Mover { get; private set; }
         public static GameFlowService GameFlowService { get; private set; }
         public static PlayerSetupService PlayerSetupService { get; private set; }
+        private static TurnFlowService TurnFlowService { get; set; }
 
         
         public static void Initialize()
@@ -37,10 +38,11 @@ namespace BoardAdventures.Managers
             PawnManager = Object.FindObjectOfType<PawnManager>();
             PlayerActionValidator = new PlayerActionValidator(pathCalculator);
             PawnMovementService = new PawnMovementService(PlayerActionValidator, Mover, UIMessageManager);
-            GameFlowService = new GameFlowService(UIMessageManager);
             TurnLogicService = new TurnLogicService();
             var playerUIFactory = new PlayerUIFactory(UIManager.PlayerUIPrefab, UIManager.PlayerUIParent);
             PlayerSetupService = new PlayerSetupService(PawnManager,playerUIFactory);
+            TurnFlowService = new TurnFlowService(TurnVisualizer);
+            GameFlowService = new GameFlowService(UIMessageManager, TurnFlowService,DiceManager,TurnVisualizer);
         }
     }
 }

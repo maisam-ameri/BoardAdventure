@@ -6,7 +6,6 @@ using BoardAdventures.Abstractions;
 using BoardAdventures.Core.GameLogic;
 using BoardAdventures.Core.Players;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
-using BoardAdventures.UI;
 using BoardAdventures.UI.Common;
 using UnityEngine;
 
@@ -16,7 +15,6 @@ namespace BoardAdventures.Managers
     {
         private DiceManager _diceManager;
         private PawnManager _pawnManager;
-        private UIManager _uiManager;
         private UIMessageManager _uiMessageManager;
         private TurnVisualizer _turnVisualizer;
         private IMovement _mover;
@@ -30,27 +28,20 @@ namespace BoardAdventures.Managers
         private PawnMovementService _movementService;
         private PlayerSetupService _playerSetupService;
 
-        public Action OnTurnSwitched { get; set; }
 
-        public Player CurrentPlayer
-        {
-            get => _players[_currentPlayerIndex];
-            set { }
-        }
+        private Player CurrentPlayer => _gameFlowService.CurrentPlayer;
 
-        private Player _lastPlayer;
 
 
         private void Start()
         {
             InitializeManagers();
-    
+
             _players = _playerSetupService.Players;
-            CurrentPlayer = _players[0];
             _turnVisualizer.Initial(_players);
             _turnVisualizer.DeactivateTurnVisuals();
             _turnVisualizer.DeactivatePlayerVisuals();
-            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, _lastPlayer);
+            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, null);
         }
 
         private void InitializeManagers()
@@ -58,7 +49,6 @@ namespace BoardAdventures.Managers
             GameServices.Initialize();
             _diceManager = GameServices.DiceManager;
             _pawnManager = GameServices.PawnManager;
-            _uiManager = GameServices.UIManager;
             _turnVisualizer = GameServices.TurnVisualizer;
             _uiMessageManager = GameServices.UIMessageManager;
             _playerActionValidator = GameServices.PlayerActionValidator;
@@ -67,17 +57,16 @@ namespace BoardAdventures.Managers
             _movementService = GameServices.PawnMovementService;
             _playerSetupService = GameServices.PlayerSetupService;
             _mover = GameServices.Mover;
-            
+
             _playerSetupService.OnTurnTimerExpired += OnTurnTimerExpired;
             _playerSetupService.OnSelectedPawn += OnSelectedPawn;
             _diceManager.OnDiceRolled += OnDiceRolled;
             _mover.OnCaptured += HandleCapturePawn;
-            _gameFlowService.OnTurnStarted += HandleTurnStarted;
-            _gameFlowService.OnTurnEnded += HandleTurnEnded;
             _gameFlowService.OnRewardGranted += HandleRewardGranted;
-            
-            _pawnManager.Initialize(new PawnFactory(),new PawnStateService());
+
+            _pawnManager.Initialize(new PawnFactory(), new PawnStateService());
             _playerSetupService.Initialize();
+            _gameFlowService.InitializePlayers(_playerSetupService.Players);
         }
 
         private void HandleCapturePawn(IPawn pawn)
@@ -86,18 +75,6 @@ namespace BoardAdventures.Managers
         }
 
 
-        private void HandleTurnStarted(Player player)
-        {
-            _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, _lastPlayer);
-            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, _lastPlayer);
-            player.UI.StartTurnTimer(10);
-        }
-
-        private void HandleTurnEnded(Player player)
-        {
-            player.UI.StopTimer();
-        }
-
         private void HandleRewardGranted(Player player)
         {
             _diceManager.SetActivateDice(true);
@@ -105,7 +82,7 @@ namespace BoardAdventures.Managers
 
         private void OnSelectedPawn(IPawn pawn)
         {
-            if (!_isDiceRolled)
+            if (!_diceManager.IsRolled)
             {
                 _uiMessageManager.ShowRollMessage();
                 return;
@@ -138,7 +115,7 @@ namespace BoardAdventures.Managers
 
         private void OnActionCompleted()
         {
-            _isDiceRolled = false;
+            //_isDiceRolled = false;
             _diceManager.Reset();
 
             if (_turnLogicService.HasReward)
@@ -147,7 +124,6 @@ namespace BoardAdventures.Managers
             }
             else
             {
-                _gameFlowService.EndTurn(CurrentPlayer);
                 SwitchTurn();
             }
         }
@@ -156,15 +132,11 @@ namespace BoardAdventures.Managers
         {
             if (step is null) return;
 
-            _isDiceRolled = true;
-
+            _diceManager.IsRolled = true;
             _diceManager.SetActivateDice(false);
-
             CurrentPlayer.UI.StopTimer();
             CurrentPlayer.UI.StartTurnTimer(10);
 
-            if (step == 6)
-                HandleFirstSixVisual();
 
             var canEnter = _playerActionValidator.CheckToEnterPawn(CurrentPlayer);
             var canMove = _playerActionValidator.CheckToMovePawn(CurrentPlayer, step);
@@ -188,29 +160,10 @@ namespace BoardAdventures.Managers
             }
         }
 
-        private void HandleFirstSixVisual()
+
+        private void SwitchTurn()
         {
-            if (_firstSix) return;
-
-            _firstSix = true;
-            _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, _lastPlayer);
-            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, _lastPlayer);
-        }
-
-
-        private async void SwitchTurn()
-        {
-            CurrentPlayer.UI.StopTimer();
-            _lastPlayer = CurrentPlayer;
-            _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
-            _isDiceRolled = false;
-
-            await _gameFlowService.DelayBetweenTurns(1000);
-
-            _diceManager.Reset();
-            _gameFlowService.StartTurn(CurrentPlayer);
-            _diceManager.SetActivateDice(true);
-            OnTurnSwitched?.Invoke();
+            _gameFlowService.SwitchTurn();
         }
 
         private void OnTurnTimerExpired()

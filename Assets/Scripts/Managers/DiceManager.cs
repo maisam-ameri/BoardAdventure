@@ -11,7 +11,9 @@ namespace BoardAdventures.Managers
         private Dice _dice;
 
         public event Action<int?> OnDiceRolled;
+        public event Action OnFirstSixRolled;
         public int? Step { get; private set; }
+        public bool IsRolled { get; set; }
 
 
         private void Start()
@@ -23,6 +25,10 @@ namespace BoardAdventures.Managers
         {
             Step = _dice.Roll();
             diceUI.ShowRoll(Step.Value);
+
+            if (Step == 6)
+                OnFirstSixRolled?.Invoke();
+
             OnDiceRolled?.Invoke(Step);
         }
 
@@ -31,6 +37,10 @@ namespace BoardAdventures.Managers
         {
             Step = step;
             diceUI.ShowRoll(Step.Value);
+
+            if (Step == 6)
+                OnFirstSixRolled?.Invoke();
+
             OnDiceRolled?.Invoke(Step);
         }
 
@@ -43,6 +53,7 @@ namespace BoardAdventures.Managers
         {
             diceUI.Reset();
             Step = null;
+            IsRolled = false;
         }
     }
 }

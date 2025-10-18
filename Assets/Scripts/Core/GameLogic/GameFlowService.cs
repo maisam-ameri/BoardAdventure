@@ -1,33 +1,69 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using BoardAdventures.Core.Players;
+using BoardAdventures.Managers;
 using BoardAdventures.UI.Common;
 
 namespace BoardAdventures.Core.GameLogic
 {
     public class GameFlowService
     {
-        public event Action<Player> OnTurnStarted;
-        public event Action<Player> OnTurnEnded;
         public event Action<Player> OnRewardGranted;
+        public Player CurrentPlayer => _turnFlowService.CurrentPlayer;
+        private Player LastPlayer => _turnFlowService.LastPlayer;
 
         private readonly UIMessageManager _uiMessageManager;
+        private readonly TurnFlowService _turnFlowService;
+        private readonly DiceManager _diceManager;
+        private readonly TurnVisualizer _turnVisualizer;
+        private bool _firstSix;
 
-        public GameFlowService(UIMessageManager uiMessageManager)
+        public GameFlowService(UIMessageManager uiMessageManager
+            , TurnFlowService turnFlowService
+            , DiceManager diceManager
+            , TurnVisualizer turnVisualizer)
         {
             _uiMessageManager = uiMessageManager;
+            _turnFlowService = turnFlowService;
+            _diceManager = diceManager;
+            _turnVisualizer = turnVisualizer;
+            
+            _turnFlowService.OnTurnSwitched += HandleSwitchTurn;
+            _diceManager.OnFirstSixRolled += HandleFirstSixVisual;
         }
 
-        public void StartTurn(Player player)
+        public void InitializePlayers(List<Player> players)
+        {
+            _turnFlowService.Initialize(players);
+        }
+
+        private void StartTurn(Player player)
         {
             _uiMessageManager.ShowPlayerTurnMessage(player.Name);
-            OnTurnStarted?.Invoke(player);
+            _turnFlowService.StartTurn(player);
         }
 
-        public void EndTurn(Player player)
+        public void SwitchTurn()
         {
-            _uiMessageManager.ShowEndTurnMessage(player.Name);
-            OnTurnEnded?.Invoke(player);
+            _turnFlowService.SwitchTurn();
+        }
+
+        private async void HandleSwitchTurn(Player player)
+        {
+            await Task.Delay(100);
+            _diceManager.Reset();
+            _diceManager.SetActivateDice(true);
+            StartTurn(player);
+        }
+        
+        private void HandleFirstSixVisual()
+        {
+            if (_firstSix) return;
+
+            _firstSix = true;
+            _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, LastPlayer);
+            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, LastPlayer);
         }
 
         public void GrantReward(Player player)
@@ -36,9 +72,5 @@ namespace BoardAdventures.Core.GameLogic
             OnRewardGranted?.Invoke(player);
         }
 
-        public async Task DelayBetweenTurns(int delay)
-        {
-            await Task.Delay(delay);
-        }
     }
 }
