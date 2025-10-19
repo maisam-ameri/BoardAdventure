@@ -41,7 +41,7 @@ namespace BoardAdventures.Managers
             TurnLogicService = new TurnLogicService();
             var playerUIFactory = new PlayerUIFactory(UIManager.PlayerUIPrefab, UIManager.PlayerUIParent);
             PlayerSetupService = new PlayerSetupService(PawnManager,playerUIFactory);
-            TurnFlowService = new TurnFlowService(TurnVisualizer);
+            TurnFlowService = new TurnFlowService();
             GameFlowService = new GameFlowService(UIMessageManager, TurnFlowService,DiceManager,TurnVisualizer);
         }
     }

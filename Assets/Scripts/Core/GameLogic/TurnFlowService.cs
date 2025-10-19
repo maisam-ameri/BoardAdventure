@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using BoardAdventures.Core.Players;
-using BoardAdventures.UI.Common;
 
 namespace BoardAdventures.Core.GameLogic
 {
@@ -10,17 +8,15 @@ namespace BoardAdventures.Core.GameLogic
     {
         public Player CurrentPlayer => _players[_currentPlayerIndex];
         public Player LastPlayer => _lastPlayer;
+        public event Action OnTurnSwitched;
+        public event Action<Player, Player> OnTurnStarted;
 
         private Player _lastPlayer;
         private int _currentPlayerIndex;
-        private readonly TurnVisualizer _turnVisualizer;
         private List<Player> _players;
-        public event Action<Player> OnTurnSwitched;
 
-        public TurnFlowService(TurnVisualizer turnVisualizer)
-        {
-            _turnVisualizer = turnVisualizer;
-        }
+        
+        public TurnFlowService(){}
 
         public void Initialize(List<Player> players)
         {
@@ -31,25 +27,17 @@ namespace BoardAdventures.Core.GameLogic
             _currentPlayerIndex = 0;
         }
 
-
-        internal void StartTurn(Player current)
+        internal void StartTurn()
         {
-            HandleTurnStarted(current);
+            OnTurnStarted?.Invoke(CurrentPlayer, _lastPlayer);
         }
-
-        private void HandleTurnStarted(Player player)
-        {
-            _turnVisualizer.UpdatePawnHighlights(player, _lastPlayer);
-            _turnVisualizer.UpdatePlayerPanels(player, _lastPlayer);
-            player.UI.StartTurnTimer(10);
-        }
-
+        
         internal void SwitchTurn()
         {
             CurrentPlayer.UI.StopTimer();
             NextPlayer();
 
-            OnTurnSwitched?.Invoke(CurrentPlayer);
+            OnTurnSwitched?.Invoke();
         }
 
         private void NextPlayer()

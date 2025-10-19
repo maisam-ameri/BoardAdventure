@@ -30,7 +30,9 @@ namespace BoardAdventures.Core.GameLogic
             _turnVisualizer = turnVisualizer;
             
             _turnFlowService.OnTurnSwitched += HandleSwitchTurn;
+            _turnFlowService.OnTurnStarted += HandleTurnStarted;
             _diceManager.OnFirstSixRolled += HandleFirstSixVisual;
+            
         }
 
         public void InitializePlayers(List<Player> players)
@@ -38,10 +40,17 @@ namespace BoardAdventures.Core.GameLogic
             _turnFlowService.Initialize(players);
         }
 
-        private void StartTurn(Player player)
+        private void StartTurn()
         {
-            _uiMessageManager.ShowPlayerTurnMessage(player.Name);
-            _turnFlowService.StartTurn(player);
+            _uiMessageManager.ShowPlayerTurnMessage(CurrentPlayer.Name);
+            _turnFlowService.StartTurn();
+        }
+        
+        private void HandleTurnStarted(Player currentPlayer, Player lastPlayer)
+        {
+            _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, lastPlayer);
+            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, lastPlayer);
+            CurrentPlayer.UI.StartTurnTimer(10);
         }
 
         public void SwitchTurn()
@@ -49,12 +58,12 @@ namespace BoardAdventures.Core.GameLogic
             _turnFlowService.SwitchTurn();
         }
 
-        private async void HandleSwitchTurn(Player player)
+        private async void HandleSwitchTurn()
         {
             await Task.Delay(1000);
             _diceManager.Reset();
             _diceManager.SetActivateDice(true);
-            StartTurn(player);
+            StartTurn();
         }
         
         private void HandleFirstSixVisual()
