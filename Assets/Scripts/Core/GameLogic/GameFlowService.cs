@@ -17,7 +17,7 @@ namespace BoardAdventures.Core.GameLogic
         private readonly TurnFlowService _turnFlowService;
         private readonly DiceManager _diceManager;
         private readonly TurnVisualizer _turnVisualizer;
-        private bool _firstSix;
+        private bool _firstSixRolled;
 
         public GameFlowService(UIMessageManager uiMessageManager
             , TurnFlowService turnFlowService
@@ -28,11 +28,10 @@ namespace BoardAdventures.Core.GameLogic
             _turnFlowService = turnFlowService;
             _diceManager = diceManager;
             _turnVisualizer = turnVisualizer;
-            
+
             _turnFlowService.OnTurnSwitched += HandleSwitchTurn;
             _turnFlowService.OnTurnStarted += HandleTurnStarted;
             _diceManager.OnFirstSixRolled += HandleFirstSixVisual;
-            
         }
 
         public void InitializePlayers(List<Player> players)
@@ -45,10 +44,12 @@ namespace BoardAdventures.Core.GameLogic
             _uiMessageManager.ShowPlayerTurnMessage(CurrentPlayer.Name);
             _turnFlowService.StartTurn();
         }
-        
+
         private void HandleTurnStarted(Player currentPlayer, Player lastPlayer)
         {
-            _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, lastPlayer);
+            if (_firstSixRolled)
+                _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, lastPlayer);
+
             _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, lastPlayer);
             CurrentPlayer.UI.StartTurnTimer(10);
         }
@@ -65,14 +66,11 @@ namespace BoardAdventures.Core.GameLogic
             _diceManager.SetActivateDice(true);
             StartTurn();
         }
-        
+
         private void HandleFirstSixVisual()
         {
-            if (_firstSix) return;
-
-            _firstSix = true;
+            _firstSixRolled = true;
             _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, LastPlayer);
-            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, LastPlayer);
         }
 
         public void GrantReward(Player player)
@@ -80,6 +78,5 @@ namespace BoardAdventures.Core.GameLogic
             _uiMessageManager.ShowRewardMessage(player.Name);
             OnRewardGranted?.Invoke(player);
         }
-
     }
 }
