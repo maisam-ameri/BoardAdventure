@@ -14,15 +14,16 @@ namespace BoardAdventures.Core.GameLogic
         public event Action<IPawn> OnPawnReturned;
         
         
-        public void EnterPawnToGame(IPawn pawn,Action onPawnEntered)
+        public void EnterPawnToGame(IPawn pawn,Action onActionStarted, Action onActionCompleted)
         {
+            onActionStarted?.Invoke();
             pawn.Position = pawn.Faction.StartNode.Position;
             pawn.CurrentNode.IsEmpty = true;
             pawn.CurrentNode.Pawn = null;
             pawn.CurrentNode = pawn.Faction.StartNode;
             pawn.Faction.StartNode.IsEmpty = false;
             pawn.State = "InGame";
-            onPawnEntered?.Invoke();
+            onActionCompleted?.Invoke();
         }
 
         public void ReturnPawnToBase(IPawn pawn)

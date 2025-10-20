@@ -12,7 +12,12 @@ namespace BoardAdventures.UI.Players
         private float _maxTime;
 
         private Coroutine _timerRoutine;
+        
+        public bool IsRunning { get; private set; }
+        public event Action TimerExpired;
 
+        
+        
         public void StartTimer(float maxTime)
         {
             _maxTime = maxTime;
@@ -51,7 +56,15 @@ namespace BoardAdventures.UI.Players
             timerUI.value = 0;
         }
 
-        public bool IsRunning { get; private set; }
-        public event Action TimerExpired;
+        public void PauseTimer()
+        {
+            IsRunning = false;
+            
+            if (_timerRoutine != null)
+                StopCoroutine(_timerRoutine);
+
+            //timerUI.value = 0;
+        }
+
     }
 }

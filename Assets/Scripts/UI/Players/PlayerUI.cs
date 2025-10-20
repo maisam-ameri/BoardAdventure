@@ -20,11 +20,11 @@ namespace BoardAdventures.UI.Players
             _canvas = GetComponent<CanvasGroup>();
         }
 
-        public void SetPlayerUI(string pName, List<Color> colors,Action onTurnTimerExpired)
+        public void SetPlayerUI(string pName, List<Color> colors, Action onTurnTimerExpired)
         {
             playerName.text = pName;
             _onTurnTimerExpired = onTurnTimerExpired;
-            
+
             for (var i = 0; i < images.Count; i++)
             {
                 if (i > colors.Count - 1)
@@ -61,6 +61,11 @@ namespace BoardAdventures.UI.Players
         public void StopTimer()
         {
             timer.StopTimer();
+        }
+
+        public void PauseTimer()
+        {
+            timer.PauseTimer();
         }
     }
 }

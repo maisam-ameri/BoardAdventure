@@ -100,7 +100,7 @@ namespace BoardAdventures.Managers
                     return;
                 }
 
-                _pawnManager.EnterPawnToGame(pawn, OnActionCompleted);
+                _pawnManager.EnterPawnToGame(pawn,null, OnActionCompleted);
             }
             else if (pawn.State == "InGame")
             {
@@ -110,12 +110,11 @@ namespace BoardAdventures.Managers
 
         private async Task HandleSelectedPawnAsync(IPawn pawn)
         {
-            await _movementService.MovePawn(CurrentPlayer, pawn, _diceManager.Step, OnActionCompleted);
+            await _movementService.MovePawn(CurrentPlayer, pawn, _diceManager.Step,OnActionStarted, OnActionCompleted);
         }
 
         private void OnActionCompleted()
         {
-            //_isDiceRolled = false;
             _diceManager.Reset();
 
             if (_turnLogicService.HasReward)
@@ -126,6 +125,11 @@ namespace BoardAdventures.Managers
             {
                 SwitchTurn();
             }
+        }
+
+        private void OnActionStarted()
+        {
+            _gameFlowService.CurrentPlayer.UI.PauseTimer();
         }
 
         private void OnDiceRolled(int? step)

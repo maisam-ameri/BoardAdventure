@@ -6,6 +6,7 @@ namespace BoardAdventures.Abstractions
     {
         void StartTimer(float maxTime);
         void StopTimer();
+        void PauseTimer();
         bool IsRunning { get;  }
         event Action TimerExpired;
     }

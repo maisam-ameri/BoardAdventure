@@ -36,9 +36,9 @@ namespace BoardAdventures.Managers
             return newPawn;
         }
 
-        public void EnterPawnToGame(IPawn pawn, Action onPawnEntered)
+        public void EnterPawnToGame(IPawn pawn,Action onActionStarted, Action onActionCompleted)
         {
-            _pawnStateService.EnterPawnToGame(pawn, onPawnEntered);
+            _pawnStateService.EnterPawnToGame(pawn,onActionStarted, onActionCompleted);
         }
 
         public void ReturnPawnToBase(IPawn pawn)
