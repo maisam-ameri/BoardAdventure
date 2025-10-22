@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,7 +22,6 @@ namespace BoardAdventures.Managers
         private bool _firstSix;
         private bool _isDiceRolled;
         private TurnLogicService _turnLogicService;
-        private PlayerActionValidator _playerActionValidator;
         private GameFlowService _gameFlowService;
         private PawnMovementService _movementService;
         private PlayerSetupService _playerSetupService;
@@ -51,7 +49,6 @@ namespace BoardAdventures.Managers
             _pawnManager = GameServices.PawnManager;
             _turnVisualizer = GameServices.TurnVisualizer;
             _uiMessageManager = GameServices.UIMessageManager;
-            _playerActionValidator = GameServices.PlayerActionValidator;
             _turnLogicService = GameServices.TurnLogicService;
             _gameFlowService = GameServices.GameFlowService;
             _movementService = GameServices.PawnMovementService;
@@ -60,7 +57,6 @@ namespace BoardAdventures.Managers
 
             _playerSetupService.OnTurnTimerExpired += OnTurnTimerExpired;
             _playerSetupService.OnSelectedPawn += OnSelectedPawn;
-            _diceManager.OnDiceRolled += OnDiceRolled;
             _mover.OnCaptured += HandleCapturePawn;
             _gameFlowService.OnRewardGranted += HandleRewardGranted;
 
@@ -131,39 +127,6 @@ namespace BoardAdventures.Managers
         {
             _gameFlowService.CurrentPlayer.UI.PauseTimer();
         }
-
-        private void OnDiceRolled(int? step)
-        {
-            if (step is null) return;
-
-            _diceManager.IsRolled = true;
-            _diceManager.SetActivateDice(false);
-            CurrentPlayer.UI.StopTimer();
-            CurrentPlayer.UI.StartTurnTimer(10);
-
-
-            var canEnter = _playerActionValidator.CheckToEnterPawn(CurrentPlayer, step);
-            var canMove = _playerActionValidator.CheckToMovePawn(CurrentPlayer, step);
-
-            var decision = _turnLogicService.ProcessRoll(step, canEnter, canMove);
-
-            switch (decision)
-            {
-                case TurnDecision.WaitForAction:
-                    _uiMessageManager.ShowActionAvailableMessage(CurrentPlayer.Name, step.Value);
-                    CurrentPlayer.UI.StartTurnTimer(10);
-                    break;
-                case TurnDecision.RollReward:
-                    _uiMessageManager.ShowRewardMessage(CurrentPlayer.Name);
-                    _diceManager.SetActivateDice(true);
-                    break;
-
-                case TurnDecision.SwitchTurn:
-                    SwitchTurn();
-                    break;
-            }
-        }
-
 
         private void SwitchTurn()
         {
