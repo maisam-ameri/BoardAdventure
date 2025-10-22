@@ -86,7 +86,7 @@ namespace BoardAdventures.Managers
 
             var faction = pawn.Faction;
 
-            if (pawn.State == "InBase" && _diceManager.Step == 6)
+            if (pawn.State == PawnState.InBase && _diceManager.Step == 6)
             {
                 if (CurrentPlayer.Factions.All(f => f != faction)) return;
 
@@ -98,7 +98,7 @@ namespace BoardAdventures.Managers
 
                 _pawnManager.EnterPawnToGame(pawn,null, OnActionCompleted);
             }
-            else if (pawn.State == "InGame")
+            else if (pawn.State == PawnState.InGame)
             {
                 _ = HandleSelectedPawnAsync(pawn);
             }

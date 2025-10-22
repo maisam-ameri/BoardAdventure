@@ -8,7 +8,7 @@ namespace BoardAdventures.GameObjects.Pawns
 {
     public class Pawn : MonoBehaviour, IPawn
     {
-        public string State { get; set; } = "InBase";
+        public PawnState State { get; set; } = PawnState.InBase;
         public Color Color
         {
             get => GetComponent<SpriteRenderer>().color;

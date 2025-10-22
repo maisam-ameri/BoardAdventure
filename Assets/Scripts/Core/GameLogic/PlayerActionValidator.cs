@@ -43,7 +43,7 @@ namespace BoardAdventures.Core.GameLogic
             
             foreach (var faction in player.Factions)
             {
-                var isExistPawnInBase = faction.Pawns.Any(p => p.State == "InBase");
+                var isExistPawnInBase = faction.Pawns.Any(p => p.State == PawnState.InBase);
                 var isStartNodeEmpty = faction.StartNode.IsEmpty;
 
                 if (isExistPawnInBase && isStartNodeEmpty)
@@ -54,6 +54,6 @@ namespace BoardAdventures.Core.GameLogic
         }
 
         private IEnumerable<IPawn> GetPawnsFromGame(Faction faction)
-            => faction.Pawns.Where(p => p.State == "InGame");
+            => faction.Pawns.Where(p => p.State == PawnState.InGame);
     }
 }

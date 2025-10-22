@@ -7,7 +7,7 @@ namespace BoardAdventures.GameObjects.Pawns.Abstractions
 {
     public interface IPawn
     {
-        string State { get; set; }
+        PawnState State { get; set; }
         Color Color { get; set; }
         Vector2 Position { get; set; }
         Faction Faction { get; set; }
