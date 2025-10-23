@@ -23,15 +23,16 @@ namespace BoardAdventures.Managers
         public static IMovement Mover { get; private set; }
         public static GameFlowService GameFlowService { get; private set; }
         public static PlayerSetupService PlayerSetupService { get; private set; }
+        public static PlayerActionService PlayerActionService { get; private set; }
         public static GameInputHandler GameInputHandler { get; private set; }
         private static TurnFlowService TurnFlowService { get; set; }
 
-        
+
         public static void Initialize()
         {
             var pathCalculator = new PathCalculator();
             Mover = new Mover();
-            
+
             DiceManager = Object.FindObjectOfType<DiceManager>();
             UIManager = Object.FindObjectOfType<UIManager>();
             TurnVisualizer = Object.FindObjectOfType<TurnVisualizer>();
@@ -42,16 +43,20 @@ namespace BoardAdventures.Managers
             PawnMovementService = new PawnMovementService(PlayerActionValidator, Mover, UIMessageManager);
             TurnLogicService = new TurnLogicService();
             var playerUIFactory = new PlayerUIFactory(UIManager.PlayerUIPrefab, UIManager.PlayerUIParent);
-            PlayerSetupService = new PlayerSetupService(PawnManager,playerUIFactory);
+            PlayerSetupService = new PlayerSetupService(PawnManager, playerUIFactory);
             TurnFlowService = new TurnFlowService();
-            GameFlowService = 
+            GameFlowService =
                 new GameFlowService(UIMessageManager
-                , TurnFlowService
-                ,DiceManager
-                ,TurnVisualizer
-                ,GameInputHandler
-                ,PlayerActionValidator
-                ,TurnLogicService);
+                    , TurnFlowService
+                    , DiceManager
+                    , TurnVisualizer
+                    , GameInputHandler
+                    , PlayerActionValidator
+                    , TurnLogicService);
+            PlayerActionService = new PlayerActionService(DiceManager, UIMessageManager, GameFlowService, PawnManager,
+                PawnMovementService);
+
+            PlayerSetupService.OnSelectedPawn += PlayerActionService.HandelPawnSelected;
         }
     }
 }

@@ -27,8 +27,8 @@ namespace BoardAdventures.Core.GameLogic
             , DiceManager diceManager
             , TurnVisualizer turnVisualizer
             , GameInputHandler gameInputHandler
-            ,PlayerActionValidator playerActionValidator
-            ,TurnLogicService turnLogicService)
+            , PlayerActionValidator playerActionValidator
+            , TurnLogicService turnLogicService)
         {
             _uiMessageManager = uiMessageManager;
             _turnFlowService = turnFlowService;
@@ -94,8 +94,8 @@ namespace BoardAdventures.Core.GameLogic
             _uiMessageManager.ShowRewardMessage(player.Name);
             OnRewardGranted?.Invoke(player);
         }
-        
-        
+
+
         private void HandleDiceRolled(int? step)
         {
             if (step is null) return;
@@ -126,6 +126,25 @@ namespace BoardAdventures.Core.GameLogic
                     SwitchTurn();
                     break;
             }
+        }
+
+        public void HandleActionCompleted()
+        {
+            _diceManager.Reset();
+
+            if (_turnLogicService.HasReward)
+            {
+                GrantReward(CurrentPlayer);
+            }
+            else
+            {
+                SwitchTurn();
+            }
+        }
+
+        public void HandleActionStarted()
+        {
+            CurrentPlayer.UI.PauseTimer();
         }
     }
 }
