@@ -6,7 +6,6 @@ namespace BoardAdventures.GameObjects.Nodes
     {
         public Color Color
         {
-            get => GetComponent<SpriteRenderer>().color;
             set => GetComponent<SpriteRenderer>().color = value;
         }
     }

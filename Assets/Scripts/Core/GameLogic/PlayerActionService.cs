@@ -2,10 +2,7 @@
 using System.Threading.Tasks;
 using BoardAdventures.Abstractions;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
-using BoardAdventures.Managers;
-using BoardAdventures.UI.Common;
 using Signals;
-using UnityEngine;
 using Zenject;
 
 namespace BoardAdventures.Core.GameLogic
@@ -33,7 +30,6 @@ namespace BoardAdventures.Core.GameLogic
 
         private void HandelPawnSelected(OnSelectedPawnSignal signal)
         {
-            Debug.Log(signal.Pawn.Color);
             var pawn = signal.Pawn;
             
             if (!_diceManager.IsRolled)

@@ -9,11 +9,6 @@ namespace BoardAdventures.Core.GameLogic
 {
     public class PawnStateService: IPawnStateService
     {
-
-        public event Action<IPawn> OnPawnEntered;
-        public event Action<IPawn> OnPawnReturned;
-        
-        
         public void EnterPawnToGame(IPawn pawn,Action onActionStarted, Action onActionCompleted)
         {
             onActionStarted?.Invoke();

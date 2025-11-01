@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using BoardAdventures.Abstractions;
-using Signals;
+﻿using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
 
 namespace BoardAdventures.UI.Players
 {
@@ -15,16 +11,9 @@ namespace BoardAdventures.UI.Players
         [SerializeField] private List<Image> images;
         [SerializeField] private TurnTimer timer;
 
-        //private Action _onTurnTimerExpired;
         private CanvasGroup _canvas;
-        private SignalBus _signalBus;
 
 
-        [Inject]
-        public void Initialize(SignalBus signalBus)
-        {
-            _signalBus = signalBus;
-        }
         private void Awake()
         {
             _canvas = GetComponent<CanvasGroup>();
@@ -33,7 +22,6 @@ namespace BoardAdventures.UI.Players
         public void SetPlayerUI(string pName, List<Color> colors)
         {
             playerName.text = pName;
-            //_onTurnTimerExpired = onTurnTimerExpired;
 
             for (var i = 0; i < images.Count; i++)
             {
@@ -46,15 +34,6 @@ namespace BoardAdventures.UI.Players
                 images[i].enabled = true;
                 images[i].color = colors[i];
             }
-
-            _signalBus.Fire(new OnTurnTimerExpiredSignal());
-            //_onTurnTimerExpired = onTurnTimerExpired;
-            //timer.TimerExpired += onTurnTimerExpired;
-        }
-
-        private void OnDisable()
-        {
-            //timer.TimerExpired -= _onTurnTimerExpired;
         }
 
         public void SetActivate(bool isActive)

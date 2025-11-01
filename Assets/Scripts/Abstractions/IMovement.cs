@@ -8,7 +8,6 @@ namespace BoardAdventures.Abstractions
 {
     public interface IMovement
     {
-        public event Action<IPawn> OnCaptured;
         Task Move(IPawn pawn, List<INode> path, Action onCompleted);
     }
 }

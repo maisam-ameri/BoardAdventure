@@ -24,20 +24,25 @@ namespace Installers
             Container.DeclareSignal<OnPlayersCreatedSignal>();
             Container.DeclareSignal<OnGameSetupCompletedSignal>();
             Container.DeclareSignal<OnSelectedPawnSignal>();
+            Container.DeclareSignal<OnTurnSwitchedSignal>();
+            Container.DeclareSignal<OnTurnStartedSignal>();
+            Container.DeclareSignal<OnFirstSixRolledSignal>();
+            Container.DeclareSignal<OnDiceRollRequestedSignal>();
+            Container.DeclareSignal<OnDiceRolledSignal>();
             
             
             // Services
             Container.Bind<IGameFlowService>().To<GameFlowService>().AsSingle();
+            Container.Bind<ITurnManagementService>().To<TurnManagementService>().AsSingle().NonLazy();
             Container.Bind<ITurnFlowService>().To<TurnFlowService>().AsSingle();
+            Container.Bind<ITurnLogicService>().To<TurnLogicService>().AsSingle();
             Container.Bind<IPlayerActionValidator>().To<PlayerActionValidator>().AsSingle();
             Container.Bind<IPlayerActionService>().To<PlayerActionService>().AsSingle().NonLazy();
             Container.Bind<IPlayerSetupService>().To<PlayerSetupService>().AsSingle();
-            Container.Bind<ITurnLogicService>().To<TurnLogicService>().AsSingle();
-            Container.Bind<IPathCalculator>().To<PathCalculator>().AsSingle();
             Container.Bind<IPawnManager>().To<PawnManager>().AsSingle();
             Container.Bind<IPawnStateService>().To<PawnStateService>().AsSingle();
-            Container.Bind<ITurnManager>().To<TurnManager>().AsSingle();
             Container.Bind<IPawnMovementService>().To<PawnMovementService>().AsSingle();
+            Container.Bind<IPathCalculator>().To<PathCalculator>().AsSingle();
             Container.Bind<IMovement>().To<Mover>().AsSingle();
             
             // MonoBehaviours

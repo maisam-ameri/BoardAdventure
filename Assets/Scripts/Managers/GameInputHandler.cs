@@ -1,16 +1,23 @@
-﻿using System;
-using BoardAdventures.Abstractions;
+﻿using BoardAdventures.Abstractions;
+using Signals;
 using UnityEngine;
+using Zenject;
 
 namespace BoardAdventures.Managers
 {
     public class GameInputHandler: MonoBehaviour, IGameInputHandler
     {
-        public event Action OnDiceRollRequested;
+        private SignalBus _signalBus;
 
+        [Inject]
+        public void Initialize(SignalBus signalBus)
+        {
+            _signalBus = signalBus;
+        }
+        
         public void HandleDiceRollRequest()
         {
-            OnDiceRollRequested?.Invoke();
+            _signalBus.Fire(new OnDiceRollRequestedSignal());
         }
     }
 }

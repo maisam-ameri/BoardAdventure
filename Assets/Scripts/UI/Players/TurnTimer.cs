@@ -1,22 +1,27 @@
-﻿using System;
-using System.Collections;
-using BoardAdventures.Abstractions;
+﻿using System.Collections;
+using Signals;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace BoardAdventures.UI.Players
 {
-    public class TurnTimer : MonoBehaviour, ITimer
+    public class TurnTimer : MonoBehaviour
     {
         [SerializeField] private Slider timerUI;
         private float _maxTime;
-
         private Coroutine _timerRoutine;
-        
-        public bool IsRunning { get; private set; }
-        public event Action TimerExpired;
+        private SignalBus _signalBus;
 
+        private bool IsRunning { get; set; }
         
+
+
+        [Inject]
+        public void Initialize(SignalBus signalBus)
+        {
+            _signalBus = signalBus;
+        }
         
         public void StartTimer(float maxTime)
         {
@@ -42,7 +47,7 @@ namespace BoardAdventures.UI.Players
                 yield return null;
             }
             
-            TimerExpired?.Invoke();
+            _signalBus.Fire(new OnTurnTimerExpiredSignal());
             IsRunning = false;
         }
 
@@ -62,8 +67,6 @@ namespace BoardAdventures.UI.Players
             
             if (_timerRoutine != null)
                 StopCoroutine(_timerRoutine);
-
-            //timerUI.value = 0;
         }
 
     }

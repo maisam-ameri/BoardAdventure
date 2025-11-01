@@ -2,16 +2,12 @@
 using BoardAdventures.Abstractions;
 using BoardAdventures.GameObjects.Factions;
 using BoardAdventures.GameObjects.Nodes.Abstractions;
-using BoardAdventures.GameObjects.Pawns;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
-using UnityEngine;
-using Zenject;
 
 namespace BoardAdventures.Core.GameLogic
 {
     public class PawnManager : IPawnManager
     {
-        // [SerializeField] private Pawn pawnPrefab;
         private readonly IPawnFactory _pawnFactory;
         private readonly IPawnStateService _pawnStateService;
 

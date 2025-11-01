@@ -1,5 +1,4 @@
 ﻿using BoardAdventures.GameObjects.Pawns.Abstractions;
-using Zenject;
 
 namespace BoardAdventures.Abstractions
 {

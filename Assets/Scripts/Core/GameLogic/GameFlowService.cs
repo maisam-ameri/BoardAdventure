@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using BoardAdventures.Abstractions;
 using BoardAdventures.Core.Players;
-using BoardAdventures.Managers;
-using BoardAdventures.UI.Common;
 using Signals;
 using Zenject;
 
 namespace BoardAdventures.Core.GameLogic
 {
-    public class GameFlowService: IGameFlowService
+    public class GameFlowService : IGameFlowService
     {
-        //public event Action OnRewardGranted;
         public Player CurrentPlayer => _turnFlowService.CurrentPlayer;
         private Player LastPlayer => _turnFlowService.LastPlayer;
-        public List<Player> _players;
 
         private readonly IUIMessageManager _uiMessageManager;
         private readonly ITurnFlowService _turnFlowService;
@@ -35,7 +29,7 @@ namespace BoardAdventures.Core.GameLogic
             , IGameInputHandler gameInputHandler
             , IPlayerActionValidator playerActionValidator
             , ITurnLogicService turnLogicService
-            ,IPlayerSetupService playerSetupService
+            , IPlayerSetupService playerSetupService
             , SignalBus signalBus)
         {
             _uiMessageManager = uiMessageManager;
@@ -48,23 +42,23 @@ namespace BoardAdventures.Core.GameLogic
             _playerSetupService = playerSetupService;
             _signalBus = signalBus;
 
-            _turnFlowService.OnTurnSwitched += HandleSwitchTurn;
-            _turnFlowService.OnTurnStarted += HandleTurnStarted;
-            _diceManager.OnFirstSixRolled += HandleFirstSixVisual;
-            _diceManager.OnDiceRolled += HandleDiceRolled;
-            _gameInputHandler.OnDiceRollRequested += OnDiceButtonClicked;
+            _signalBus.Subscribe<OnTurnSwitchedSignal>(HandleSwitchTurn);
+            _signalBus.Subscribe<OnTurnStartedSignal>(HandleTurnStarted);
+            _signalBus.Subscribe<OnFirstSixRolledSignal>(HandleFirstSixVisual);
+            _signalBus.Subscribe<OnDiceRolledSignal>(HandleDiceRolled);
+            _signalBus.Subscribe<OnDiceRollRequestedSignal>(OnDiceButtonClicked);
         }
 
         public void StartGame()
         {
             _playerSetupService.Setup();
-            _players = _playerSetupService.Players;
-            _turnVisualizer.Initial(_players);
+            var players = _playerSetupService.Players;
+            _turnVisualizer.Initial(players);
             _turnVisualizer.DeactivateTurnVisuals();
             _turnVisualizer.DeactivatePlayerVisuals();
             _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, null);
         }
-        
+
         private void OnDiceButtonClicked()
         {
             _diceManager.RollDice();
@@ -76,12 +70,12 @@ namespace BoardAdventures.Core.GameLogic
             _turnFlowService.StartTurn();
         }
 
-        private void HandleTurnStarted(Player currentPlayer, Player lastPlayer)
+        private void HandleTurnStarted(OnTurnStartedSignal signal)
         {
             if (_firstSixRolled)
-                _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, lastPlayer);
+                _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, signal.LastPlayer);
 
-            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, lastPlayer);
+            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, signal.LastPlayer);
             CurrentPlayer.UI.StartTurnTimer(10);
         }
 
@@ -108,12 +102,13 @@ namespace BoardAdventures.Core.GameLogic
         {
             _uiMessageManager.ShowRewardMessage(player.Name);
             _signalBus.Fire(new OnRewardGrantedSignal());
-            //OnRewardGranted?.Invoke();
         }
 
 
-        private void HandleDiceRolled(int? step)
+        private void HandleDiceRolled(OnDiceRolledSignal signal)
         {
+            var step = signal.Step;
+            
             if (step is null) return;
 
             _diceManager.IsRolled = true;

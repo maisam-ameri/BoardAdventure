@@ -1,5 +1,4 @@
-﻿using System;
-using BoardAdventures.GameObjects.Factions;
+﻿using BoardAdventures.GameObjects.Factions;
 using BoardAdventures.GameObjects.Nodes.Abstractions;
 using UnityEngine;
 

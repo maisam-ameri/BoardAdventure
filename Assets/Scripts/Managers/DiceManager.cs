@@ -2,7 +2,9 @@
 using BoardAdventures.Abstractions;
 using BoardAdventures.Core.Dices;
 using BoardAdventures.UI.Dices;
+using Signals;
 using UnityEngine;
+using Zenject;
 
 namespace BoardAdventures.Managers
 {
@@ -10,12 +12,17 @@ namespace BoardAdventures.Managers
     {
         [SerializeField] private DiceUI diceUI;
         private Dice _dice;
+        private SignalBus _signalBus;
 
-        public event Action<int?> OnDiceRolled;
-        public event Action OnFirstSixRolled;
         public int? Step { get; private set; }
         public bool IsRolled { get; set; }
 
+
+        [Inject]
+        public void Initialize(SignalBus signalBus)
+        {
+            _signalBus = signalBus;
+        }
 
         private void Start()
         {
@@ -28,9 +35,9 @@ namespace BoardAdventures.Managers
             diceUI.ShowRoll(Step.Value);
 
             if (Step == 6)
-                OnFirstSixRolled?.Invoke();
+                _signalBus.Fire(new OnFirstSixRolledSignal());
 
-            OnDiceRolled?.Invoke(Step);
+            _signalBus.Fire(new OnDiceRolledSignal {Step = Step});
         }
 
         // for debugging
@@ -40,9 +47,9 @@ namespace BoardAdventures.Managers
             diceUI.ShowRoll(Step.Value);
 
             if (Step == 6)
-                OnFirstSixRolled?.Invoke();
+                _signalBus.Fire(new OnFirstSixRolledSignal());
 
-            OnDiceRolled?.Invoke(Step);
+            _signalBus.Fire(new OnDiceRolledSignal {Step = Step});
         }
 
         public void SetActivateDice(bool isActive)

@@ -30,4 +30,25 @@ namespace Signals
     {
         public IPawn Pawn;
     }
+
+    public class OnTurnSwitchedSignal
+    {
+    }
+
+    public class OnTurnStartedSignal
+    {
+        public Player CurrentPlayer;
+        public Player LastPlayer;
+    }
+    
+    public class OnFirstSixRolledSignal
+    {
+    }
+    public class OnDiceRolledSignal
+    {
+        public int? Step;
+    }
+    public class OnDiceRollRequestedSignal
+    {
+    }
 }

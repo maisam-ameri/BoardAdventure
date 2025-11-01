@@ -1,5 +1,4 @@
-﻿
-using BoardAdventures.Abstractions;
+﻿using BoardAdventures.Abstractions;
 
 namespace BoardAdventures.Core.GameLogic
 {

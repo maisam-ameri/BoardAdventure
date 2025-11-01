@@ -1,6 +1,6 @@
 ﻿namespace BoardAdventures.Abstractions
 {
-    public interface ITurnManager
+    public interface ITurnManagementService
     {
         
     }

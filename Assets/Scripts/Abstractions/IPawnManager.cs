@@ -7,7 +7,6 @@ namespace BoardAdventures.Abstractions
 {
     public interface IPawnManager
     {
-        //void Initialize(IPawnFactory pawnFactory, IPawnStateService pawnStateService);
         IPawn CreatePawn(Faction faction, INode baseNode);
         void EnterPawnToGame(IPawn pawn, Action onActionStarted, Action onActionCompleted);
         void ReturnPawnToBase(IPawn pawn);

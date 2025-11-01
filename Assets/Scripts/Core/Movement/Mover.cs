@@ -5,19 +5,25 @@ using BoardAdventures.Abstractions;
 using BoardAdventures.Core.Path;
 using BoardAdventures.GameObjects.Nodes.Abstractions;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
+using Signals;
+using Zenject;
 
 namespace BoardAdventures.Core.Movement
 {
     public class Mover : IMovement
     {
+        private int _delay = 500;
 
-        private readonly int _delay;
-        public event Action<IPawn> OnCaptured;
-        
-        
-        public Mover(int delay = 500)
+        public int Delay
         {
-            _delay = delay;
+            set => _delay = value;
+        }
+
+        private readonly SignalBus _signalBus;
+
+        public Mover(SignalBus signalBus)
+        {
+            _signalBus = signalBus;
         }
 
 
@@ -30,14 +36,12 @@ namespace BoardAdventures.Core.Movement
 
             foreach (var node in path)
             {
-
                 if (path.Count > 1 && node.Equals(path[^2]))
                 {
                     if (PathValidator.CheckNodeToCapture(pawn, path[^1]))
-                    {
-                        OnCaptured?.Invoke(path[^1].Pawn);
-                    }
+                        _signalBus.Fire(new OnCapturedSignal {Pawn = path[^1].Pawn});
                 }
+
                 pawn.Position = node.Position;
                 await Task.Delay(_delay);
             }
@@ -47,6 +51,5 @@ namespace BoardAdventures.Core.Movement
             pawn.CurrentNode.IsEmpty = false;
             onCompleted?.Invoke();
         }
-
     }
 }

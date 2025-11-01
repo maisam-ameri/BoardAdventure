@@ -7,17 +7,15 @@ using Zenject;
 
 namespace BoardAdventures.Core.GameLogic
 {
-    public class TurnFlowService: ITurnFlowService
+    public class TurnFlowService : ITurnFlowService
     {
         public Player CurrentPlayer => _players[_currentPlayerIndex];
         public Player LastPlayer => _lastPlayer;
-        public event Action OnTurnSwitched;
-        public event Action<Player, Player> OnTurnStarted;
 
         private Player _lastPlayer;
         private int _currentPlayerIndex;
         private List<Player> _players;
-        private SignalBus _signalBus;
+        private readonly SignalBus _signalBus;
 
 
         public TurnFlowService(SignalBus signalBus)
@@ -37,15 +35,19 @@ namespace BoardAdventures.Core.GameLogic
 
         public void StartTurn()
         {
-            OnTurnStarted?.Invoke(CurrentPlayer, _lastPlayer);
+            _signalBus.Fire(new OnTurnStartedSignal
+            {
+                CurrentPlayer = CurrentPlayer
+                , LastPlayer = _lastPlayer
+            });
         }
-        
+
         public void SwitchTurn()
         {
             CurrentPlayer.UI.StopTimer();
             NextPlayer();
 
-            OnTurnSwitched?.Invoke();
+            _signalBus.Fire(new OnTurnSwitchedSignal());
         }
 
         private void NextPlayer()

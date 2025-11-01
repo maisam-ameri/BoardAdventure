@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BoardAdventures.Abstractions;
 using UnityEngine;
 using Zenject;
@@ -16,7 +15,6 @@ namespace BoardAdventures.UI.Players
         public void Initialize(DiContainer container)
         {
             _container = container;
-            Debug.Log("DiContainer successfully injected into PlayerUIFactory.");
         }
 
         public PlayerUI Create(string playerName, List<Color> factionColors)

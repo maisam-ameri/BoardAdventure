@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BoardAdventures.Abstractions;
 using BoardAdventures.GameObjects.Factions;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
-using BoardAdventures.Managers;
 using Signals;
-using UnityEngine;
 using Zenject;
 
 namespace BoardAdventures.Core.Players
@@ -19,7 +16,6 @@ namespace BoardAdventures.Core.Players
 
         public List<Player> Players { get; private set; }
 
-        //public event Action OnTurnTimerExpired;
 
         public PlayerSetupService(IPawnManager pawnManager, IPlayerUIFactory playerUIFactory
             , SignalBus signalBus)
