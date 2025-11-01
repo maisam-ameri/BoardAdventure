@@ -7,6 +7,6 @@ namespace BoardAdventures.Abstractions
 {
     public interface IPlayerUIFactory
     {
-        PlayerUI Create(string playerName,List<Color> factionColors,Action onTurnTimerExpired);
+        PlayerUI Create(string playerName,List<Color> factionColors);
     }
 }

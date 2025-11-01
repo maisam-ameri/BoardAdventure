@@ -1,4 +1,6 @@
 ﻿
+using BoardAdventures.Abstractions;
+
 namespace BoardAdventures.Core.GameLogic
 {
     public enum TurnDecision
@@ -8,7 +10,7 @@ namespace BoardAdventures.Core.GameLogic
         RollReward
     }
 
-    public class TurnLogicService
+    public class TurnLogicService: ITurnLogicService
     {
         public bool HasReward { get; set; }
 

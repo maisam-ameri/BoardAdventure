@@ -9,15 +9,15 @@ using BoardAdventures.UI.Common;
 
 namespace BoardAdventures.Core.GameLogic
 {
-    public class PawnMovementService
+    public class PawnMovementService: IPawnMovementService
     {
-        private readonly PlayerActionValidator _actionValidator;
+        private readonly IPlayerActionValidator _actionValidator;
         private readonly IMovement _movement;
-        private readonly UIMessageManager _uiMessageManager;
+        private readonly IUIMessageManager _uiMessageManager;
 
 
-        public PawnMovementService(PlayerActionValidator actionValidator, IMovement movement,
-            UIMessageManager uiMessageManager)
+        public PawnMovementService(IPlayerActionValidator actionValidator, IMovement movement,
+            IUIMessageManager uiMessageManager)
         {
             _actionValidator = actionValidator;
             _movement = movement;

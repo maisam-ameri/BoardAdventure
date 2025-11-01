@@ -4,62 +4,67 @@ using BoardAdventures.Core.GameLogic;
 using BoardAdventures.Core.Players;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
 using BoardAdventures.UI.Common;
+using Signals;
 using UnityEngine;
+using Zenject;
 
 namespace BoardAdventures.Managers
 {
-    public class TurnManager : MonoBehaviour
+    public class TurnManager: ITurnManager
     {
-        private DiceManager _diceManager;
-        private PawnManager _pawnManager;
-        private TurnVisualizer _turnVisualizer;
-        private IMovement _mover;
+        private IDiceManager _diceManager;
+        private IPawnManager _pawnManager;
+        private ITurnVisualizer _turnVisualizer;
         private List<Player> _players;
         private int _currentPlayerIndex;
         private bool _firstSix;
         private bool _isDiceRolled;
-        private GameFlowService _gameFlowService;
-        private PlayerSetupService _playerSetupService;
+        private IGameFlowService _gameFlowService;
+        private IPlayerSetupService _playerSetupService;
         private Player CurrentPlayer => _gameFlowService.CurrentPlayer;
+        private SignalBus _signalBus;
 
+        // private void Start()
+        // {
+        //     //InitializeManagers();
+        //
+        //     _players = _playerSetupService.Players;
+        //     _turnVisualizer.Initial(_players);
+        //     _turnVisualizer.DeactivateTurnVisuals();
+        //     _turnVisualizer.DeactivatePlayerVisuals();
+        //     _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, null);
+        // }
 
-        private void Start()
+        [Inject]
+        public void Initialize(IGameFlowService gameFlowService
+            , IDiceManager diceManager, IPawnManager pawnManager
+            , ITurnVisualizer turnVisualizer, IPlayerSetupService playerSetupService
+            , SignalBus signalBus)
         {
-            InitializeManagers();
+            _signalBus = signalBus;
+            _gameFlowService = gameFlowService;
+            _diceManager = diceManager;
+            _pawnManager = pawnManager;
+            _turnVisualizer = turnVisualizer;
+            _playerSetupService = playerSetupService;
 
-            _players = _playerSetupService.Players;
-            _turnVisualizer.Initial(_players);
-            _turnVisualizer.DeactivateTurnVisuals();
-            _turnVisualizer.DeactivatePlayerVisuals();
-            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, null);
+            _signalBus.Subscribe<OnRewardGrantedSignal>(HandleRewardGranted);
+            _signalBus.Subscribe<OnTurnTimerExpiredSignal>(OnTurnTimerExpired);
+            _signalBus.Subscribe<OnCapturedSignal>(HandleCapturePawn);
+
+            // _pawnManager.Initialize(new PawnFactory(), new PawnStateService());
+            // _playerSetupService.Initialize();
+            // _gameFlowService.InitializePlayers(_playerSetupService.Players);
         }
 
-        private void InitializeManagers()
+
+        private void HandleCapturePawn(OnCapturedSignal signal)
         {
-            GameServices.Initialize();
-            _diceManager = GameServices.DiceManager;
-            _pawnManager = GameServices.PawnManager;
-            _turnVisualizer = GameServices.TurnVisualizer;
-            _gameFlowService = GameServices.GameFlowService;
-            _playerSetupService = GameServices.PlayerSetupService;
-            _mover = GameServices.Mover;
-
-            _playerSetupService.OnTurnTimerExpired += OnTurnTimerExpired;
-            _mover.OnCaptured += HandleCapturePawn;
-            _gameFlowService.OnRewardGranted += HandleRewardGranted;
-
-            _pawnManager.Initialize(new PawnFactory(), new PawnStateService());
-            _playerSetupService.Initialize();
-            _gameFlowService.InitializePlayers(_playerSetupService.Players);
-        }
-
-        private void HandleCapturePawn(IPawn pawn)
-        {
-            _pawnManager.ReturnPawnToBase(pawn);
+            _pawnManager.ReturnPawnToBase(signal.Pawn);
         }
 
 
-        private void HandleRewardGranted(Player player)
+        private void HandleRewardGranted()
         {
             _diceManager.SetActivateDice(true);
         }

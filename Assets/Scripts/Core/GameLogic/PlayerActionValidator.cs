@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BoardAdventures.Abstractions;
 using BoardAdventures.Core.Path;
 using BoardAdventures.Core.Players;
 using BoardAdventures.GameObjects.Factions;
@@ -8,11 +9,11 @@ using BoardAdventures.GameObjects.Pawns.Abstractions;
 
 namespace BoardAdventures.Core.GameLogic
 {
-    public class PlayerActionValidator
+    public class PlayerActionValidator: IPlayerActionValidator
     {
-        private readonly PathCalculator _pathCalculator;
+        private readonly IPathCalculator _pathCalculator;
 
-        public PlayerActionValidator(PathCalculator pathCalculator)
+        public PlayerActionValidator(IPathCalculator pathCalculator)
         {
             _pathCalculator = pathCalculator;
         }

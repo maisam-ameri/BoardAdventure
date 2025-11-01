@@ -1,11 +1,12 @@
 ﻿using System;
+using BoardAdventures.Abstractions;
 using BoardAdventures.Core.Dices;
 using BoardAdventures.UI.Dices;
 using UnityEngine;
 
 namespace BoardAdventures.Managers
 {
-    public class DiceManager : MonoBehaviour
+    public class DiceManager : MonoBehaviour, IDiceManager
     {
         [SerializeField] private DiceUI diceUI;
         private Dice _dice;

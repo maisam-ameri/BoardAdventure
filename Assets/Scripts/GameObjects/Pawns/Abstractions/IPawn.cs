@@ -15,6 +15,5 @@ namespace BoardAdventures.GameObjects.Pawns.Abstractions
         Collider2D Collider { get; }
         bool IsActive { set; }
 
-        event Action<IPawn> OnSelectPawn;
     }
 }

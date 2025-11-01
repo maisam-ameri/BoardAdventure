@@ -1,34 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BoardAdventures.Abstractions;
 using BoardAdventures.Core.Players;
 using BoardAdventures.Managers;
 using BoardAdventures.UI.Common;
+using Signals;
+using Zenject;
 
 namespace BoardAdventures.Core.GameLogic
 {
-    public class GameFlowService
+    public class GameFlowService: IGameFlowService
     {
-        public event Action<Player> OnRewardGranted;
+        //public event Action OnRewardGranted;
         public Player CurrentPlayer => _turnFlowService.CurrentPlayer;
         private Player LastPlayer => _turnFlowService.LastPlayer;
+        public List<Player> _players;
 
-        private readonly UIMessageManager _uiMessageManager;
-        private readonly TurnFlowService _turnFlowService;
-        private readonly DiceManager _diceManager;
-        private readonly TurnVisualizer _turnVisualizer;
-        private readonly GameInputHandler _gameInputHandler;
-        private readonly PlayerActionValidator _playerActionValidator;
-        private readonly TurnLogicService _turnLogicService;
+        private readonly IUIMessageManager _uiMessageManager;
+        private readonly ITurnFlowService _turnFlowService;
+        private readonly IDiceManager _diceManager;
+        private readonly ITurnVisualizer _turnVisualizer;
+        private readonly IGameInputHandler _gameInputHandler;
+        private readonly IPlayerActionValidator _playerActionValidator;
+        private readonly ITurnLogicService _turnLogicService;
         private bool _firstSixRolled;
+        private readonly SignalBus _signalBus;
+        private readonly IPlayerSetupService _playerSetupService;
 
-        public GameFlowService(UIMessageManager uiMessageManager
-            , TurnFlowService turnFlowService
-            , DiceManager diceManager
-            , TurnVisualizer turnVisualizer
-            , GameInputHandler gameInputHandler
-            , PlayerActionValidator playerActionValidator
-            , TurnLogicService turnLogicService)
+        public GameFlowService(IUIMessageManager uiMessageManager
+            , ITurnFlowService turnFlowService
+            , IDiceManager diceManager
+            , ITurnVisualizer turnVisualizer
+            , IGameInputHandler gameInputHandler
+            , IPlayerActionValidator playerActionValidator
+            , ITurnLogicService turnLogicService
+            ,IPlayerSetupService playerSetupService
+            , SignalBus signalBus)
         {
             _uiMessageManager = uiMessageManager;
             _turnFlowService = turnFlowService;
@@ -37,6 +45,8 @@ namespace BoardAdventures.Core.GameLogic
             _gameInputHandler = gameInputHandler;
             _playerActionValidator = playerActionValidator;
             _turnLogicService = turnLogicService;
+            _playerSetupService = playerSetupService;
+            _signalBus = signalBus;
 
             _turnFlowService.OnTurnSwitched += HandleSwitchTurn;
             _turnFlowService.OnTurnStarted += HandleTurnStarted;
@@ -45,14 +55,19 @@ namespace BoardAdventures.Core.GameLogic
             _gameInputHandler.OnDiceRollRequested += OnDiceButtonClicked;
         }
 
+        public void StartGame()
+        {
+            _playerSetupService.Setup();
+            _players = _playerSetupService.Players;
+            _turnVisualizer.Initial(_players);
+            _turnVisualizer.DeactivateTurnVisuals();
+            _turnVisualizer.DeactivatePlayerVisuals();
+            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, null);
+        }
+        
         private void OnDiceButtonClicked()
         {
             _diceManager.RollDice();
-        }
-
-        public void InitializePlayers(List<Player> players)
-        {
-            _turnFlowService.Initialize(players);
         }
 
         private void StartTurn()
@@ -92,7 +107,8 @@ namespace BoardAdventures.Core.GameLogic
         public void GrantReward(Player player)
         {
             _uiMessageManager.ShowRewardMessage(player.Name);
-            OnRewardGranted?.Invoke(player);
+            _signalBus.Fire(new OnRewardGrantedSignal());
+            //OnRewardGranted?.Invoke();
         }
 
 

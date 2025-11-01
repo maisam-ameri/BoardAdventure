@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using BoardAdventures.Abstractions;
 using BoardAdventures.Core.Players;
 using UnityEngine;
 
 namespace BoardAdventures.UI.Common
 {
-    public class TurnVisualizer : MonoBehaviour
+    public class TurnVisualizer : MonoBehaviour,ITurnVisualizer
     {
 
         private List<Player> _players;

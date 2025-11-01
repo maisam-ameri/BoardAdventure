@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using BoardAdventures.Abstractions;
+using UnityEngine;
 
 namespace BoardAdventures.UI.Common
 {
-    public class UIMessageManager : MonoBehaviour
+    public class UIMessageManager : MonoBehaviour, IUIMessageManager
     {
         [SerializeField] private UIMessage uiMessage;
         [SerializeField] private Transform parent;

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using BoardAdventures.Abstractions;
 using BoardAdventures.Core.Players;
+using Signals;
+using Zenject;
 
 namespace BoardAdventures.Core.GameLogic
 {
-    public class TurnFlowService
+    public class TurnFlowService: ITurnFlowService
     {
         public Player CurrentPlayer => _players[_currentPlayerIndex];
         public Player LastPlayer => _lastPlayer;
@@ -14,25 +17,30 @@ namespace BoardAdventures.Core.GameLogic
         private Player _lastPlayer;
         private int _currentPlayerIndex;
         private List<Player> _players;
+        private SignalBus _signalBus;
 
-        
-        public TurnFlowService(){}
 
-        public void Initialize(List<Player> players)
+        public TurnFlowService(SignalBus signalBus)
+        {
+            _signalBus = signalBus;
+            _signalBus.Subscribe<OnPlayersCreatedSignal>(HandlePlayersCreated);
+        }
+
+        private void HandlePlayersCreated(OnPlayersCreatedSignal signal)
         {
             if (_players != null)
                 throw new InvalidOperationException("TurnFlowService already initialized.");
 
-            _players = players ?? throw new ArgumentNullException(nameof(players));
+            _players = signal.Players ?? throw new ArgumentNullException(nameof(signal.Players));
             _currentPlayerIndex = 0;
         }
 
-        internal void StartTurn()
+        public void StartTurn()
         {
             OnTurnStarted?.Invoke(CurrentPlayer, _lastPlayer);
         }
         
-        internal void SwitchTurn()
+        public void SwitchTurn()
         {
             CurrentPlayer.UI.StopTimer();
             NextPlayer();

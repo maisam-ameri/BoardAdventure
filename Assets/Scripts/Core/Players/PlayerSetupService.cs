@@ -5,28 +5,39 @@ using BoardAdventures.Abstractions;
 using BoardAdventures.GameObjects.Factions;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
 using BoardAdventures.Managers;
+using Signals;
+using UnityEngine;
+using Zenject;
 
 namespace BoardAdventures.Core.Players
 {
-    public class PlayerSetupService
+    public class PlayerSetupService : IPlayerSetupService
     {
-        private readonly PawnManager _pawnManager;
+        private readonly IPawnManager _pawnManager;
         private readonly IPlayerUIFactory _playerUIFactory;
-        public List<Player>  Players { get; private set; }
-        public event Action OnTurnTimerExpired;
-        public event Action<IPawn> OnSelectedPawn;
+        private readonly SignalBus _signalBus;
 
-        public PlayerSetupService(PawnManager pawnManager, IPlayerUIFactory playerUIFactory)
+        public List<Player> Players { get; private set; }
+
+        //public event Action OnTurnTimerExpired;
+
+        public PlayerSetupService(IPawnManager pawnManager, IPlayerUIFactory playerUIFactory
+            , SignalBus signalBus)
         {
             _pawnManager = pawnManager;
             _playerUIFactory = playerUIFactory;
+            _signalBus = signalBus;
         }
-        public void Initialize()
+
+        public void Setup()
         {
             var factions = InitializeFactions();
             Players = CreatePlayer(factions);
             InitialPlayerUIs();
+
+            _signalBus.Fire(new OnPlayersCreatedSignal {Players = Players});
         }
+
         private List<Player> CreatePlayer(List<Faction> factions)
         {
             var factionPlayer1 = factions.GetRange(0, 2);
@@ -56,8 +67,8 @@ namespace BoardAdventures.Core.Players
             foreach (var player in Players)
             {
                 var ui = _playerUIFactory.Create(player.Name, player.Factions.Select(f => f.Color).ToList()
-                    , OnTurnTimerExpired);
-                
+                );
+
                 player.UI = ui;
             }
         }
@@ -71,8 +82,7 @@ namespace BoardAdventures.Core.Players
                 faction.Pawns = new List<IPawn>();
                 faction.BaseNodes.ForEach(baseNode =>
                 {
-                    var newPawn = _pawnManager.CreatePawn(faction, baseNode);
-                    newPawn.OnSelectPawn += OnSelectedPawn;
+                    _pawnManager.CreatePawn(faction, baseNode);
                 });
             }
 

@@ -5,20 +5,20 @@ using BoardAdventures.GameObjects.Nodes.Abstractions;
 using BoardAdventures.GameObjects.Pawns;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
 using UnityEngine;
+using Zenject;
 
-namespace BoardAdventures.Managers
+namespace BoardAdventures.Core.GameLogic
 {
-    public class PawnManager : MonoBehaviour
+    public class PawnManager : IPawnManager
     {
-        [SerializeField] private Pawn pawnPrefab;
-        private IPawnFactory _pawnFactory;
-        private IPawnStateService _pawnStateService;
+        // [SerializeField] private Pawn pawnPrefab;
+        private readonly IPawnFactory _pawnFactory;
+        private readonly IPawnStateService _pawnStateService;
 
-
-        public void Initialize(IPawnFactory pawnFactory, IPawnStateService pawnStateService)
+        public PawnManager(IPawnFactory pawnFactory, IPawnStateService pawnStateService)
         {
+             
             _pawnFactory = pawnFactory;
-            _pawnFactory = new PawnFactory(pawnPrefab);
             _pawnStateService = pawnStateService;
         }
 

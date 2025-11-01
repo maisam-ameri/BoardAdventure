@@ -2,23 +2,22 @@
 using BoardAdventures.GameObjects.Pawns;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
 using UnityEngine;
+using Zenject;
 
 namespace BoardAdventures.Managers
 {
-    public class PawnFactory: IPawnFactory
+    public class PawnFactory: MonoBehaviour, IPawnFactory
     {
-        private readonly Pawn _pawn;
+        [SerializeField] private Pawn pawn;
+        private DiContainer _container;
 
-        public PawnFactory(Pawn pawn)
+
+        [Inject]
+        public void Initialize(DiContainer container)
         {
-            _pawn = pawn;
+            _container = container;
         }
 
-        public PawnFactory()
-        {
-            
-        }
-
-        public IPawn Create() => Object.Instantiate(_pawn);
+        public IPawn Create() => _container.InstantiatePrefabForComponent<Pawn>(pawn);
     }
 }

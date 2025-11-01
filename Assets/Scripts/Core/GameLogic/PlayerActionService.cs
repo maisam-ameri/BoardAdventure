@@ -1,32 +1,41 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using BoardAdventures.Abstractions;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
 using BoardAdventures.Managers;
 using BoardAdventures.UI.Common;
+using Signals;
+using UnityEngine;
+using Zenject;
 
 namespace BoardAdventures.Core.GameLogic
 {
-    public class PlayerActionService
+    public class PlayerActionService: IPlayerActionService
     {
-        private readonly DiceManager _diceManager;
-        private readonly UIMessageManager _uiMessageManager;
-        private readonly GameFlowService _gameFlowService;
-        private readonly PawnManager _pawnManager;
-        private readonly PawnMovementService _pawnMovementService;
+        private readonly IDiceManager _diceManager;
+        private readonly IUIMessageManager _uiMessageManager;
+        private readonly IGameFlowService _gameFlowService;
+        private readonly IPawnManager _pawnManager;
+        private readonly IPawnMovementService _pawnMovementService;
 
 
-        public PlayerActionService(DiceManager diceManager, UIMessageManager uiMessageManager,
-            GameFlowService gameFlowService, PawnManager pawnManager, PawnMovementService pawnMovementService)
+        public PlayerActionService(IDiceManager diceManager, IUIMessageManager uiMessageManager,
+            IGameFlowService gameFlowService, IPawnManager pawnManager, IPawnMovementService pawnMovementService
+            , SignalBus signalBus)
         {
             _diceManager = diceManager;
             _uiMessageManager = uiMessageManager;
             _gameFlowService = gameFlowService;
             _pawnManager = pawnManager;
             _pawnMovementService = pawnMovementService;
+            signalBus.Subscribe<OnSelectedPawnSignal>(HandelPawnSelected);
         }
 
-        public void HandelPawnSelected(IPawn pawn)
+        private void HandelPawnSelected(OnSelectedPawnSignal signal)
         {
+            Debug.Log(signal.Pawn.Color);
+            var pawn = signal.Pawn;
+            
             if (!_diceManager.IsRolled)
             {
                 _uiMessageManager.ShowRollMessage();

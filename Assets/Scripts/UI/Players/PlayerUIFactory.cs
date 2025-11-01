@@ -2,25 +2,30 @@
 using System.Collections.Generic;
 using BoardAdventures.Abstractions;
 using UnityEngine;
+using Zenject;
 
 namespace BoardAdventures.UI.Players
 {
-    public class PlayerUIFactory : IPlayerUIFactory
+    public class PlayerUIFactory : MonoBehaviour, IPlayerUIFactory
     {
-        private readonly PlayerUI _playerUIPrefab;
-        private readonly RectTransform _playerUIParent;
+        [SerializeField] private PlayerUI playerUIPrefab;
+        [SerializeField] private RectTransform playerUIParent;
+        private DiContainer _container;
 
-        public PlayerUIFactory(PlayerUI playerUIPrefab, RectTransform playerUIParent)
+        [Inject]
+        public void Initialize(DiContainer container)
         {
-            _playerUIPrefab = playerUIPrefab;
-            _playerUIParent = playerUIParent;
+            _container = container;
+            Debug.Log("DiContainer successfully injected into PlayerUIFactory.");
         }
 
-        public PlayerUI Create(string playerName, List<Color> factionColors,
-            Action onTurnTimerExpired)
+        public PlayerUI Create(string playerName, List<Color> factionColors)
         {
-            var ui = UnityEngine.Object.Instantiate(_playerUIPrefab, _playerUIParent, true);
-            ui.SetPlayerUI(playerName,factionColors,onTurnTimerExpired);
+            var ui = _container.InstantiatePrefabForComponent<PlayerUI>(
+                playerUIPrefab, playerUIParent);
+            
+            ui.SetPlayerUI(playerName,factionColors);
+            
             return ui;
         }
     }

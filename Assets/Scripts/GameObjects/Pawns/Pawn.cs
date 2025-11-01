@@ -1,8 +1,9 @@
-﻿using System;
-using BoardAdventures.GameObjects.Factions;
+﻿using BoardAdventures.GameObjects.Factions;
 using BoardAdventures.GameObjects.Nodes.Abstractions;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
+using Signals;
 using UnityEngine;
+using Zenject;
 
 namespace BoardAdventures.GameObjects.Pawns
 {
@@ -36,13 +37,19 @@ namespace BoardAdventures.GameObjects.Pawns
         public INode CurrentNode { get; set; }
         public Collider2D Collider => GetComponent<Collider2D>();
 
-        public event Action<IPawn> OnSelectPawn;
         private Color? _tempColor;
-        
+        private SignalBus _signalBus;
+
+
+        [Inject]
+        public void Initialize(SignalBus signalBus)
+        {
+            _signalBus = signalBus;
+        }
         
         private void OnMouseDown()
         {
-            OnSelectPawn?.Invoke(this);
+            _signalBus.Fire(new OnSelectedPawnSignal{Pawn = this});
         }
 
     }
