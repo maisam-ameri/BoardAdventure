@@ -1,5 +1,4 @@
-﻿using System;
-using BoardAdventures.Abstractions;
+﻿using BoardAdventures.Abstractions;
 using BoardAdventures.GameObjects.Factions;
 using BoardAdventures.GameObjects.Nodes.Abstractions;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
@@ -32,9 +31,9 @@ namespace BoardAdventures.Core.GameLogic
             return newPawn;
         }
 
-        public void EnterPawnToGame(IPawn pawn,Action onActionStarted, Action onActionCompleted)
+        public void EnterPawnToGame(IPawn pawn)
         {
-            _pawnStateService.EnterPawnToGame(pawn,onActionStarted, onActionCompleted);
+            _pawnStateService.EnterPawnToGame(pawn);
         }
 
         public void ReturnPawnToBase(IPawn pawn)

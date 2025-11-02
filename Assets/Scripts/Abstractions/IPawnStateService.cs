@@ -5,7 +5,7 @@ namespace BoardAdventures.Abstractions
 {
     public interface IPawnStateService
     {
-        public void EnterPawnToGame(IPawn pawn,Action onActionStarted, Action onActionCompleted);
+        public void EnterPawnToGame(IPawn pawn);
 
         public void ReturnPawnToBase(IPawn pawn);
     }

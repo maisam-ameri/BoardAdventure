@@ -50,7 +50,7 @@ namespace BoardAdventures.Core.GameLogic
                     return;
                 }
 
-                _pawnManager.EnterPawnToGame(pawn, null, _gameFlowService.HandlePlayerActionCompleted);
+                _pawnManager.EnterPawnToGame(pawn);
             }
             else if (pawn.State == PawnState.InGame)
             {

@@ -1,24 +1,35 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using BoardAdventures.Abstractions;
 using BoardAdventures.GameObjects.Factions;
 using BoardAdventures.GameObjects.Nodes.Abstractions;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
+using Signals;
+using Zenject;
 
 namespace BoardAdventures.Core.GameLogic
 {
     public class PawnStateService: IPawnStateService
     {
-        public void EnterPawnToGame(IPawn pawn,Action onActionStarted, Action onActionCompleted)
+
+        private readonly SignalBus _signalBus;
+
+        public PawnStateService(SignalBus signalBus)
         {
-            onActionStarted?.Invoke();
+            _signalBus = signalBus;
+        }
+
+        public void EnterPawnToGame(IPawn pawn)
+        {
+            _signalBus.Fire(new OnPlayerActionStartedSignal());
+            
             pawn.Position = pawn.Faction.StartNode.Position;
             pawn.CurrentNode.IsEmpty = true;
             pawn.CurrentNode.Pawn = null;
             pawn.CurrentNode = pawn.Faction.StartNode;
             pawn.Faction.StartNode.IsEmpty = false;
             pawn.State = PawnState.InGame;
-            onActionCompleted?.Invoke();
+            
+            _signalBus.Fire(new OnPlayerActionCompletedSignal());
         }
 
         public void ReturnPawnToBase(IPawn pawn)

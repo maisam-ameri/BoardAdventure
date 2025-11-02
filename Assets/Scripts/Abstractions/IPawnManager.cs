@@ -8,7 +8,7 @@ namespace BoardAdventures.Abstractions
     public interface IPawnManager
     {
         IPawn CreatePawn(Faction faction, INode baseNode);
-        void EnterPawnToGame(IPawn pawn, Action onActionStarted, Action onActionCompleted);
+        void EnterPawnToGame(IPawn pawn);
         void ReturnPawnToBase(IPawn pawn);
     }
 }
