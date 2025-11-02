@@ -15,7 +15,6 @@ namespace BoardAdventures.Core.GameLogic
         private readonly ITurnFlowService _turnFlowService;
         private readonly IDiceManager _diceManager;
         private readonly ITurnVisualizer _turnVisualizer;
-        private readonly IGameInputHandler _gameInputHandler;
         private readonly IPlayerActionValidator _playerActionValidator;
         private readonly ITurnLogicService _turnLogicService;
         private bool _firstSixRolled;
@@ -26,7 +25,6 @@ namespace BoardAdventures.Core.GameLogic
             , ITurnFlowService turnFlowService
             , IDiceManager diceManager
             , ITurnVisualizer turnVisualizer
-            , IGameInputHandler gameInputHandler
             , IPlayerActionValidator playerActionValidator
             , ITurnLogicService turnLogicService
             , IPlayerSetupService playerSetupService
@@ -36,7 +34,6 @@ namespace BoardAdventures.Core.GameLogic
             _turnFlowService = turnFlowService;
             _diceManager = diceManager;
             _turnVisualizer = turnVisualizer;
-            _gameInputHandler = gameInputHandler;
             _playerActionValidator = playerActionValidator;
             _turnLogicService = turnLogicService;
             _playerSetupService = playerSetupService;
@@ -47,6 +44,9 @@ namespace BoardAdventures.Core.GameLogic
             _signalBus.Subscribe<OnFirstSixRolledSignal>(HandleFirstSixVisual);
             _signalBus.Subscribe<OnDiceRolledSignal>(HandleDiceRolled);
             _signalBus.Subscribe<OnDiceRollRequestedSignal>(OnDiceButtonClicked);
+            _signalBus.Subscribe<OnPlayerActionStartedSignal>(HandlePlayerActionStarted);
+            _signalBus.Subscribe<OnPlayerActionCompletedSignal>(HandlePlayerActionCompleted);
+            
         }
 
         public void StartGame()
@@ -73,9 +73,9 @@ namespace BoardAdventures.Core.GameLogic
         private void HandleTurnStarted(OnTurnStartedSignal signal)
         {
             if (_firstSixRolled)
-                _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, signal.LastPlayer);
+                _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, LastPlayer);
 
-            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, signal.LastPlayer);
+            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, LastPlayer);
             CurrentPlayer.UI.StartTurnTimer(10);
         }
 
@@ -139,7 +139,7 @@ namespace BoardAdventures.Core.GameLogic
             }
         }
 
-        public void HandleActionCompleted()
+        public void HandlePlayerActionCompleted()
         {
             _diceManager.Reset();
 
@@ -153,7 +153,7 @@ namespace BoardAdventures.Core.GameLogic
             }
         }
 
-        public void HandleActionStarted()
+        public void HandlePlayerActionStarted()
         {
             CurrentPlayer.UI.PauseTimer();
         }

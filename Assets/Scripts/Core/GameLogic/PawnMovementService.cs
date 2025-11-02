@@ -23,7 +23,7 @@ namespace BoardAdventures.Core.GameLogic
             _uiMessageManager = uiMessageManager;
         }
 
-        public async Task MovePawn(Player player, IPawn pawn, int? step, Action onActionStarted, Action onActionCompleted)
+        public async Task MovePawn(Player player, IPawn pawn, int? step)
         {
             if (step == null)
             {
@@ -39,8 +39,8 @@ namespace BoardAdventures.Core.GameLogic
                 return;
             }
 
-            onActionStarted?.Invoke();
-            await _movement.Move(pawn, path, onActionCompleted);
+            //onActionStarted?.Invoke();
+            await _movement.Move(pawn, path);
         }
 
         private List<INode> ValidatePath(Player player, IPawn pawn, int step)

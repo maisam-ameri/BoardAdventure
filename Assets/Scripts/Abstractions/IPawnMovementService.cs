@@ -7,6 +7,6 @@ namespace BoardAdventures.Abstractions
 {
     public interface IPawnMovementService
     {
-        Task MovePawn(Player player, IPawn pawn, int? step, Action onActionStarted, Action onActionCompleted);
+        Task MovePawn(Player player, IPawn pawn, int? step);
     }
 }

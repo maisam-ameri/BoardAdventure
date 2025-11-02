@@ -29,6 +29,8 @@ namespace Installers
             Container.DeclareSignal<OnFirstSixRolledSignal>();
             Container.DeclareSignal<OnDiceRollRequestedSignal>();
             Container.DeclareSignal<OnDiceRolledSignal>();
+            Container.DeclareSignal<OnPlayerActionStartedSignal>();
+            Container.DeclareSignal<OnPlayerActionCompletedSignal>();
             
             
             // Services

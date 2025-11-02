@@ -50,7 +50,7 @@ namespace BoardAdventures.Core.GameLogic
                     return;
                 }
 
-                _pawnManager.EnterPawnToGame(pawn, null, _gameFlowService.HandleActionCompleted);
+                _pawnManager.EnterPawnToGame(pawn, null, _gameFlowService.HandlePlayerActionCompleted);
             }
             else if (pawn.State == PawnState.InGame)
             {
@@ -60,8 +60,7 @@ namespace BoardAdventures.Core.GameLogic
 
         private async Task HandleSelectedPawnAsync(IPawn pawn)
         {
-            await _pawnMovementService.MovePawn(_gameFlowService.CurrentPlayer, pawn, _diceManager.Step,
-                _gameFlowService.HandleActionStarted, _gameFlowService.HandleActionCompleted);
+            await _pawnMovementService.MovePawn(_gameFlowService.CurrentPlayer, pawn, _diceManager.Step);
         }
     }
 }

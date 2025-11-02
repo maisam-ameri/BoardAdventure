@@ -51,4 +51,13 @@ namespace Signals
     public class OnDiceRollRequestedSignal
     {
     }
+    public class OnPlayerActionStartedSignal
+    {
+        
+    }
+    public class OnPlayerActionCompletedSignal
+    {
+    }
+
+    
 }

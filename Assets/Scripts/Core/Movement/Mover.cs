@@ -27,8 +27,10 @@ namespace BoardAdventures.Core.Movement
         }
 
 
-        public async Task Move(IPawn pawn, List<INode> path, Action onCompleted = null)
+        public async Task Move(IPawn pawn, List<INode> path)
         {
+            _signalBus.Fire(new OnPlayerActionStartedSignal());
+            
             if (path == null || path.Count == 0) return;
 
             pawn.CurrentNode.Pawn = null;
@@ -49,7 +51,8 @@ namespace BoardAdventures.Core.Movement
             pawn.CurrentNode = path[^1];
             pawn.CurrentNode.Pawn = pawn;
             pawn.CurrentNode.IsEmpty = false;
-            onCompleted?.Invoke();
+            _signalBus.Fire(new OnPlayerActionCompletedSignal());
+            // onCompleted?.Invoke();
         }
     }
 }
