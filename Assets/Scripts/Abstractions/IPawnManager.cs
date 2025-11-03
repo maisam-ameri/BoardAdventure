@@ -9,6 +9,5 @@ namespace BoardAdventures.Abstractions
     {
         IPawn CreatePawn(Faction faction, INode baseNode);
         void EnterPawnToGame(IPawn pawn);
-        void ReturnPawnToBase(IPawn pawn);
     }
 }

@@ -41,6 +41,7 @@ namespace BoardAdventures.Core.GameLogic
 
             _signalBus.Subscribe<OnTurnSwitchedSignal>(HandleSwitchTurn);
             _signalBus.Subscribe<OnTurnStartedSignal>(HandleTurnStarted);
+            _signalBus.Subscribe<OnTurnTimerExpiredSignal>(SwitchTurn);
             _signalBus.Subscribe<OnFirstSixRolledSignal>(HandleFirstSixVisual);
             _signalBus.Subscribe<OnDiceRolledSignal>(HandleDiceRolled);
             _signalBus.Subscribe<OnDiceRollRequestedSignal>(OnDiceButtonClicked);
@@ -67,7 +68,7 @@ namespace BoardAdventures.Core.GameLogic
         private void StartTurn()
         {
             _uiMessageManager.ShowPlayerTurnMessage(CurrentPlayer.Name);
-            _turnFlowService.StartTurn();
+            HandleTurnStarted(null);
         }
 
         private void HandleTurnStarted(OnTurnStartedSignal signal)
@@ -81,7 +82,7 @@ namespace BoardAdventures.Core.GameLogic
 
         public void SwitchTurn()
         {
-            _turnFlowService.SwitchTurn();
+            HandleSwitchTurn();
         }
 
         private async void HandleSwitchTurn()
@@ -89,6 +90,8 @@ namespace BoardAdventures.Core.GameLogic
             await Task.Delay(1000);
             _diceManager.Reset();
             _diceManager.SetActivateDice(true);
+            CurrentPlayer.UI.StopTimer();
+            _turnFlowService.NextPlayer();
             StartTurn();
         }
 
@@ -101,9 +104,9 @@ namespace BoardAdventures.Core.GameLogic
         public void GrantReward(Player player)
         {
             _uiMessageManager.ShowRewardMessage(player.Name);
-            _signalBus.Fire(new OnRewardGrantedSignal());
+            _diceManager.SetActivateDice(true);
+            CurrentPlayer.UI.StartTurnTimer(10);
         }
-
 
         private void HandleDiceRolled(OnDiceRolledSignal signal)
         {
@@ -113,7 +116,6 @@ namespace BoardAdventures.Core.GameLogic
 
             _diceManager.IsRolled = true;
             _diceManager.SetActivateDice(false);
-            CurrentPlayer.UI.StopTimer();
             CurrentPlayer.UI.StartTurnTimer(10);
 
 

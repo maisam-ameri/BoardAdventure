@@ -32,10 +32,8 @@ namespace Installers
             Container.DeclareSignal<OnPlayerActionStartedSignal>();
             Container.DeclareSignal<OnPlayerActionCompletedSignal>();
             
-            
             // Services
             Container.Bind<IGameFlowService>().To<GameFlowService>().AsSingle();
-            Container.Bind<ITurnManagementService>().To<TurnManagementService>().AsSingle().NonLazy();
             Container.Bind<ITurnFlowService>().To<TurnFlowService>().AsSingle();
             Container.Bind<ITurnLogicService>().To<TurnLogicService>().AsSingle();
             Container.Bind<IPlayerActionValidator>().To<PlayerActionValidator>().AsSingle();
@@ -54,9 +52,6 @@ namespace Installers
             Container.Bind<IGameInputHandler>().To<GameInputHandler>().FromComponentInHierarchy().AsSingle();
             Container.Bind<IPlayerUIFactory>().To<PlayerUIFactory>().FromComponentInHierarchy().AsSingle();
             Container.Bind<IPawnFactory>().To<PawnFactory>().FromComponentInHierarchy().AsSingle();
-            
-            
-            
             
         }
     }

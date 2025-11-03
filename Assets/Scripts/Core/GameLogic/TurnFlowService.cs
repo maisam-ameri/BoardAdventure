@@ -15,13 +15,11 @@ namespace BoardAdventures.Core.GameLogic
         private Player _lastPlayer;
         private int _currentPlayerIndex;
         private List<Player> _players;
-        private readonly SignalBus _signalBus;
 
 
         public TurnFlowService(SignalBus signalBus)
         {
-            _signalBus = signalBus;
-            _signalBus.Subscribe<OnPlayersCreatedSignal>(HandlePlayersCreated);
+            signalBus.Subscribe<OnPlayersCreatedSignal>(HandlePlayersCreated);
         }
 
         private void HandlePlayersCreated(OnPlayersCreatedSignal signal)
@@ -33,24 +31,7 @@ namespace BoardAdventures.Core.GameLogic
             _currentPlayerIndex = 0;
         }
 
-        public void StartTurn()
-        {
-            _signalBus.Fire(new OnTurnStartedSignal
-            {
-                CurrentPlayer = CurrentPlayer
-                , LastPlayer = _lastPlayer
-            });
-        }
-
-        public void SwitchTurn()
-        {
-            CurrentPlayer.UI.StopTimer();
-            NextPlayer();
-
-            _signalBus.Fire(new OnTurnSwitchedSignal());
-        }
-
-        private void NextPlayer()
+        public void NextPlayer()
         {
             _lastPlayer = CurrentPlayer;
             _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;

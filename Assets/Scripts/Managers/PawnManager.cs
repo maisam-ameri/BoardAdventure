@@ -2,6 +2,8 @@
 using BoardAdventures.GameObjects.Factions;
 using BoardAdventures.GameObjects.Nodes.Abstractions;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
+using Signals;
+using Zenject;
 
 namespace BoardAdventures.Core.GameLogic
 {
@@ -10,11 +12,12 @@ namespace BoardAdventures.Core.GameLogic
         private readonly IPawnFactory _pawnFactory;
         private readonly IPawnStateService _pawnStateService;
 
-        public PawnManager(IPawnFactory pawnFactory, IPawnStateService pawnStateService)
+        public PawnManager(IPawnFactory pawnFactory, IPawnStateService pawnStateService, SignalBus signalBus)
         {
-             
             _pawnFactory = pawnFactory;
             _pawnStateService = pawnStateService;
+
+            signalBus.Subscribe<OnCapturedSignal>(HandleCapturePawn);
         }
 
         public IPawn CreatePawn(Faction faction, INode baseNode)
@@ -35,8 +38,13 @@ namespace BoardAdventures.Core.GameLogic
         {
             _pawnStateService.EnterPawnToGame(pawn);
         }
+        
+        private void HandleCapturePawn(OnCapturedSignal signal)
+        {
+            ReturnPawnToBase(signal.Pawn);
+        }
 
-        public void ReturnPawnToBase(IPawn pawn)
+        private void ReturnPawnToBase(IPawn pawn)
         {
             _pawnStateService.ReturnPawnToBase(pawn);
         }

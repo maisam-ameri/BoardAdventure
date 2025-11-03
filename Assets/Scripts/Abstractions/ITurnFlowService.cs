@@ -6,7 +6,6 @@ namespace BoardAdventures.Abstractions
     {
         public  Player CurrentPlayer { get; }
         public  Player LastPlayer { get; }
-        void StartTurn();
-        void SwitchTurn();
+        void NextPlayer();
     }
 }

@@ -45,6 +45,7 @@ namespace BoardAdventures.UI.Players
 
         public void StartTurnTimer(float time)
         {
+            timer.StopTimer();
             timer.StartTimer(time);
         }
 
