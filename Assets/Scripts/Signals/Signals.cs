@@ -4,10 +4,7 @@ using BoardAdventures.GameObjects.Pawns.Abstractions;
 
 namespace Signals
 {
-    public class OnRewardGrantedSignal
-    {
-    }
-
+   
     public class OnTurnTimerExpiredSignal
     {
     }
@@ -21,24 +18,10 @@ namespace Signals
     {
         public List<Player> Players;
     }
-
-    public class OnGameSetupCompletedSignal
-    {
-    }
-
+    
     public class OnSelectedPawnSignal
     {
         public IPawn Pawn;
-    }
-
-    public class OnTurnSwitchedSignal
-    {
-    }
-
-    public class OnTurnStartedSignal
-    {
-        public Player CurrentPlayer;
-        public Player LastPlayer;
     }
     
     public class OnFirstSixRolledSignal
@@ -54,9 +37,6 @@ namespace Signals
     public class OnPlayerActionStartedSignal
     {
         
-    }
-    public class OnPawnEnterCompletedSignal
-    {
     }
 
     public class OnPawnMoveCompletedSignal

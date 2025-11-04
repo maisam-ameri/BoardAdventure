@@ -18,19 +18,14 @@ namespace Installers
 
             // Signals
             SignalBusInstaller.Install(Container);
-            Container.DeclareSignal<OnRewardGrantedSignal>();
             Container.DeclareSignal<OnTurnTimerExpiredSignal>();
             Container.DeclareSignal<OnCapturedSignal>();
             Container.DeclareSignal<OnPlayersCreatedSignal>();
-            Container.DeclareSignal<OnGameSetupCompletedSignal>();
             Container.DeclareSignal<OnSelectedPawnSignal>();
-            Container.DeclareSignal<OnTurnSwitchedSignal>();
-            Container.DeclareSignal<OnTurnStartedSignal>();
             Container.DeclareSignal<OnFirstSixRolledSignal>();
             Container.DeclareSignal<OnDiceRollRequestedSignal>();
             Container.DeclareSignal<OnDiceRolledSignal>();
             Container.DeclareSignal<OnPlayerActionStartedSignal>();
-            Container.DeclareSignal<OnPawnEnterCompletedSignal>();
             Container.DeclareSignal<OnPawnMoveCompletedSignal>();
             Container.DeclareSignal<OnPlayerActionCompletedSignal>();
             Container.DeclareSignal<OnGameOverSignal>();

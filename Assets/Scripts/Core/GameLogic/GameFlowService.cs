@@ -40,8 +40,6 @@ namespace BoardAdventures.Core.GameLogic
             _playerSetupService = playerSetupService;
             _signalBus = signalBus;
 
-            _signalBus.Subscribe<OnTurnSwitchedSignal>(HandleSwitchTurn);
-            _signalBus.Subscribe<OnTurnStartedSignal>(HandleTurnStarted);
             _signalBus.Subscribe<OnTurnTimerExpiredSignal>(SwitchTurn);
             _signalBus.Subscribe<OnFirstSixRolledSignal>(HandleFirstSixVisual);
             _signalBus.Subscribe<OnDiceRolledSignal>(HandleDiceRolled);
@@ -74,10 +72,10 @@ namespace BoardAdventures.Core.GameLogic
         private void StartTurn()
         {
             _uiMessageManager.ShowPlayerTurnMessage(CurrentPlayer.Name);
-            HandleTurnStarted(null);
+            HandleTurnStarted();
         }
 
-        private void HandleTurnStarted(OnTurnStartedSignal signal)
+        private void HandleTurnStarted()
         {
             if (_firstSixRolled)
                 _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, LastPlayer);
