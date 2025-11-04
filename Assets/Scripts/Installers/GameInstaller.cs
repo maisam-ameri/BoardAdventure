@@ -7,6 +7,7 @@ using BoardAdventures.Managers;
 using BoardAdventures.UI.Common;
 using BoardAdventures.UI.Menu;
 using BoardAdventures.UI.Players;
+using Managers;
 using Signals;
 using Zenject;
 
@@ -30,6 +31,7 @@ namespace Installers
             Container.DeclareSignal<OnPawnMoveCompletedSignal>();
             Container.DeclareSignal<OnPlayerActionCompletedSignal>();
             Container.DeclareSignal<OnGameOverSignal>();
+            Container.DeclareSignal<OnGameStartSignal>();
             
             // Services
             Container.Bind<IGameFlowService>().To<GameFlowService>().AsSingle();
@@ -48,6 +50,7 @@ namespace Installers
             Container.Bind<IMovement>().To<Mover>().AsSingle();
             
             // MonoBehaviours
+            Container.Bind<IGameManager>().To<GameManager>().FromComponentInHierarchy().AsSingle();
             Container.Bind<IMenuManager>().To<MenuManager>().FromComponentInHierarchy().AsSingle();
             Container.Bind<IUIMessageManager>().To<UIMessageManager>().FromComponentInHierarchy().AsSingle();
             Container.Bind<IDiceManager>().To<DiceManager>().FromComponentInHierarchy().AsSingle();

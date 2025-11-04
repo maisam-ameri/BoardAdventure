@@ -1,37 +1,29 @@
 ﻿using BoardAdventures.Abstractions;
 using BoardAdventures.UI.Menu;
+using Core.Data;
+using Signals;
 using UnityEngine;
 using Zenject;
 
 namespace Managers
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager : MonoBehaviour, IGameManager
     {
-        private IGameFlowService _gameFlowService;
-        private ITurnVisualizer _turnVisualizer;
-        private IMenuManager _menuManager;
+        private SignalBus _signalBus;
 
         [Inject]
-        public void Initialize(IGameFlowService gameFlowService, IMenuManager menuManager)
+        public void Initialize(SignalBus signalBus)
         {
-            _gameFlowService = gameFlowService;
-            _menuManager = menuManager;
+            _signalBus = signalBus;
         }
 
-        private void Start()
+        public void StartGame(GameMode mode)
         {
-            StartGame();
-        }
-
-        private void StartGame()
-        {
-            // start game
-           _gameFlowService.StartGame();
+            _signalBus.Fire(new OnGameStartSignal{Mode = mode});
         }
 
         private void EndGame()
         {
-            // end game
         }
     }
 }

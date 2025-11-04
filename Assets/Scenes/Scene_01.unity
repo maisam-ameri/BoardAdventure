@@ -5749,7 +5749,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 894441826}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 930195233}
+        m_TargetAssemblyTypeName: BoardAdventures.UI.Menu.MenuManager, Assembly-CSharp
+        m_MethodName: OnStartSingleMatchClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &894441826
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6109,6 +6121,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainPanel: {fileID: 1167212324}
+  matchPanel: {fileID: 228771347}
 --- !u!4 &963607923 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1382309790660939195, guid: d4070dd23c0e7414fbc911cd79078584, type: 3}
@@ -7417,7 +7430,7 @@ GameObject:
   - component: {fileID: 1253932791}
   - component: {fileID: 1253932790}
   m_Layer: 5
-  m_Name: 4X
+  m_Name: FourPlayers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7487,7 +7500,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1253932791}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 930195233}
+        m_TargetAssemblyTypeName: BoardAdventures.UI.Menu.MenuManager, Assembly-CSharp
+        m_MethodName: OnStartFourMatchClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1253932791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9301,7 +9326,7 @@ GameObject:
   - component: {fileID: 1627333486}
   - component: {fileID: 1627333485}
   m_Layer: 5
-  m_Name: 2X
+  m_Name: TwoPlayers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9371,7 +9396,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1627333486}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 930195233}
+        m_TargetAssemblyTypeName: BoardAdventures.UI.Menu.MenuManager, Assembly-CSharp
+        m_MethodName: OnStartTwoMatchClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1627333486
 MonoBehaviour:
   m_ObjectHideFlags: 0

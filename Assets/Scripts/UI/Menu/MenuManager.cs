@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using BoardAdventures.Abstractions;
+﻿using BoardAdventures.Abstractions;
 using Core.Data;
 using UnityEngine;
 using Zenject;
@@ -10,14 +8,15 @@ namespace BoardAdventures.UI.Menu
     public class MenuManager : MonoBehaviour, IMenuManager
     {
         [SerializeField] private CanvasGroup mainPanel;
+        [SerializeField] private CanvasGroup matchPanel;
 
         private CanvasGroup _lastPanel;
-        private SignalBus _signalBus;
+        private IGameManager _gameManager;
 
-
-        public void Initialize(SignalBus signalBus)
+        [Inject]
+        public void Initialize(IGameManager gameManager)
         {
-            _signalBus = signalBus;
+            _gameManager = gameManager;
         }
 
         private void Start()
@@ -28,22 +27,49 @@ namespace BoardAdventures.UI.Menu
         public void ShowPanel(CanvasGroup panel)
         {
             if (_lastPanel != null)
-            {
-                _lastPanel.alpha = 0;
-                _lastPanel.interactable = false;
-                _lastPanel.blocksRaycasts = false;
-            }
+                HandleHidePanel(_lastPanel);
 
             _lastPanel = panel;
+            HandleShowPanel(panel);
+        }
 
+        private void HandleShowPanel(CanvasGroup panel)
+        {
             panel.alpha = 1;
             panel.interactable = true;
             panel.blocksRaycasts = true;
         }
 
-        public void OnGameModeClicked(GameMode mode)
+        private void HandleHidePanel(CanvasGroup panel)
         {
-            
+            panel.alpha = 0;
+            panel.interactable = false;
+            panel.blocksRaycasts = false;
+        }
+
+        private void HideAllPanels()
+        {
+            HandleHidePanel(mainPanel);
+            HandleHidePanel(matchPanel);
+        }
+
+        public void OnStartSingleMatchClicked()
+        {
+            StartMatch(GameMode.SinglePlayer);
+        }
+        public void OnStartTwoMatchClicked()
+        {
+            StartMatch(GameMode.TwoPlayers);
+        }
+        public void OnStartFourMatchClicked()
+        {
+            StartMatch(GameMode.FourPlayers);
+        }
+
+        private void StartMatch(GameMode mode)
+        {
+            HideAllPanels();
+            _gameManager.StartGame(mode);
         }
     }
 }

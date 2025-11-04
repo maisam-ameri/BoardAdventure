@@ -47,9 +47,11 @@ namespace BoardAdventures.Core.GameLogic
             _signalBus.Subscribe<OnPlayerActionStartedSignal>(HandlePlayerActionStarted);
             _signalBus.Subscribe<OnPlayerActionCompletedSignal>(HandlePlayerActionCompleted);
             _signalBus.Subscribe<OnGameOverSignal>(EndGame);
+            _signalBus.Subscribe<OnGameStartSignal>(StartGame);
+            
         }
 
-        public void StartGame()
+        private void StartGame(OnGameStartSignal signal)
         {
             _playerSetupService.Setup();
             var players = _playerSetupService.Players;
