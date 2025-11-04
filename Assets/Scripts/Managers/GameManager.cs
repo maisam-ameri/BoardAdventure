@@ -1,4 +1,5 @@
 ﻿using BoardAdventures.Abstractions;
+using BoardAdventures.UI.Menu;
 using UnityEngine;
 using Zenject;
 
@@ -8,12 +9,13 @@ namespace Managers
     {
         private IGameFlowService _gameFlowService;
         private ITurnVisualizer _turnVisualizer;
-
+        private IMenuManager _menuManager;
 
         [Inject]
-        public void Initialize(IGameFlowService gameFlowService)
+        public void Initialize(IGameFlowService gameFlowService, IMenuManager menuManager)
         {
             _gameFlowService = gameFlowService;
+            _menuManager = menuManager;
         }
 
         private void Start()
