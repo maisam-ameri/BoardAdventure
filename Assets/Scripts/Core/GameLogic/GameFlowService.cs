@@ -2,6 +2,7 @@
 using BoardAdventures.Abstractions;
 using BoardAdventures.Core.Players;
 using Signals;
+using UnityEngine;
 using Zenject;
 
 namespace BoardAdventures.Core.GameLogic
@@ -47,7 +48,7 @@ namespace BoardAdventures.Core.GameLogic
             _signalBus.Subscribe<OnDiceRollRequestedSignal>(OnDiceButtonClicked);
             _signalBus.Subscribe<OnPlayerActionStartedSignal>(HandlePlayerActionStarted);
             _signalBus.Subscribe<OnPlayerActionCompletedSignal>(HandlePlayerActionCompleted);
-            
+            _signalBus.Subscribe<OnGameOverSignal>(EndGame);
         }
 
         public void StartGame()
@@ -58,6 +59,11 @@ namespace BoardAdventures.Core.GameLogic
             _turnVisualizer.DeactivateTurnVisuals();
             _turnVisualizer.DeactivatePlayerVisuals();
             _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, null);
+        }
+
+        private void EndGame(OnGameOverSignal signal)
+        {
+            Debug.Log($"{signal.Winner.Name} won");
         }
 
         private void OnDiceButtonClicked()
@@ -111,7 +117,7 @@ namespace BoardAdventures.Core.GameLogic
         private void HandleDiceRolled(OnDiceRolledSignal signal)
         {
             var step = signal.Step;
-            
+
             if (step is null) return;
 
             _diceManager.IsRolled = true;

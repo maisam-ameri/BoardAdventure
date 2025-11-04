@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using BoardAdventures.Abstractions;
 using BoardAdventures.Core.Path;
@@ -13,16 +12,18 @@ namespace BoardAdventures.Core.Movement
     public class Mover : IMovement
     {
         private int _delay = 500;
+        private readonly SignalBus _signalBus;
+        private readonly ICurrentPlayerProvider _playerProvider;
 
         public int Delay
         {
             set => _delay = value;
         }
 
-        private readonly SignalBus _signalBus;
 
-        public Mover(SignalBus signalBus)
+        public Mover(ICurrentPlayerProvider currentPlayerProvider, SignalBus signalBus)
         {
+            _playerProvider = currentPlayerProvider;
             _signalBus = signalBus;
         }
 
@@ -51,8 +52,7 @@ namespace BoardAdventures.Core.Movement
             pawn.CurrentNode = path[^1];
             pawn.CurrentNode.Pawn = pawn;
             pawn.CurrentNode.IsEmpty = false;
-            _signalBus.Fire(new OnPlayerActionCompletedSignal());
-            // onCompleted?.Invoke();
+            _signalBus.Fire(new OnPawnMoveCompletedSignal{Player = _playerProvider.CurrentPlayer});
         }
     }
 }

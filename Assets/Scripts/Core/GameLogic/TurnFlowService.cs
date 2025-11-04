@@ -7,7 +7,7 @@ using Zenject;
 
 namespace BoardAdventures.Core.GameLogic
 {
-    public class TurnFlowService : ITurnFlowService
+    public class TurnFlowService : ITurnFlowService, ICurrentPlayerProvider
     {
         public Player CurrentPlayer => _players[_currentPlayerIndex];
         public Player LastPlayer => _lastPlayer;

@@ -55,9 +55,22 @@ namespace Signals
     {
         
     }
+    public class OnPawnEnterCompletedSignal
+    {
+    }
+
+    public class OnPawnMoveCompletedSignal
+    {
+        public Player Player;
+    }
+    
     public class OnPlayerActionCompletedSignal
     {
     }
 
+    public class OnGameOverSignal
+    {
+        public Player Winner;
+    }
     
 }

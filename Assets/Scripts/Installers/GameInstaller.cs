@@ -30,11 +30,17 @@ namespace Installers
             Container.DeclareSignal<OnDiceRollRequestedSignal>();
             Container.DeclareSignal<OnDiceRolledSignal>();
             Container.DeclareSignal<OnPlayerActionStartedSignal>();
+            Container.DeclareSignal<OnPawnEnterCompletedSignal>();
+            Container.DeclareSignal<OnPawnMoveCompletedSignal>();
             Container.DeclareSignal<OnPlayerActionCompletedSignal>();
+            Container.DeclareSignal<OnGameOverSignal>();
             
             // Services
             Container.Bind<IGameFlowService>().To<GameFlowService>().AsSingle();
-            Container.Bind<ITurnFlowService>().To<TurnFlowService>().AsSingle();
+            Container.Bind<IGameRulesService>().To<GameRulesService>().AsSingle().NonLazy();
+            Container.Bind<TurnFlowService>().AsSingle();
+            Container.Bind<ITurnFlowService>().To<TurnFlowService>().FromResolve();
+            Container.Bind<ICurrentPlayerProvider>().To<TurnFlowService>().FromResolve();
             Container.Bind<ITurnLogicService>().To<TurnLogicService>().AsSingle();
             Container.Bind<IPlayerActionValidator>().To<PlayerActionValidator>().AsSingle();
             Container.Bind<IPlayerActionService>().To<PlayerActionService>().AsSingle().NonLazy();
