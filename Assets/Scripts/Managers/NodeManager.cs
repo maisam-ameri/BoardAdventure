@@ -11,14 +11,14 @@ namespace BoardAdventures.Managers
     {
         [SerializeField] private PathNode firstNode;
         [SerializeField] private LayerMask layerMask;
-        private INode blueStartNode;
-        private INode redStartNode;
-        private INode yellowStartNode;
-        private INode greenStartNode;
-        private List<INode> blueGoalNodes;
-        private List<INode> redGoalNodes;
-        private List<INode> yellowGoalNodes;
-        private List<INode> greenGoalNodes;
+        private INode _blueStartNode;
+        private INode _redStartNode;
+        private INode _yellowStartNode;
+        private INode _greenStartNode;
+        private List<INode> _blueGoalNodes;
+        private List<INode> _redGoalNodes;
+        private List<INode> _yellowGoalNodes;
+        private List<INode> _greenGoalNodes;
         private List<INode> _nodes;
 
 
