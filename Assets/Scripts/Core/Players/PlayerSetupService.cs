@@ -3,7 +3,6 @@ using System.Linq;
 using BoardAdventures.Abstractions;
 using BoardAdventures.GameObjects.Factions;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
-using Core.Data;
 using Signals;
 using Zenject;
 
@@ -26,37 +25,51 @@ namespace BoardAdventures.Core.Players
             _signalBus = signalBus;
         }
 
-        public void Setup(GameMode mode)
+        public void Setup(int playerCount)
         {
             var factions = InitializeFactions();
-            Players = CreatePlayer(factions);
+            Players = CreatePlayer(factions, playerCount);
             InitialPlayerUIs();
 
             _signalBus.Fire(new OnPlayersCreatedSignal {Players = Players});
         }
 
-        private List<Player> CreatePlayer(List<Faction> factions)
+        private List<Player> CreatePlayer(List<Faction> factions,int playerCount)
         {
-            var factionPlayer1 = factions.GetRange(0, 2);
-            var factionPlayer2 = factions.GetRange(2, 2);
 
-            var players = new List<Player>
+            var playerFactions = SplitFactions(playerCount, factions);
+            var players = new List<Player>();
+            
+            for (var i = 0; i < playerCount; i++)
             {
-                new()
+                var player = new Player()
                 {
-                    Name = "mesi",
+                    Name = $"Guest_{i + 1}",
                     IsActive = true,
-                    Factions = factionPlayer1
-                },
-                new()
-                {
-                    Name = "keren",
-                    IsActive = true,
-                    Factions = factionPlayer2
-                }
-            };
+                    Factions = playerFactions[i]
+                };
+                
+                players.Add(player);
+            }
 
             return players;
+        }
+
+        private List<List<Faction>> SplitFactions(int playerCount, List<Faction> factions)
+        {
+            List<List<Faction>> result = new List<List<Faction>>();
+            var factionsPerPlayer = factions.Count / playerCount;
+            
+            for (var i = 0; i < playerCount; i++)
+            {
+                var playerFactions = factions
+                    .Skip(i * factionsPerPlayer)
+                    .Take(factionsPerPlayer).ToList();
+                
+                result.Add(playerFactions);
+            }
+
+            return result;
         }
 
         private void InitialPlayerUIs()

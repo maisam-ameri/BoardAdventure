@@ -1,5 +1,4 @@
 ﻿using BoardAdventures.Abstractions;
-using Core.Data;
 using UnityEngine;
 using Zenject;
 
@@ -53,23 +52,10 @@ namespace BoardAdventures.UI.Menu
             HandleHidePanel(matchPanel);
         }
 
-        public void OnStartSingleMatchClicked()
-        {
-            StartMatch(GameMode.SinglePlayer);
-        }
-        public void OnStartTwoMatchClicked()
-        {
-            StartMatch(GameMode.TwoPlayers);
-        }
-        public void OnStartFourMatchClicked()
-        {
-            StartMatch(GameMode.FourPlayers);
-        }
-
-        private void StartMatch(GameMode mode)
+        public void OnStartMatchClicked(int playerCount)
         {
             HideAllPanels();
-            _gameManager.StartGame(mode);
+            _gameManager.StartGame(playerCount);
         }
     }
 }

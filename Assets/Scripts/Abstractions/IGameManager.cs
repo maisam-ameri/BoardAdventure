@@ -1,10 +1,7 @@
-﻿using System;
-using Core.Data;
-
-namespace BoardAdventures.Abstractions
+﻿namespace BoardAdventures.Abstractions
 {
     public interface IGameManager
     {
-        public void StartGame(GameMode mode);
+        public void StartGame(int playerCount);
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using BoardAdventures.Core.Players;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
-using Core.Data;
 
 namespace Signals
 {
@@ -56,7 +55,7 @@ namespace Signals
 
     public class OnGameStartSignal
     {
-        public GameMode Mode;
+        public int PlayerCount;
     }
     
 }
