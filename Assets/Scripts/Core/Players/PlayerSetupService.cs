@@ -3,6 +3,7 @@ using System.Linq;
 using BoardAdventures.Abstractions;
 using BoardAdventures.GameObjects.Factions;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
+using Core.Data;
 using Signals;
 using Zenject;
 
@@ -25,7 +26,7 @@ namespace BoardAdventures.Core.Players
             _signalBus = signalBus;
         }
 
-        public void Setup()
+        public void Setup(GameMode mode)
         {
             var factions = InitializeFactions();
             Players = CreatePlayer(factions);

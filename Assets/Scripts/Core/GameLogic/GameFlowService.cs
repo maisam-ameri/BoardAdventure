@@ -53,7 +53,7 @@ namespace BoardAdventures.Core.GameLogic
 
         private void StartGame(OnGameStartSignal signal)
         {
-            _playerSetupService.Setup();
+            _playerSetupService.Setup(signal.Mode);
             var players = _playerSetupService.Players;
             _turnVisualizer.Initial(players);
             _turnVisualizer.DeactivateTurnVisuals();
