@@ -93,6 +93,7 @@ namespace BoardAdventures.Core.GameLogic
 
         private async void HandleSwitchTurn()
         {
+            CurrentPlayer.UI.PauseTimer();
             await Task.Delay(1000);
             _diceManager.Reset();
             _diceManager.SetActivateDice(true);
@@ -122,7 +123,6 @@ namespace BoardAdventures.Core.GameLogic
 
             _diceManager.IsRolled = true;
             _diceManager.SetActivateDice(false);
-            CurrentPlayer.UI.StartTurnTimer(10);
 
 
             var canEnter = _playerActionValidator.CheckToEnterPawn(CurrentPlayer, step);
