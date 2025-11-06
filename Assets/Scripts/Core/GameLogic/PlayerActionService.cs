@@ -11,18 +11,18 @@ namespace BoardAdventures.Core.GameLogic
     {
         private readonly IDiceManager _diceManager;
         private readonly IUIMessageManager _uiMessageManager;
-        private readonly IGameFlowService _gameFlowService;
+        private readonly IMatchFlowService _matchFlowService;
         private readonly IPawnManager _pawnManager;
         private readonly IPawnMovementService _pawnMovementService;
 
 
         public PlayerActionService(IDiceManager diceManager, IUIMessageManager uiMessageManager,
-            IGameFlowService gameFlowService, IPawnManager pawnManager, IPawnMovementService pawnMovementService
+            IMatchFlowService matchFlowService, IPawnManager pawnManager, IPawnMovementService pawnMovementService
             , SignalBus signalBus)
         {
             _diceManager = diceManager;
             _uiMessageManager = uiMessageManager;
-            _gameFlowService = gameFlowService;
+            _matchFlowService = matchFlowService;
             _pawnManager = pawnManager;
             _pawnMovementService = pawnMovementService;
             signalBus.Subscribe<OnSelectedPawnSignal>(HandelPawnSelected);
@@ -42,7 +42,7 @@ namespace BoardAdventures.Core.GameLogic
 
             if (pawn.State == PawnState.InBase && _diceManager.Step == 6)
             {
-                if (_gameFlowService.CurrentPlayer.Factions.All(f => f != faction)) return;
+                if (_matchFlowService.CurrentPlayer.Factions.All(f => f != faction)) return;
 
                 if (!faction.StartNode.IsEmpty)
                 {
@@ -60,7 +60,7 @@ namespace BoardAdventures.Core.GameLogic
 
         private async Task HandleSelectedPawnAsync(IPawn pawn)
         {
-            await _pawnMovementService.MovePawn(_gameFlowService.CurrentPlayer, pawn, _diceManager.Step);
+            await _pawnMovementService.MovePawn(_matchFlowService.CurrentPlayer, pawn, _diceManager.Step);
         }
     }
 }

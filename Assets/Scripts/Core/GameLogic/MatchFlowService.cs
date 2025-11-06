@@ -7,7 +7,7 @@ using Zenject;
 
 namespace BoardAdventures.Core.GameLogic
 {
-    public class GameFlowService : IGameFlowService
+    public class MatchFlowService : IMatchFlowService
     {
         public Player CurrentPlayer => _turnFlowService.CurrentPlayer;
         private Player LastPlayer => _turnFlowService.LastPlayer;
@@ -22,7 +22,7 @@ namespace BoardAdventures.Core.GameLogic
         private readonly SignalBus _signalBus;
         private readonly IPlayerSetupService _playerSetupService;
 
-        public GameFlowService(IUIMessageManager uiMessageManager
+        public MatchFlowService(IUIMessageManager uiMessageManager
             , ITurnFlowService turnFlowService
             , IDiceManager diceManager
             , ITurnVisualizer turnVisualizer

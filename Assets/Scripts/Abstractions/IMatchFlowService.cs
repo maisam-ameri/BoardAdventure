@@ -2,7 +2,7 @@
 
 namespace BoardAdventures.Abstractions
 {
-    public interface IGameFlowService
+    public interface IMatchFlowService
     {
         public Player CurrentPlayer { get; }
 

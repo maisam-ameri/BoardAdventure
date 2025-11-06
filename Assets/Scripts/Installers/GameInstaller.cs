@@ -34,7 +34,7 @@ namespace Installers
             Container.DeclareSignal<OnGameStartSignal>();
             
             // Services
-            Container.Bind<IGameFlowService>().To<GameFlowService>().AsSingle();
+            Container.Bind<IMatchFlowService>().To<MatchFlowService>().AsSingle();
             Container.Bind<IGameRulesService>().To<GameRulesService>().AsSingle().NonLazy();
             Container.Bind<TurnFlowService>().AsSingle();
             Container.Bind<ITurnFlowService>().To<TurnFlowService>().FromResolve();
