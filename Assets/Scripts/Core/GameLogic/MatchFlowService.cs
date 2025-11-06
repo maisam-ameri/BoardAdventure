@@ -46,12 +46,11 @@ namespace BoardAdventures.Core.GameLogic
             _signalBus.Subscribe<OnDiceRollRequestedSignal>(OnDiceButtonClicked);
             _signalBus.Subscribe<OnPlayerActionStartedSignal>(HandlePlayerActionStarted);
             _signalBus.Subscribe<OnPlayerActionCompletedSignal>(HandlePlayerActionCompleted);
-            _signalBus.Subscribe<OnGameOverSignal>(EndGame);
-            _signalBus.Subscribe<OnGameStartSignal>(StartGame);
-            
+            _signalBus.Subscribe<OnGameOverSignal>(HandleEndMatch);
+            _signalBus.Subscribe<OnGameStartSignal>(HandleStartMatch);
         }
 
-        private void StartGame(OnGameStartSignal signal)
+        private void HandleStartMatch(OnGameStartSignal signal)
         {
             _playerSetupService.Setup(signal.PlayerCount);
             var players = _playerSetupService.Players;
@@ -61,8 +60,9 @@ namespace BoardAdventures.Core.GameLogic
             _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, null);
         }
 
-        private void EndGame(OnGameOverSignal signal)
+        private void HandleEndMatch(OnGameOverSignal signal)
         {
+            CurrentPlayer.UI.StopTimer();
             Debug.Log($"{signal.Winner.Name} won");
         }
 

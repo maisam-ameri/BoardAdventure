@@ -1,4 +1,7 @@
 ﻿using BoardAdventures.Abstractions;
+using BoardAdventures.Core.Players;
+using Signals;
+using TMPro;
 using UnityEngine;
 using Zenject;
 
@@ -8,19 +11,27 @@ namespace BoardAdventures.UI.Menu
     {
         [SerializeField] private CanvasGroup mainPanel;
         [SerializeField] private CanvasGroup matchPanel;
+        [SerializeField] private CanvasGroup matchResultPanel;
+        [SerializeField] private TextMeshProUGUI winnerName;
 
         private CanvasGroup _lastPanel;
         private IGameManager _gameManager;
+        private SignalBus _signalBus;
 
         [Inject]
-        public void Initialize(IGameManager gameManager)
+        public void Initialize(SignalBus signalBus, IGameManager gameManager)
         {
             _gameManager = gameManager;
+            _signalBus = signalBus;
         }
 
         private void Start()
         {
+            HideAllPanels();
+            ShowPanel(mainPanel);
             _lastPanel = mainPanel;
+
+            _signalBus.Subscribe<OnGameOverSignal>(HandleGameResultPanel);
         }
 
         public void ShowPanel(CanvasGroup panel)
@@ -50,6 +61,13 @@ namespace BoardAdventures.UI.Menu
         {
             HandleHidePanel(mainPanel);
             HandleHidePanel(matchPanel);
+            HandleHidePanel(matchResultPanel);
+        }
+
+        private void HandleGameResultPanel(OnGameOverSignal signal)
+        {
+            ShowPanel(matchResultPanel);
+            winnerName.text = $"{signal.Winner.Name} won";
         }
 
         public void OnStartMatchClicked(int playerCount)

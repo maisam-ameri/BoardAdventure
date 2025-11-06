@@ -22,7 +22,7 @@ namespace BoardAdventures.Core.GameLogic
 
             if (player.Factions
                 .Select(faction => faction.GoalNodes
-                    .Any(n => n.IsEmpty)).Any(result => !result))
+                    .Any(n => n.IsEmpty)).Any(result => result))
             {
                 _signalBus.Fire(new OnGameOverSignal{Winner = player});
             }
