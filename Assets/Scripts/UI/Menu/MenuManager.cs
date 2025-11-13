@@ -15,13 +15,11 @@ namespace BoardAdventures.UI.Menu
         [SerializeField] private TextMeshProUGUI winnerName;
 
         private CanvasGroup _lastPanel;
-        private IGameManager _gameManager;
         private SignalBus _signalBus;
 
         [Inject]
-        public void Initialize(SignalBus signalBus, IGameManager gameManager)
+        public void Initialize(SignalBus signalBus)
         {
-            _gameManager = gameManager;
             _signalBus = signalBus;
         }
 
@@ -73,7 +71,7 @@ namespace BoardAdventures.UI.Menu
         public void OnStartMatchClicked(int playerCount)
         {
             HideAllPanels();
-            _gameManager.StartGame(playerCount);
+            _signalBus.Fire(new OnGameStartSignal{PlayerCount = playerCount});
         }
     }
 }
