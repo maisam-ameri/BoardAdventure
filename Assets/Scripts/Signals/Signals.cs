@@ -58,4 +58,14 @@ namespace Signals
         public int PlayerCount;
     }
     
+    
+    // network
+    public class OnConnectingToServer
+    {
+    }
+    
+    public class OnConnectedToServer
+    {
+    }
+    
 }
