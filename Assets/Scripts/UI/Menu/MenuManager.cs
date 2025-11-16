@@ -11,16 +11,16 @@ namespace BoardAdventures.UI.Menu
     {
         [SerializeField] private CanvasGroup mainPanel;
         [SerializeField] private CanvasGroup matchPanel;
-        [SerializeField] private CanvasGroup matchResultPanel;
-        [SerializeField] private TextMeshProUGUI winnerName;
 
         private CanvasGroup _lastPanel;
         private SignalBus _signalBus;
+        private INetworkService _networkService;
 
         [Inject]
-        public void Initialize(SignalBus signalBus)
+        public void Initialize(SignalBus signalBus, INetworkService networkService)
         {
             _signalBus = signalBus;
+            _networkService = networkService;
         }
 
         private void Start()
@@ -28,8 +28,8 @@ namespace BoardAdventures.UI.Menu
             HideAllPanels();
             ShowPanel(mainPanel);
             _lastPanel = mainPanel;
-
-            _signalBus.Subscribe<OnGameOverSignal>(HandleGameResultPanel);
+            _networkService.Connect();
+            // _signalBus.Subscribe<OnGameOverSignal>(HandleGameResultPanel);
         }
 
         public void ShowPanel(CanvasGroup panel)
@@ -59,19 +59,19 @@ namespace BoardAdventures.UI.Menu
         {
             HandleHidePanel(mainPanel);
             HandleHidePanel(matchPanel);
-            HandleHidePanel(matchResultPanel);
+            // HandleHidePanel(matchResultPanel);
         }
 
-        private void HandleGameResultPanel(OnGameOverSignal signal)
-        {
-            ShowPanel(matchResultPanel);
-            winnerName.text = $"{signal.Winner.Name} won";
-        }
+        // private void HandleGameResultPanel(OnGameOverSignal signal)
+        // {
+        //     ShowPanel(matchResultPanel);
+        //     winnerName.text = $"{signal.Winner.Name} won";
+        // }
 
         public void OnStartMatchClicked(int playerCount)
         {
             HideAllPanels();
-            _signalBus.Fire(new OnGameStartSignal{PlayerCount = playerCount});
+            _signalBus.Fire(new OnGameStartSignal {PlayerCount = playerCount});
         }
     }
 }

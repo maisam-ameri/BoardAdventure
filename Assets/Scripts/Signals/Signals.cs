@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using BoardAdventures.Core.Players;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
+using BoardAdventures.Network;
 
 namespace Signals
 {
-   
     public class OnTurnTimerExpiredSignal
     {
     }
@@ -18,32 +18,34 @@ namespace Signals
     {
         public List<Player> Players;
     }
-    
+
     public class OnSelectedPawnSignal
     {
         public IPawn Pawn;
     }
-    
+
     public class OnFirstSixRolledSignal
     {
     }
+
     public class OnDiceRolledSignal
     {
         public int? Step;
     }
+
     public class OnDiceRollRequestedSignal
     {
     }
+
     public class OnPlayerActionStartedSignal
     {
-        
     }
 
     public class OnPawnMoveCompletedSignal
     {
         public Player Player;
     }
-    
+
     public class OnPlayerActionCompletedSignal
     {
     }
@@ -57,15 +59,11 @@ namespace Signals
     {
         public int PlayerCount;
     }
-    
-    
+
+
     // network
-    public class OnConnectingToServer
+    public class OnConnectionStatusChangedSignal
     {
+        public ConnectionState State;
     }
-    
-    public class OnConnectedToServer
-    {
-    }
-    
 }

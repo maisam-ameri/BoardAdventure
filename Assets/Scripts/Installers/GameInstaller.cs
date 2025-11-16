@@ -18,7 +18,7 @@ namespace Installers
         {
 
             // Signals
-            SignalBusInstaller.Install(Container);
+            // SignalBusInstaller.Install(Container);
             Container.DeclareSignal<OnTurnTimerExpiredSignal>();
             Container.DeclareSignal<OnCapturedSignal>();
             Container.DeclareSignal<OnPlayersCreatedSignal>();
@@ -49,7 +49,7 @@ namespace Installers
             Container.Bind<IMovement>().To<Mover>().AsSingle();
             
             // MonoBehaviours
-            Container.Bind<IMenuManager>().To<MenuManager>().FromComponentInHierarchy().AsSingle();
+            // Container.Bind<IMenuManager>().To<MenuManager>().FromComponentInHierarchy().AsSingle();
             Container.Bind<IUIMessageManager>().To<UIMessageManager>().FromComponentInHierarchy().AsSingle();
             Container.Bind<IDiceManager>().To<DiceManager>().FromComponentInHierarchy().AsSingle();
             Container.Bind<ITurnVisualizer>().To<TurnVisualizer>().FromComponentInHierarchy().AsSingle();

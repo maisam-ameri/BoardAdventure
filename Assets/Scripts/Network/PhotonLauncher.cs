@@ -2,9 +2,10 @@
 using Photon.Pun;
 using Photon.Realtime;
 using Signals;
+using UnityEngine;
 using Zenject;
 
-namespace Network
+namespace BoardAdventures.Network
 {
     public class PhotonLauncher : MonoBehaviourPunCallbacks, INetworkService
     {
@@ -25,12 +26,26 @@ namespace Network
             }
 
             PhotonNetwork.ConnectUsingSettings();
-            _signalBus.Fire(new OnConnectingToServer());
+            _signalBus.Fire(new OnConnectionStatusChangedSignal {State = ConnectionState.Connecting});
         }
 
         public override void OnConnectedToMaster()
         {
-            _signalBus.Fire(new OnConnectedToServer());
+            _signalBus.Fire(new OnConnectionStatusChangedSignal {State = ConnectionState.ConnectedToMaster});
+        }
+
+        public override void OnDisconnected(DisconnectCause cause)
+        {
+            if (cause == DisconnectCause.DnsExceptionOnConnect
+                || cause == DisconnectCause.ExceptionOnConnect
+                || cause == DisconnectCause.ClientTimeout
+                || cause == DisconnectCause.ServerTimeout)
+            {
+                Debug.Log(cause);
+                PhotonNetwork.Reconnect();
+            }
+
+            _signalBus.Fire(new OnConnectionStatusChangedSignal {State = ConnectionState.Disconnected});
         }
     }
 }
