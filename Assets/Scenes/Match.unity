@@ -4735,7 +4735,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 930195233}
         m_TargetAssemblyTypeName: BoardAdventures.UI.Menu.MenuManager, Assembly-CSharp
-        m_MethodName: OnStartMatchClicked
+        m_MethodName: OnSelectMatchClicked
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7868,7 +7868,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 930195233}
         m_TargetAssemblyTypeName: BoardAdventures.UI.Menu.MenuManager, Assembly-CSharp
-        m_MethodName: OnStartMatchClicked
+        m_MethodName: OnSelectMatchClicked
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9764,7 +9764,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 930195233}
         m_TargetAssemblyTypeName: BoardAdventures.UI.Menu.MenuManager, Assembly-CSharp
-        m_MethodName: OnStartMatchClicked
+        m_MethodName: OnSelectMatchClicked
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

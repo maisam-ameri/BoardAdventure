@@ -12,6 +12,8 @@ namespace Installers
             // Signals
             SignalBusInstaller.Install(Container);
             Container.DeclareSignal<OnConnectionStatusChangedSignal>();
+            Container.DeclareSignal<OnPlayerListUpdatedSignal>();
+            
             
             // MonoBehaviours
             Container.Bind<INetworkService>().To<PhotonLauncher>().FromNewComponentOnNewGameObject().AsSingle();

@@ -1,4 +1,5 @@
-﻿using BoardAdventures.Abstractions;
+﻿using System.Collections.Generic;
+using BoardAdventures.Abstractions;
 using Photon.Pun;
 using Photon.Realtime;
 using Signals;
@@ -29,9 +30,27 @@ namespace BoardAdventures.Network
             _signalBus.Fire(new OnConnectionStatusChangedSignal {State = ConnectionState.Connecting});
         }
 
+        public void JoinToRoom()
+        {
+            PhotonNetwork.JoinRandomOrCreateRoom();
+        }
+
+
         public override void OnConnectedToMaster()
         {
+            Debug.Log(PhotonNetwork.NetworkClientState);
             _signalBus.Fire(new OnConnectionStatusChangedSignal {State = ConnectionState.ConnectedToMaster});
+        }
+        
+
+        public override void OnPlayerEnteredRoom(Player newPlayer)
+        {
+            _signalBus.Fire(new OnPlayerListUpdatedSignal {Players = PhotonNetwork.CurrentRoom.Players});
+        }
+
+        public Dictionary<int, Player> GetPlayers()
+        {
+            return PhotonNetwork.CurrentRoom.Players;
         }
 
         public override void OnDisconnected(DisconnectCause cause)

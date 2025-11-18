@@ -1,7 +1,5 @@
 ﻿using BoardAdventures.Abstractions;
-using BoardAdventures.Core.Players;
 using Signals;
-using TMPro;
 using UnityEngine;
 using Zenject;
 
@@ -11,6 +9,7 @@ namespace BoardAdventures.UI.Menu
     {
         [SerializeField] private CanvasGroup mainPanel;
         [SerializeField] private CanvasGroup matchPanel;
+        [SerializeField] private CanvasGroup lobbyPanel;
 
         private CanvasGroup _lastPanel;
         private SignalBus _signalBus;
@@ -31,6 +30,8 @@ namespace BoardAdventures.UI.Menu
             _networkService.Connect();
             // _signalBus.Subscribe<OnGameOverSignal>(HandleGameResultPanel);
         }
+
+
 
         public void ShowPanel(CanvasGroup panel)
         {
@@ -59,6 +60,7 @@ namespace BoardAdventures.UI.Menu
         {
             HandleHidePanel(mainPanel);
             HandleHidePanel(matchPanel);
+            HandleHidePanel(lobbyPanel);
             // HandleHidePanel(matchResultPanel);
         }
 
@@ -68,10 +70,12 @@ namespace BoardAdventures.UI.Menu
         //     winnerName.text = $"{signal.Winner.Name} won";
         // }
 
-        public void OnStartMatchClicked(int playerCount)
+        public void OnSelectMatchClicked(int playerCount)
         {
-            HideAllPanels();
-            _signalBus.Fire(new OnGameStartSignal {PlayerCount = playerCount});
+            // HideAllPanels();
+            _networkService.JoinToRoom();
+            ShowPanel(lobbyPanel);
+            _signalBus.Fire(new OnPlayerListUpdatedSignal());
         }
     }
 }
