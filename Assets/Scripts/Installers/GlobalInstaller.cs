@@ -1,4 +1,5 @@
 ﻿using BoardAdventures.Abstractions;
+using BoardAdventures.Authentication;
 using BoardAdventures.Network;
 using Signals;
 using Zenject;
@@ -13,6 +14,7 @@ namespace Installers
             SignalBusInstaller.Install(Container);
             Container.DeclareSignal<OnConnectionStatusChangedSignal>();
             Container.DeclareSignal<OnPlayerListUpdatedSignal>();
+            
             
             
             // MonoBehaviours
