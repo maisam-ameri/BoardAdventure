@@ -1,7 +1,6 @@
 ﻿using BoardAdventures.Abstractions;
 using Signals;
 using TMPro;
-using TMPro.Examples;
 using UnityEngine;
 using Zenject;
 
@@ -34,9 +33,7 @@ namespace BoardAdventures.UI.Menu
             _signalBus.Subscribe<OnPlayerLoggedInSignal>(HandleLoggedInUI);
             
             HideAllPanels();
-            //ShowPanel(mainPanel);
             _accountService.CheckAuth();
-            //_networkService.Connect();
 
         }
 
@@ -70,21 +67,12 @@ namespace BoardAdventures.UI.Menu
             HandleHidePanel(matchPanel);
             HandleHidePanel(lobbyPanel);
             HandleHidePanel(registrationPanel);
-            // HandleHidePanel(matchResultPanel);
         }
-
-        // private void HandleGameResultPanel(OnGameOverSignal signal)
-        // {
-        //     ShowPanel(matchResultPanel);
-        //     winnerName.text = $"{signal.Winner.Name} won";
-        // }
 
         public void OnSelectMatchClicked(int playerCount)
         {
-            // HideAllPanels();
             _networkService.JoinToRoom();
             ShowPanel(lobbyPanel);
-            _signalBus.Fire(new OnPlayerListUpdatedSignal());
         }
 
         private void HandleShowRegistrationUI()

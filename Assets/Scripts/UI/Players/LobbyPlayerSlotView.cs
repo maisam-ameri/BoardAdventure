@@ -1,5 +1,4 @@
-﻿using Photon.Realtime;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 namespace BoardAdventures.UI.Players
@@ -8,9 +7,9 @@ namespace BoardAdventures.UI.Players
     {
         [SerializeField] private TextMeshProUGUI nickName;
 
-        public void SetData(Player player)
+        public void SetData(string nickname)
         {
-            nickName.text = $"{player.ActorNumber} - {player.NickName}";
+            nickName.text = nickname;
         }
     }
 }

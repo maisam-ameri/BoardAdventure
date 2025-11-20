@@ -5,7 +5,6 @@ using BoardAdventures.Core.Path;
 using BoardAdventures.Core.Players;
 using BoardAdventures.Managers;
 using BoardAdventures.UI.Common;
-using BoardAdventures.UI.Menu;
 using BoardAdventures.UI.Players;
 using Signals;
 using Zenject;
@@ -18,7 +17,6 @@ namespace Installers
         {
 
             // Signals
-            // SignalBusInstaller.Install(Container);
             Container.DeclareSignal<OnTurnTimerExpiredSignal>();
             Container.DeclareSignal<OnCapturedSignal>();
             Container.DeclareSignal<OnPlayersCreatedSignal>();
@@ -49,7 +47,6 @@ namespace Installers
             Container.Bind<IMovement>().To<Mover>().AsSingle();
             
             // MonoBehaviours
-            // Container.Bind<IMenuManager>().To<MenuManager>().FromComponentInHierarchy().AsSingle();
             Container.Bind<IUIMessageManager>().To<UIMessageManager>().FromComponentInHierarchy().AsSingle();
             Container.Bind<IDiceManager>().To<DiceManager>().FromComponentInHierarchy().AsSingle();
             Container.Bind<ITurnVisualizer>().To<TurnVisualizer>().FromComponentInHierarchy().AsSingle();
