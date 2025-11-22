@@ -28,10 +28,12 @@ namespace BoardAdventures.Network
                 return;
             }
 
+            PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion = "asia";
             PhotonNetwork.ConnectUsingSettings();
+            
             _signalBus.Fire(new OnConnectionStatusChangedSignal {State = ConnectionState.Connecting});
         }
-
+        
         public void JoinToRoom()
         {
             PhotonNetwork.JoinRandomOrCreateRoom();
@@ -40,13 +42,11 @@ namespace BoardAdventures.Network
         public override void OnJoinedRoom()
         {
             _signalBus.Fire(new OnPlayerListUpdatedSignal {Players = PhotonNetwork.CurrentRoom.Players});
-
         }
 
 
         public override void OnConnectedToMaster()
         {
-            Debug.Log(PhotonNetwork.NetworkClientState);
             PhotonNetwork.NickName = _accountService.Nickname;
             _signalBus.Fire(new OnConnectionStatusChangedSignal {State = ConnectionState.ConnectedToMaster});
         }
@@ -54,6 +54,7 @@ namespace BoardAdventures.Network
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
+            _signalBus.Fire(new OnPlayerListUpdatedSignal {Players = PhotonNetwork.CurrentRoom.Players});
         }
 
         public Dictionary<int, Player> GetPlayers()
