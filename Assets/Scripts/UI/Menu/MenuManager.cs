@@ -18,6 +18,7 @@ namespace BoardAdventures.UI.Menu
         private INetworkService _networkService;
         private IAccountService _accountService;
 
+        
         [Inject]
         public void Initialize(SignalBus signalBus, INetworkService networkService
             , IAccountService accountService)
@@ -36,7 +37,6 @@ namespace BoardAdventures.UI.Menu
             _accountService.CheckAuth();
 
         }
-
 
         public void ShowPanel(CanvasGroup panel)
         {
@@ -69,12 +69,6 @@ namespace BoardAdventures.UI.Menu
             HandleHidePanel(registrationPanel);
         }
 
-        public void OnSelectMatchClicked(int playerCount)
-        {
-            _networkService.JoinToRoom();
-            ShowPanel(lobbyPanel);
-        }
-
         private void HandleShowRegistrationUI()
         {
             ShowPanel(registrationPanel);
@@ -84,6 +78,12 @@ namespace BoardAdventures.UI.Menu
         {
             ShowPanel(mainPanel);
             _networkService.Connect();
+        }
+        
+        public void OnSelectMatchClicked(int maxPlayer)
+        {
+            _networkService.JoinToRoom((byte)maxPlayer);
+            ShowPanel(lobbyPanel);
         }
 
         public void OnRegisterClicked(TMP_InputField inputField)

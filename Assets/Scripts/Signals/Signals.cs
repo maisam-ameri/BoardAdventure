@@ -2,7 +2,6 @@
 using BoardAdventures.Core.Players;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
 using BoardAdventures.Network;
-using Photon.Pun;
 
 namespace Signals
 {
@@ -70,6 +69,7 @@ namespace Signals
 
     public class OnPlayerListUpdatedSignal
     {
+        public byte MaxPlayer;
         public Dictionary<int,Photon.Realtime.Player> Players;
     }
     

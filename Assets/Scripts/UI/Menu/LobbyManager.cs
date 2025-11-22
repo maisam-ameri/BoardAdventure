@@ -5,6 +5,7 @@ using BoardAdventures.UI.Players;
 using Signals;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 namespace BoardAdventures.UI.Lobby
@@ -13,8 +14,10 @@ namespace BoardAdventures.UI.Lobby
     {
         [SerializeField] private List<LobbyPlayerSlotView> playerUIList;
         [SerializeField] private TextMeshProUGUI waitingToJoin;
-        private SignalBus _signalBus;
+        [SerializeField] private Button playButton;
         
+        private SignalBus _signalBus;
+
 
         [Inject]
         public void Initialize(SignalBus signalBus)
@@ -25,8 +28,11 @@ namespace BoardAdventures.UI.Lobby
         private void Start()
         {
             _signalBus.Subscribe<OnPlayerListUpdatedSignal>(HandlePlayerListInLobby);
+            _signalBus.Subscribe<OnPlayerListUpdatedSignal>(HandlePlayButton);
+
             HideAllPlayerSlotViews();
             ShowWaitingToJoinPlayer(true);
+            playButton.interactable = false;
         }
 
         private void HandlePlayerListInLobby(OnPlayerListUpdatedSignal signal)
@@ -40,6 +46,11 @@ namespace BoardAdventures.UI.Lobby
                 var nickname = signal.Players.ElementAt(i).Value.NickName;
                 playerUIList[i].SetData(nickname);
             }
+        }
+
+        private void HandlePlayButton(OnPlayerListUpdatedSignal signal)
+        {
+            playButton.interactable = signal.Players.Count >= signal.MaxPlayer;
         }
 
         private void HideAllPlayerSlotViews()

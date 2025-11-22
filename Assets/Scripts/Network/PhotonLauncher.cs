@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using BoardAdventures.Abstractions;
+﻿using BoardAdventures.Abstractions;
 using Photon.Pun;
 using Photon.Realtime;
 using Signals;
@@ -14,7 +13,7 @@ namespace BoardAdventures.Network
         private IAccountService _accountService;
 
         [Inject]
-        private void Initialize(SignalBus signalBus,IAccountService accountService)
+        private void Initialize(SignalBus signalBus, IAccountService accountService)
         {
             _signalBus = signalBus;
             _accountService = accountService;
@@ -30,38 +29,57 @@ namespace BoardAdventures.Network
 
             PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion = "asia";
             PhotonNetwork.ConnectUsingSettings();
-            
+
             _signalBus.Fire(new OnConnectionStatusChangedSignal {State = ConnectionState.Connecting});
         }
-        
-        public void JoinToRoom()
+
+        public void JoinToRoom(byte maxPlayer)
         {
-            PhotonNetwork.JoinRandomOrCreateRoom();
+            PhotonNetwork.JoinRandomOrCreateRoom(roomOptions: new RoomOptions {MaxPlayers = maxPlayer});
         }
 
         public override void OnJoinedRoom()
         {
-            _signalBus.Fire(new OnPlayerListUpdatedSignal {Players = PhotonNetwork.CurrentRoom.Players});
+            _signalBus.Fire(new OnPlayerListUpdatedSignal
+            {
+                MaxPlayer = PhotonNetwork.CurrentRoom.MaxPlayers,
+                Players = PhotonNetwork.CurrentRoom.Players
+            });
         }
-
 
         public override void OnConnectedToMaster()
         {
             PhotonNetwork.NickName = _accountService.Nickname;
             _signalBus.Fire(new OnConnectionStatusChangedSignal {State = ConnectionState.ConnectedToMaster});
         }
-        
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
-            _signalBus.Fire(new OnPlayerListUpdatedSignal {Players = PhotonNetwork.CurrentRoom.Players});
+            _signalBus.Fire(new OnPlayerListUpdatedSignal
+            {
+                MaxPlayer = PhotonNetwork.CurrentRoom.MaxPlayers,
+                Players = PhotonNetwork.CurrentRoom.Players
+            });
         }
 
-        public Dictionary<int, Player> GetPlayers()
+        public override void OnLeftRoom()
         {
-            return PhotonNetwork.CurrentRoom.Players;
+            _signalBus.Fire(new OnPlayerListUpdatedSignal
+            {
+                MaxPlayer = PhotonNetwork.CurrentRoom.MaxPlayers,
+                Players = PhotonNetwork.CurrentRoom.Players
+            });
         }
 
+        public override void OnPlayerLeftRoom(Player otherPlayer)
+        {
+            _signalBus.Fire(new OnPlayerListUpdatedSignal
+            {
+                MaxPlayer = PhotonNetwork.CurrentRoom.MaxPlayers,
+                Players = PhotonNetwork.CurrentRoom.Players
+            });
+        }
+        
         public override void OnDisconnected(DisconnectCause cause)
         {
             if (cause == DisconnectCause.DnsExceptionOnConnect
