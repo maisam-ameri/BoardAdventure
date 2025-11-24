@@ -4,5 +4,6 @@
     {
         void Connect();
         void JoinToRoom(byte maxPlayer);
+        void SetPlayerReady(bool isReady);
     }
 }

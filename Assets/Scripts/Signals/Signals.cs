@@ -73,6 +73,12 @@ namespace Signals
         public Dictionary<int,Photon.Realtime.Player> Players;
     }
     
+    public class OnPlayersReadyToPlaySignal
+    {
+    }
+
+    
+    
     
     // Auth
     public class OnRegisterRequestedSignal

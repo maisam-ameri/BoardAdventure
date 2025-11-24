@@ -2,6 +2,7 @@
 using System.Linq;
 using BoardAdventures.Abstractions;
 using BoardAdventures.UI.Players;
+using Photon.Pun;
 using Signals;
 using TMPro;
 using UnityEngine;
@@ -14,25 +15,33 @@ namespace BoardAdventures.UI.Lobby
     {
         [SerializeField] private List<LobbyPlayerSlotView> playerUIList;
         [SerializeField] private TextMeshProUGUI waitingToJoin;
-        [SerializeField] private Button playButton;
+        [SerializeField] private Button readyButton;
         
         private SignalBus _signalBus;
+        private INetworkService _networkService;
 
 
         [Inject]
-        public void Initialize(SignalBus signalBus)
+        public void Initialize(SignalBus signalBus, INetworkService networkService)
         {
             _signalBus = signalBus;
+            _networkService = networkService;
         }
 
         private void Start()
         {
             _signalBus.Subscribe<OnPlayerListUpdatedSignal>(HandlePlayerListInLobby);
-            _signalBus.Subscribe<OnPlayerListUpdatedSignal>(HandlePlayButton);
+            _signalBus.Subscribe<OnPlayerListUpdatedSignal>(HandleReadyButton);
+            _signalBus.Subscribe<OnPlayersReadyToPlaySignal>(HandlePlayersReadyToPlay);
 
             HideAllPlayerSlotViews();
             ShowWaitingToJoinPlayer(true);
-            playButton.interactable = false;
+            readyButton.interactable = false;
+        }
+
+        public void ReadyToPlayClicked()
+        {
+            _networkService.SetPlayerReady(true);
         }
 
         private void HandlePlayerListInLobby(OnPlayerListUpdatedSignal signal)
@@ -48,9 +57,9 @@ namespace BoardAdventures.UI.Lobby
             }
         }
 
-        private void HandlePlayButton(OnPlayerListUpdatedSignal signal)
+        private void HandleReadyButton(OnPlayerListUpdatedSignal signal)
         {
-            playButton.interactable = signal.Players.Count >= signal.MaxPlayer;
+            readyButton.interactable = signal.Players.Count >= signal.MaxPlayer;
         }
 
         private void HideAllPlayerSlotViews()
@@ -64,6 +73,12 @@ namespace BoardAdventures.UI.Lobby
         private void ShowWaitingToJoinPlayer(bool isActive)
         {
             waitingToJoin.gameObject.SetActive(isActive);
+        }
+
+        private void HandlePlayersReadyToPlay()
+        {
+            // todo: handle UI
+            PhotonNetwork.LoadLevel("Match");
         }
     }
 }
