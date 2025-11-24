@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using BoardAdventures.Abstractions;
 using ExitGames.Client.Photon;
 using Photon.Pun;
@@ -102,6 +103,7 @@ namespace BoardAdventures.Network
             PhotonNetwork.LocalPlayer.SetCustomProperties(props);
         }
 
+
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
             if (changedProps.ContainsKey("IsReadyToPlay"))
@@ -121,6 +123,14 @@ namespace BoardAdventures.Network
             }
 
             _signalBus.Fire(new OnConnectionStatusChangedSignal {State = ConnectionState.Disconnected});
+        }
+
+        public List<Player> GetPlayers()
+        {
+            return PhotonNetwork.CurrentRoom.Players
+                .OrderBy(p => p.Value.ActorNumber)
+                .Select(p => p.Value)
+                .ToList();
         }
     }
 }

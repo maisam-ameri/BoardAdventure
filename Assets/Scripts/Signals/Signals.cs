@@ -55,7 +55,7 @@ namespace Signals
         public Player Winner;
     }
 
-    public class OnGameStartSignal
+    public class OnStartMatchSignal
     {
         public int PlayerCount;
     }

@@ -28,7 +28,7 @@ namespace Installers
             Container.DeclareSignal<OnPawnMoveCompletedSignal>();
             Container.DeclareSignal<OnPlayerActionCompletedSignal>();
             Container.DeclareSignal<OnGameOverSignal>();
-            Container.DeclareSignal<OnGameStartSignal>();
+            Container.DeclareSignal<OnStartMatchSignal>();
             
             // Services
             Container.Bind<IMatchFlowService>().To<MatchFlowService>().AsSingle();
@@ -53,6 +53,8 @@ namespace Installers
             Container.Bind<IGameInputHandler>().To<GameInputHandler>().FromComponentInHierarchy().AsSingle();
             Container.Bind<IPlayerUIFactory>().To<PlayerUIFactory>().FromComponentInHierarchy().AsSingle();
             Container.Bind<IPawnFactory>().To<PawnFactory>().FromComponentInHierarchy().AsSingle();
+            Container.Bind<IMatchManager>().To<IMatchManager>().FromComponentInHierarchy().AsSingle();
+            
             
         }
     }

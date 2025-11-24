@@ -18,41 +18,42 @@ namespace BoardAdventures.Core.Players
 
 
         public PlayerSetupService(IPawnManager pawnManager, IPlayerUIFactory playerUIFactory
-            , SignalBus signalBus)
+             , SignalBus signalBus)
         {
             _pawnManager = pawnManager;
             _playerUIFactory = playerUIFactory;
             _signalBus = signalBus;
         }
 
-        public void Setup(int playerCount)
+        public void Setup(List<Photon.Realtime.Player> players)
         {
             var factions = InitializeFactions();
-            Players = CreatePlayer(factions, playerCount);
+            Players = CreatePlayer(factions, players);
             InitialPlayerUIs();
 
             _signalBus.Fire(new OnPlayersCreatedSignal {Players = Players});
         }
 
-        private List<Player> CreatePlayer(List<Faction> factions,int playerCount)
+        private List<Player> CreatePlayer(List<Faction> factions,List<Photon.Realtime.Player> players)
         {
 
-            var playerFactions = SplitFactions(playerCount, factions);
-            var players = new List<Player>();
+            var numberOfPlayers = players.Count;
+            var playerFactions = SplitFactions(numberOfPlayers, factions);
+            var inMatchPlayers = new List<Player>();
             
-            for (var i = 0; i < playerCount; i++)
+            for (var i = 0; i < numberOfPlayers; i++)
             {
                 var player = new Player()
                 {
-                    Name = $"Guest_{i + 1}",
+                    Name = players[i].NickName,
                     IsActive = true,
                     Factions = playerFactions[i]
                 };
                 
-                players.Add(player);
+                inMatchPlayers.Add(player);
             }
 
-            return players;
+            return inMatchPlayers;
         }
 
         private List<List<Faction>> SplitFactions(int playerCount, List<Faction> factions)

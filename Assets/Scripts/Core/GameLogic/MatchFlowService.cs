@@ -21,6 +21,7 @@ namespace BoardAdventures.Core.GameLogic
         private bool _firstSixRolled;
         private readonly SignalBus _signalBus;
         private readonly IPlayerSetupService _playerSetupService;
+        private readonly INetworkService _networkService;
 
         public MatchFlowService(IUIMessageManager uiMessageManager
             , ITurnFlowService turnFlowService
@@ -29,6 +30,7 @@ namespace BoardAdventures.Core.GameLogic
             , IPlayerActionValidator playerActionValidator
             , ITurnLogicService turnLogicService
             , IPlayerSetupService playerSetupService
+            , INetworkService networkService
             , SignalBus signalBus)
         {
             _uiMessageManager = uiMessageManager;
@@ -38,6 +40,7 @@ namespace BoardAdventures.Core.GameLogic
             _playerActionValidator = playerActionValidator;
             _turnLogicService = turnLogicService;
             _playerSetupService = playerSetupService;
+            _networkService = networkService;
             _signalBus = signalBus;
 
             _signalBus.Subscribe<OnTurnTimerExpiredSignal>(SwitchTurn);
@@ -47,12 +50,12 @@ namespace BoardAdventures.Core.GameLogic
             _signalBus.Subscribe<OnPlayerActionStartedSignal>(HandlePlayerActionStarted);
             _signalBus.Subscribe<OnPlayerActionCompletedSignal>(HandlePlayerActionCompleted);
             _signalBus.Subscribe<OnGameOverSignal>(HandleEndMatch);
-            _signalBus.Subscribe<OnGameStartSignal>(HandleStartMatch);
+            _signalBus.Subscribe<OnStartMatchSignal>(HandleStartMatch);
         }
 
-        private void HandleStartMatch(OnGameStartSignal signal)
+        private void HandleStartMatch(OnStartMatchSignal matchSignal)
         {
-            _playerSetupService.Setup(signal.PlayerCount);
+            _playerSetupService.Setup(_networkService.GetPlayers());
             var players = _playerSetupService.Players;
             _turnVisualizer.Initial(players);
             _turnVisualizer.DeactivateTurnVisuals();

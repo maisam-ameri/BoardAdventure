@@ -6,6 +6,6 @@ namespace BoardAdventures.Abstractions
     public interface IPlayerSetupService
     {
         List<Player>  Players { get;}
-        void Setup(int playerCount);
+        void Setup(List<Photon.Realtime.Player> players);
     }
 }
