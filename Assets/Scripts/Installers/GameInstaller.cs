@@ -21,7 +21,7 @@ namespace Installers
             Container.DeclareSignal<OnCapturedSignal>();
             Container.DeclareSignal<OnPlayersCreatedSignal>();
             Container.DeclareSignal<OnSelectedPawnSignal>();
-            Container.DeclareSignal<OnFirstSixRolledSignal>();
+            // Container.DeclareSignal<OnFirstSixRolledSignal>();
             Container.DeclareSignal<OnDiceRollRequestedSignal>();
             Container.DeclareSignal<OnDiceRolledSignal>();
             Container.DeclareSignal<OnPlayerActionStartedSignal>();

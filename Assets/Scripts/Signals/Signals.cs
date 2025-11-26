@@ -24,9 +24,9 @@ namespace Signals
         public IPawn Pawn;
     }
 
-    public class OnFirstSixRolledSignal
-    {
-    }
+    // public class OnFirstSixRolledSignal
+    // {
+    // }
 
     public class OnDiceRolledSignal
     {

@@ -18,7 +18,6 @@ namespace BoardAdventures.Core.GameLogic
         private readonly ITurnVisualizer _turnVisualizer;
         private readonly IPlayerActionValidator _playerActionValidator;
         private readonly ITurnLogicService _turnLogicService;
-        private bool _firstSixRolled;
         private readonly SignalBus _signalBus;
         private readonly IPlayerSetupService _playerSetupService;
         private readonly INetworkService _networkService;
@@ -44,7 +43,6 @@ namespace BoardAdventures.Core.GameLogic
             _signalBus = signalBus;
 
             _signalBus.Subscribe<OnTurnTimerExpiredSignal>(SwitchTurn);
-            _signalBus.Subscribe<OnFirstSixRolledSignal>(HandleFirstSixVisual);
             _signalBus.Subscribe<OnDiceRolledSignal>(HandleDiceRolled);
             _signalBus.Subscribe<OnDiceRollRequestedSignal>(OnDiceButtonClicked);
             _signalBus.Subscribe<OnPlayerActionStartedSignal>(HandlePlayerActionStarted);
@@ -61,12 +59,14 @@ namespace BoardAdventures.Core.GameLogic
             _turnVisualizer.DeactivateTurnVisuals();
             _turnVisualizer.DeactivatePlayerVisuals();
             _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, null);
+            _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, null);
+
         }
 
         private void HandleEndMatch(OnGameOverSignal signal)
         {
             CurrentPlayer.UI.StopTimer();
-            Debug.Log($"{signal.Winner.Name} won");
+            Debug.Log($"{signal.Winner.Nickname} won");
         }
 
         private void OnDiceButtonClicked()
@@ -76,16 +76,14 @@ namespace BoardAdventures.Core.GameLogic
 
         private void StartTurn()
         {
-            _uiMessageManager.ShowPlayerTurnMessage(CurrentPlayer.Name);
+            _uiMessageManager.ShowPlayerTurnMessage(CurrentPlayer.Nickname);
             HandleTurnStarted();
         }
 
         private void HandleTurnStarted()
         {
-            if (_firstSixRolled)
-                _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, LastPlayer);
-
             _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, LastPlayer);
+            _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, LastPlayer);
             CurrentPlayer.UI.StartTurnTimer(10);
         }
 
@@ -104,16 +102,10 @@ namespace BoardAdventures.Core.GameLogic
             _turnFlowService.NextPlayer();
             StartTurn();
         }
-
-        private void HandleFirstSixVisual()
-        {
-            _firstSixRolled = true;
-            _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, LastPlayer);
-        }
-
+        
         public void GrantReward(Player player)
         {
-            _uiMessageManager.ShowRewardMessage(player.Name);
+            _uiMessageManager.ShowRewardMessage(player.Nickname);
             _diceManager.SetActivateDice(true);
             CurrentPlayer.UI.StartTurnTimer(10);
         }
@@ -136,11 +128,11 @@ namespace BoardAdventures.Core.GameLogic
             switch (decision)
             {
                 case TurnDecision.WaitForAction:
-                    _uiMessageManager.ShowActionAvailableMessage(CurrentPlayer.Name, step.Value);
+                    _uiMessageManager.ShowActionAvailableMessage(CurrentPlayer.Nickname, step.Value);
                     CurrentPlayer.UI.StartTurnTimer(10);
                     break;
                 case TurnDecision.RollReward:
-                    _uiMessageManager.ShowRewardMessage(CurrentPlayer.Name);
+                    _uiMessageManager.ShowRewardMessage(CurrentPlayer.Nickname);
                     _diceManager.SetActivateDice(true);
                     break;
 

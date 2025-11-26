@@ -34,8 +34,8 @@ namespace BoardAdventures.Managers
             Step = _dice.Roll();
             diceUI.ShowRoll(Step.Value);
 
-            if (Step == 6)
-                _signalBus.Fire(new OnFirstSixRolledSignal());
+            // if (Step == 6)
+            //     _signalBus.Fire(new OnFirstSixRolledSignal());
 
             _signalBus.Fire(new OnDiceRolledSignal {Step = Step});
         }
@@ -46,8 +46,8 @@ namespace BoardAdventures.Managers
             Step = step;
             diceUI.ShowRoll(Step.Value);
 
-            if (Step == 6)
-                _signalBus.Fire(new OnFirstSixRolledSignal());
+            // if (Step == 6)
+            //     _signalBus.Fire(new OnFirstSixRolledSignal());
 
             _signalBus.Fire(new OnDiceRolledSignal {Step = Step});
         }
