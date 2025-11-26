@@ -27,7 +27,7 @@ namespace BoardAdventures.Core.GameLogic
         {
             if (step == null)
             {
-                _uiMessageManager.ShowAvoidToMovement(player.Name);
+                _uiMessageManager.ShowAvoidToMovement(player.Nickname);
                 return;
             }
 
@@ -35,7 +35,7 @@ namespace BoardAdventures.Core.GameLogic
 
             if (path == null)
             {
-                _uiMessageManager.ShowAvoidToMovement(player.Name);
+                _uiMessageManager.ShowAvoidToMovement(player.Nickname);
                 return;
             }
 

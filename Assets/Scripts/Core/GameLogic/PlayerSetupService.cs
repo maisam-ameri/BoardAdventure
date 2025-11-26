@@ -26,7 +26,7 @@ namespace BoardAdventures.Core.GameLogic
             _signalBus = signalBus;
         }
 
-        public void Setup(List<Photon.Realtime.Player> players)
+        public void Setup(List<Player> players)
         {
             var factions = InitializeFactions();
             Players = CreatePlayer(factions, players);
@@ -35,7 +35,7 @@ namespace BoardAdventures.Core.GameLogic
             _signalBus.Fire(new OnPlayersCreatedSignal {Players = Players});
         }
 
-        private List<Player> CreatePlayer(List<Faction> factions,List<Photon.Realtime.Player> players)
+        private List<Player> CreatePlayer(List<Faction> factions,List<Player> players)
         {
 
             var numberOfPlayers = players.Count;
@@ -46,7 +46,7 @@ namespace BoardAdventures.Core.GameLogic
             {
                 var player = new Player()
                 {
-                    Name = players[i].NickName,
+                    Nickname = players[i].Nickname,
                     IsActive = true,
                     Factions = playerFactions[i]
                 };
@@ -78,7 +78,7 @@ namespace BoardAdventures.Core.GameLogic
         {
             foreach (var player in Players)
             {
-                var ui = _playerUIFactory.Create(player.Name, player.Factions.Select(f => f.Color).ToList()
+                var ui = _playerUIFactory.Create(player.Nickname, player.Factions.Select(f => f.Color).ToList()
                 );
 
                 player.UI = ui;

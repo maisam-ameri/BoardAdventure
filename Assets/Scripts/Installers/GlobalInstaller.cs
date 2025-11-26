@@ -23,7 +23,8 @@ namespace Installers
             Container.Bind<IAccountService>().To<LocalAccountService>().AsSingle();
 
             // MonoBehaviours
-            Container.Bind<INetworkService>().To<PhotonLauncher>().FromNewComponentOnNewGameObject().AsSingle();
+            Container.Bind<INetworkService>().To<NetworkMockProvider>().FromNewComponentOnNewGameObject().AsSingle();
+            // Container.Bind<INetworkService>().To<PhotonLauncher>().FromNewComponentOnNewGameObject().AsSingle();
         }
     }
 }

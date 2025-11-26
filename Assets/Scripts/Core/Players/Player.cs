@@ -6,7 +6,7 @@ namespace BoardAdventures.Core.Players
 {
     public  class Player
     {
-        public string Name { get; set; }
+        public string Nickname { get; set; }
         public bool IsActive { get; set; }
         public PlayerUI UI { get; set; }
         public List<Faction> Factions { get; set; } = new ();

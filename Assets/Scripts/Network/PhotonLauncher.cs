@@ -125,11 +125,12 @@ namespace BoardAdventures.Network
             _signalBus.Fire(new OnConnectionStatusChangedSignal {State = ConnectionState.Disconnected});
         }
 
-        public List<Player> GetPlayers()
+        public List<Core.Players.Player> GetPlayers()
         {
             return PhotonNetwork.CurrentRoom.Players
                 .OrderBy(p => p.Value.ActorNumber)
                 .Select(p => p.Value)
+                .Select(p => new Core.Players.Player{Nickname = p.NickName})
                 .ToList();
         }
     }

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Photon.Realtime;
+using BoardAdventures.Core.Players;
 
 namespace BoardAdventures.Abstractions
 {
