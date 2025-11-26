@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BoardAdventures.Abstractions;
+using BoardAdventures.Core.Players;
 using BoardAdventures.GameObjects.Factions;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
 using Signals;
 using Zenject;
 
-namespace BoardAdventures.Core.Players
+namespace BoardAdventures.Core.GameLogic
 {
     public class PlayerSetupService : IPlayerSetupService
     {
