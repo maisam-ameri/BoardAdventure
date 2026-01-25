@@ -22,7 +22,7 @@ namespace BoardAdventures.UI.Dices
 
         public void Reset()
         {
-            stepTxt.text = "--";
+            stepTxt.text = "Roll";
         }
         
     }

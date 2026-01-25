@@ -60,7 +60,7 @@ namespace BoardAdventures.Core.GameLogic
             _turnVisualizer.DeactivatePlayerVisuals();
             _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, null);
             _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, null);
-
+            _diceManager.Reset();
         }
 
         private void HandleEndMatch(OnGameOverSignal signal)
@@ -102,7 +102,7 @@ namespace BoardAdventures.Core.GameLogic
             _turnFlowService.NextPlayer();
             StartTurn();
         }
-        
+
         public void GrantReward(Player player)
         {
             _uiMessageManager.ShowRewardMessage(player.Nickname);
