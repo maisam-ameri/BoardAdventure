@@ -133,7 +133,7 @@ Possible future directions for this project include:
 
 ## Author
 
-Created by **maisam-ameri**  
+Created by **Maisam Ameri**  
 This project is part of a personal learning journey and portfolio.
 
 
