@@ -14,6 +14,13 @@ The project is intentionally kept at a **prototype level**, prioritizing clarity
 
 ---
 
+## Why This Project?
+
+This project was created to explore scalable architecture patterns for turn-based games in Unity, 
+with a focus on decoupled systems, testability, and future multiplayer support.
+
+---
+
 ## Gameplay
 
 The gameplay loop includes:
@@ -135,5 +142,8 @@ Possible future directions for this project include:
 
 Created by **Maisam Ameri**  
 This project is part of a personal learning journey and portfolio.
+
+⭐ If you find this project interesting or useful, consider giving it a star.
+
 
 
