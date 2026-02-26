@@ -14,6 +14,7 @@ namespace BoardAdventures.Network
     {
         private SignalBus _signalBus;
         private IAccountService _accountService;
+        private const string ReadyToPlayKey = "IsReadyToPlay";
 
         [Inject]
         private void Initialize(SignalBus signalBus, IAccountService accountService)
@@ -88,7 +89,7 @@ namespace BoardAdventures.Network
         {
             foreach (var player in PhotonNetwork.CurrentRoom.Players.Values)
             {
-                if (player.CustomProperties.TryGetValue("IsReadyToPlay", out var value))
+                if (player.CustomProperties.TryGetValue(ReadyToPlayKey, out var value))
 
                     if (value is bool isReady && !isReady)
                         return false;
@@ -99,14 +100,13 @@ namespace BoardAdventures.Network
 
         public void SetPlayerReady(bool isReady)
         {
-            Hashtable props = new() {{"IsReadyToPlay", isReady}};
+            Hashtable props = new() {{ReadyToPlayKey, isReady}};
             PhotonNetwork.LocalPlayer.SetCustomProperties(props);
         }
 
-
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
-            if (changedProps.ContainsKey("IsReadyToPlay"))
+            if (changedProps.ContainsKey(ReadyToPlayKey))
                 if (CheckPlayersReadyToPlay())
                     _signalBus.Fire(new OnPlayersReadyToPlaySignal());
         }

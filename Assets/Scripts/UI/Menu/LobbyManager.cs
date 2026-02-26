@@ -15,6 +15,7 @@ namespace BoardAdventures.UI.Lobby
     {
         [SerializeField] private List<LobbyPlayerSlotView> playerUIList;
         [SerializeField] private TextMeshProUGUI waitingToJoin;
+        [SerializeField] private TextMeshProUGUI roomStatus;
         [SerializeField] private Button readyButton;
         
         private SignalBus _signalBus;
