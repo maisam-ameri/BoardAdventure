@@ -13,6 +13,9 @@ namespace BoardAdventures.Network
 {
     public class PhotonLauncher : MonoBehaviourPunCallbacks, INetworkService
     {
+        public byte MaxPlayers => PhotonNetwork.CurrentRoom.MaxPlayers;
+        public bool IsMasterClient => PhotonNetwork.IsMasterClient;
+        
         private SignalBus _signalBus;
         private IAccountService _accountService;
 
@@ -28,6 +31,7 @@ namespace BoardAdventures.Network
         {
             PhotonNetwork.AutomaticallySyncScene = true;
         }
+
 
         public void Connect()
         {
@@ -125,6 +129,16 @@ namespace BoardAdventures.Network
             return true;
         }
 
+        public void LoadLevel(string levelName)
+        {
+            PhotonNetwork.LoadLevel(levelName);
+        }
+
+        public Hashtable GetPlayerCustomProperties()
+        {
+            return PhotonNetwork.LocalPlayer.CustomProperties;
+        }
+
 
         public override void OnDisconnected(DisconnectCause cause)
         {
@@ -142,6 +156,8 @@ namespace BoardAdventures.Network
 
         public List<Core.Players.Player> GetPlayers()
         {
+            if (!PhotonNetwork.InRoom) return null;
+            
             return PhotonNetwork.CurrentRoom.Players
                 .OrderBy(p => p.Value.ActorNumber)
                 .Select(p => p.Value)

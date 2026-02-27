@@ -1,13 +1,18 @@
 ﻿using System.Collections.Generic;
 using BoardAdventures.Abstractions;
-using Photon.Realtime;
+using ExitGames.Client.Photon;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Player = BoardAdventures.Core.Players.Player;
 
 namespace BoardAdventures.Network
 {
-    public class NetworkMockProvider: MonoBehaviour , INetworkService
+    public class NetworkMockProvider : MonoBehaviour, INetworkService
     {
+        public byte MaxPlayers => 2;
+        public bool IsMasterClient => PhotonNetwork.IsMasterClient;
+
         public void Connect()
         {
             Debug.Log("connected(Mock)");
@@ -26,23 +31,33 @@ namespace BoardAdventures.Network
 
         public bool CheckAllPlayersReady()
         {
-            throw new System.NotImplementedException();
+            return false;
         }
 
-        public List<Core.Players.Player> GetPlayers()
+        public void LoadLevel(string levelName)
         {
-            var players = new List<Core.Players.Player>
+            PhotonNetwork.LoadLevel(levelName);
+        }
+
+        public Hashtable GetPlayerCustomProperties()
+        {
+            return null;
+        }
+
+        public List<Player> GetPlayers()
+        {
+            var players = new List<Player>
             {
                 new()
                 {
                     Nickname = "mesi",
                 },
-                new ()
+                new()
                 {
                     Nickname = "karen"
                 }
             };
-            
+
             return players;
         }
     }

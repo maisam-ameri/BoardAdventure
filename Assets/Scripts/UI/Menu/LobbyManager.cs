@@ -3,7 +3,6 @@ using System.Linq;
 using BoardAdventures.Abstractions;
 using BoardAdventures.Network;
 using BoardAdventures.UI.Players;
-using Photon.Pun;
 using Signals;
 using TMPro;
 using UI.Menu;
@@ -21,6 +20,7 @@ namespace BoardAdventures.UI.Lobby
         [SerializeField] private TextMeshProUGUI roomStatus;
         [SerializeField] private Button readyButton;
         [SerializeField] private Button startButton;
+        [SerializeField] private string matchLevelName;
 
         private SignalBus _signalBus;
         private INetworkService _networkService;
@@ -50,10 +50,10 @@ namespace BoardAdventures.UI.Lobby
 
         public void StartMatchClicked()
         {
-            if (!PhotonNetwork.IsMasterClient)
+            if (!_networkService.IsMasterClient)
                 return;
 
-            PhotonNetwork.LoadLevel("Match");
+            _networkService.LoadLevel(matchLevelName);
         }
 
         private void HideAllPlayerSlotViews()
@@ -83,9 +83,7 @@ namespace BoardAdventures.UI.Lobby
                 var playerData = signal.Players.ElementAt(i).Value;
                 playerUIList[i].gameObject.SetActive(true);
 
-                var isMaster = playerData.IsMasterClient ? " (Master)" : "";
-                var nickname = playerData.NickName + isMaster;
-
+                var nickname = playerData.NickName;
 
                 var isReady = false;
 
@@ -95,7 +93,7 @@ namespace BoardAdventures.UI.Lobby
                         isReady = ready;
                 }
 
-                UpdateLobbyUI(_networkService.GetPlayers(), PhotonNetwork.CurrentRoom.MaxPlayers);
+                UpdateLobbyUI(_networkService.GetPlayers(), _networkService.MaxPlayers);
                 playerUIList[i].SetPlayerSlot(nickname, isReady);
             }
         }
@@ -108,7 +106,7 @@ namespace BoardAdventures.UI.Lobby
             if (!_networkService.CheckAllPlayersReady())
                 return LobbyState.WaitingForReady;
 
-            if (!PhotonNetwork.IsMasterClient)
+            if (!_networkService.IsMasterClient)
                 return LobbyState.WaitingForHost;
 
             return LobbyState.ReadyToStart;
@@ -134,10 +132,10 @@ namespace BoardAdventures.UI.Lobby
 
         private void UpdateButtons(LobbyState state)
         {
-            var isMaster = PhotonNetwork.IsMasterClient;
+            var isMaster = _networkService.IsMasterClient;
             var isLocalReady = false;
 
-            if (PhotonNetwork.LocalPlayer.CustomProperties
+            if (_networkService.GetPlayerCustomProperties()
                 .TryGetValue(NetworkKeys.ReadyToPlayKey, out var value))
             {
                 if (value is bool ready)
@@ -171,28 +169,27 @@ namespace BoardAdventures.UI.Lobby
         
         private void UpdateLobbyMessages(LobbyState state)
         {
+            var msg = "";
             switch (state)
             {
                 case LobbyState.WaitingForPlayers:
-                    roomStatus.text = "Waiting for players to join";
-                    startButton.interactable = false;
+                    msg = "Waiting for players to join";
                     break;
 
                 case LobbyState.WaitingForReady:
-                    roomStatus.text = "Waiting for players to be ready";
-                    startButton.interactable = false;
+                    msg = "Waiting for players to be ready";
                     break;
 
                 case LobbyState.WaitingForHost:
-                    roomStatus.text = "Waiting for host to start";
-                    startButton.interactable = false;
+                    msg = "Waiting for host to start";
                     break;
 
                 case LobbyState.ReadyToStart:
-                    roomStatus.text = "Ready to start";
-                    startButton.interactable = true;
+                    msg = "Ready to start";
                     break;
             }
+
+            roomStatus.text = msg;
         }
     }
 }
