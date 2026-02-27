@@ -8,6 +8,7 @@ namespace BoardAdventures.Abstractions
         void Connect();
         void JoinToRoom(byte maxPlayer);
         void SetPlayerReady(bool isReady);
+        bool CheckAllPlayersReady();
         List<Player>  GetPlayers();
     }
 }

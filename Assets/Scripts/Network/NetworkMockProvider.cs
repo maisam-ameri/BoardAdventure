@@ -24,6 +24,11 @@ namespace BoardAdventures.Network
             Debug.Log("SetPlayerReady(Mock)");
         }
 
+        public bool CheckAllPlayersReady()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public List<Core.Players.Player> GetPlayers()
         {
             var players = new List<Core.Players.Player>

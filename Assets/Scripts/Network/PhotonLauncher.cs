@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BoardAdventures.Abstractions;
 using ExitGames.Client.Photon;
@@ -14,13 +15,18 @@ namespace BoardAdventures.Network
     {
         private SignalBus _signalBus;
         private IAccountService _accountService;
-        private const string ReadyToPlayKey = "IsReadyToPlay";
 
         [Inject]
         private void Initialize(SignalBus signalBus, IAccountService accountService)
         {
             _signalBus = signalBus;
             _accountService = accountService;
+        }
+
+
+        private void Awake()
+        {
+            PhotonNetwork.AutomaticallySyncScene = true;
         }
 
         public void Connect()
@@ -85,31 +91,40 @@ namespace BoardAdventures.Network
             });
         }
 
-        private bool CheckPlayersReadyToPlay()
-        {
-            foreach (var player in PhotonNetwork.CurrentRoom.Players.Values)
-            {
-                if (player.CustomProperties.TryGetValue(ReadyToPlayKey, out var value))
-
-                    if (value is bool isReady && !isReady)
-                        return false;
-            }
-
-            return true;
-        }
 
         public void SetPlayerReady(bool isReady)
         {
-            Hashtable props = new() {{ReadyToPlayKey, isReady}};
+            Hashtable props = new() {{NetworkKeys.ReadyToPlayKey, isReady}};
             PhotonNetwork.LocalPlayer.SetCustomProperties(props);
         }
 
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
-            if (changedProps.ContainsKey(ReadyToPlayKey))
-                if (CheckPlayersReadyToPlay())
-                    _signalBus.Fire(new OnPlayersReadyToPlaySignal());
+            if (changedProps.ContainsKey(NetworkKeys.ReadyToPlayKey))
+                _signalBus.Fire(new OnPlayerListUpdatedSignal
+                {
+                    MaxPlayer = PhotonNetwork.CurrentRoom.MaxPlayers,
+                    Players = PhotonNetwork.CurrentRoom.Players
+                });
+
+            if (CheckAllPlayersReady())
+                _signalBus.Fire(new OnAllPlayersReadySignal());
         }
+
+        public bool CheckAllPlayersReady()
+        {
+            foreach (var player in PhotonNetwork.CurrentRoom.Players.Values)
+            {
+                if (!player.CustomProperties.TryGetValue(NetworkKeys.ReadyToPlayKey, out var value))
+                    return false;
+
+                if (value is not bool isReady || !isReady)
+                    return false;
+            }
+
+            return true;
+        }
+
 
         public override void OnDisconnected(DisconnectCause cause)
         {
@@ -130,7 +145,7 @@ namespace BoardAdventures.Network
             return PhotonNetwork.CurrentRoom.Players
                 .OrderBy(p => p.Value.ActorNumber)
                 .Select(p => p.Value)
-                .Select(p => new Core.Players.Player{Nickname = p.NickName})
+                .Select(p => new Core.Players.Player {Nickname = p.NickName})
                 .ToList();
         }
     }

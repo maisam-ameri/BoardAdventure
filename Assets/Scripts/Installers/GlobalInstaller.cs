@@ -17,7 +17,7 @@ namespace Installers
             Container.DeclareSignal<OnShowRegistrationUISignal>();
             Container.DeclareSignal<OnPlayerLoggedInSignal>();
             Container.DeclareSignal<OnPlayerListUpdatedSignal>();
-            Container.DeclareSignal<OnPlayersReadyToPlaySignal>();
+            Container.DeclareSignal<OnAllPlayersReadySignal>();
 
             // Services
             Container.Bind<IAccountService>().To<LocalAccountService>().AsSingle();
