@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using BoardAdventures.Abstractions;
 using ExitGames.Client.Photon;
@@ -15,7 +14,7 @@ namespace BoardAdventures.Network
     {
         public byte MaxPlayers => PhotonNetwork.CurrentRoom.MaxPlayers;
         public bool IsMasterClient => PhotonNetwork.IsMasterClient;
-        
+
         private SignalBus _signalBus;
         private IAccountService _accountService;
 
@@ -26,15 +25,38 @@ namespace BoardAdventures.Network
             _accountService = accountService;
         }
 
-
         private void Awake()
         {
             PhotonNetwork.AutomaticallySyncScene = true;
         }
 
+        public T GetPlayerProp<T>(Player player, string key, T defaultValue = default)
+        {
+            player ??= PhotonNetwork.LocalPlayer;
+
+            if (player.CustomProperties.TryGetValue(key, out var value)
+                && value is T typedValue)
+                return typedValue;
+
+            return defaultValue;
+        }
+
+        public void SetPlayerReady<T>(string key, T prop = default)
+        {
+            Hashtable props = new() {{key, prop}};
+            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+        }
 
         public void Connect()
         {
+            if (Application.internetReachability == NetworkReachability.NotReachable)
+            {
+                Debug.Log("[NetworkManager] Internet restored! Ready to connect.");
+                _signalBus.Fire(new OnConnectionStatusChangedSignal {State = ConnectionState.ConnectionFailed});
+
+                return;
+            }
+
             if (PhotonNetwork.IsConnected)
             {
                 OnConnectedToMaster();
@@ -47,6 +69,7 @@ namespace BoardAdventures.Network
             _signalBus.Fire(new OnConnectionStatusChangedSignal {State = ConnectionState.Connecting});
         }
 
+
         public void JoinToRoom(byte maxPlayer)
         {
             PhotonNetwork.JoinRandomOrCreateRoom(roomOptions: new RoomOptions {MaxPlayers = maxPlayer});
@@ -55,11 +78,7 @@ namespace BoardAdventures.Network
 
         public override void OnJoinedRoom()
         {
-            _signalBus.Fire(new OnPlayerListUpdatedSignal
-            {
-                MaxPlayer = PhotonNetwork.CurrentRoom.MaxPlayers,
-                Players = PhotonNetwork.CurrentRoom.Players
-            });
+            _signalBus.Fire(new OnLobbyStateChangedSignal());
         }
 
         public override void OnConnectedToMaster()
@@ -70,59 +89,36 @@ namespace BoardAdventures.Network
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
-            _signalBus.Fire(new OnPlayerListUpdatedSignal
-            {
-                MaxPlayer = PhotonNetwork.CurrentRoom.MaxPlayers,
-                Players = PhotonNetwork.CurrentRoom.Players
-            });
+            _signalBus.Fire(new OnLobbyStateChangedSignal());
         }
 
         public override void OnLeftRoom()
         {
-            _signalBus.Fire(new OnPlayerListUpdatedSignal
-            {
-                MaxPlayer = PhotonNetwork.CurrentRoom.MaxPlayers,
-                Players = PhotonNetwork.CurrentRoom.Players
-            });
+            _signalBus.Fire(new OnLobbyStateChangedSignal());
         }
 
         public override void OnPlayerLeftRoom(Player otherPlayer)
         {
-            _signalBus.Fire(new OnPlayerListUpdatedSignal
-            {
-                MaxPlayer = PhotonNetwork.CurrentRoom.MaxPlayers,
-                Players = PhotonNetwork.CurrentRoom.Players
-            });
+            _signalBus.Fire(new OnLobbyStateChangedSignal());
         }
 
-
-        public void SetPlayerReady(bool isReady)
-        {
-            Hashtable props = new() {{NetworkKeys.ReadyToPlayKey, isReady}};
-            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
-        }
 
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
+            Debug.Log(changedProps.ContainsKey(NetworkKeys.ReadyToPlayKey));
             if (changedProps.ContainsKey(NetworkKeys.ReadyToPlayKey))
-                _signalBus.Fire(new OnPlayerListUpdatedSignal
-                {
-                    MaxPlayer = PhotonNetwork.CurrentRoom.MaxPlayers,
-                    Players = PhotonNetwork.CurrentRoom.Players
-                });
-
-            if (CheckAllPlayersReady())
-                _signalBus.Fire(new OnAllPlayersReadySignal());
+                _signalBus.Fire(new OnLobbyStateChangedSignal());
         }
 
         public bool CheckAllPlayersReady()
         {
             foreach (var player in PhotonNetwork.CurrentRoom.Players.Values)
             {
-                if (!player.CustomProperties.TryGetValue(NetworkKeys.ReadyToPlayKey, out var value))
-                    return false;
+                if(player.IsMasterClient) continue;
+                
+                var value = GetPlayerProp<bool>(player, NetworkKeys.ReadyToPlayKey);
 
-                if (value is not bool isReady || !isReady)
+                if (value is false)
                     return false;
             }
 
@@ -134,35 +130,38 @@ namespace BoardAdventures.Network
             PhotonNetwork.LoadLevel(levelName);
         }
 
-        public Hashtable GetPlayerCustomProperties()
+        public List<Player> GetPlayers()
         {
-            return PhotonNetwork.LocalPlayer.CustomProperties;
-        }
+            if (!PhotonNetwork.InRoom) return null;
 
+            return PhotonNetwork.CurrentRoom.Players
+                .OrderBy(p => p.Value.ActorNumber)
+                .Select(p => p.Value)
+                .ToList();
+        }
 
         public override void OnDisconnected(DisconnectCause cause)
         {
             if (cause == DisconnectCause.DnsExceptionOnConnect
                 || cause == DisconnectCause.ExceptionOnConnect
                 || cause == DisconnectCause.ClientTimeout
+                || cause == DisconnectCause.DisconnectByClientLogic
                 || cause == DisconnectCause.ServerTimeout)
             {
                 Debug.Log(cause);
+
+                if (Application.internetReachability == NetworkReachability.NotReachable)
+                {
+                    Debug.Log("[NetworkManager] Internet restored! Ready to connect.");
+                    _signalBus.Fire(new OnConnectionStatusChangedSignal {State = ConnectionState.ConnectionFailed});
+
+                    return;
+                }
+
                 PhotonNetwork.Reconnect();
             }
 
             _signalBus.Fire(new OnConnectionStatusChangedSignal {State = ConnectionState.Disconnected});
-        }
-
-        public List<Core.Players.Player> GetPlayers()
-        {
-            if (!PhotonNetwork.InRoom) return null;
-            
-            return PhotonNetwork.CurrentRoom.Players
-                .OrderBy(p => p.Value.ActorNumber)
-                .Select(p => p.Value)
-                .Select(p => new Core.Players.Player {Nickname = p.NickName})
-                .ToList();
         }
     }
 }

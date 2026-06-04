@@ -16,11 +16,12 @@ namespace Installers
             Container.DeclareSignal<OnRegisterRequestedSignal>();
             Container.DeclareSignal<OnShowRegistrationUISignal>();
             Container.DeclareSignal<OnPlayerLoggedInSignal>();
-            Container.DeclareSignal<OnPlayerListUpdatedSignal>();
-            Container.DeclareSignal<OnAllPlayersReadySignal>();
+            Container.DeclareSignal<OnLobbyStateChangedSignal>();
+            Container.DeclareSignal<OnLobbyStateUiChangedSignal>();
 
             // Services
             Container.Bind<IAccountService>().To<LocalAccountService>().AsSingle();
+            Container.Bind<ILobbyService>().To<LobbyService>().AsSingle();
 
             // MonoBehaviours
             //Container.Bind<INetworkService>().To<NetworkMockProvider>().FromNewComponentOnNewGameObject().AsSingle();

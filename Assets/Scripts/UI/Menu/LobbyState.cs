@@ -1,11 +1,11 @@
 ﻿namespace UI.Menu
 {
-    enum LobbyState
+    public enum LobbyState
     {
-        WaitingForPlayers,
-        WaitingForReady,
-        WaitingForHost,
-        ReadyToStart
+        None = 0,
+        WaitingForPlayers = 1,
+        WaitingForReady = 2,
+        WaitingForHost = 3,
+        ReadyToStart = 4
     }
-
 }

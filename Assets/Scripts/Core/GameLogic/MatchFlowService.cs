@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using BoardAdventures.Abstractions;
 using BoardAdventures.Core.Players;
 using Signals;
@@ -53,7 +55,10 @@ namespace BoardAdventures.Core.GameLogic
 
         private void HandleStartMatch(OnStartMatchSignal matchSignal)
         {
-            _playerSetupService.Setup(_networkService.GetPlayers());
+            var playerNetModels = _networkService.GetPlayers();
+            var playerGameModels = MapPlayersNetModel(playerNetModels);
+            _playerSetupService.Setup(playerGameModels);
+            
             var players = _playerSetupService.Players;
             _turnVisualizer.Initial(players);
             _turnVisualizer.DeactivateTurnVisuals();
@@ -62,6 +67,9 @@ namespace BoardAdventures.Core.GameLogic
             _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, null);
             _diceManager.Reset();
         }
+
+        private List<Player> MapPlayersNetModel(List<Photon.Realtime.Player> players)=>
+             players.Select(p => new Core.Players.Player {Nickname = p.NickName}).ToList();
 
         private void HandleEndMatch(OnGameOverSignal signal)
         {

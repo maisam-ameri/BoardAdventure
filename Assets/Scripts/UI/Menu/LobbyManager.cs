@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using BoardAdventures.Abstractions;
-using BoardAdventures.Network;
 using BoardAdventures.UI.Players;
 using Signals;
 using TMPro;
@@ -9,35 +7,34 @@ using UI.Menu;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
-using Player = BoardAdventures.Core.Players.Player;
 
 namespace BoardAdventures.UI.Lobby
 {
     public class LobbyManager : MonoBehaviour, ILobbyManager
     {
-        [SerializeField] private List<LobbyPlayerSlotView> playerUIList;
+        [SerializeField] private List<LobbyPlayerSlotView> playerSlots;
         [SerializeField] private TextMeshProUGUI waitingToJoin;
         [SerializeField] private TextMeshProUGUI roomStatus;
         [SerializeField] private Button readyButton;
         [SerializeField] private Button startButton;
-        [SerializeField] private string matchLevelName;
+        [SerializeField] private string levelName;
 
         private SignalBus _signalBus;
-        private INetworkService _networkService;
+        private ILobbyService _lobbyService;
 
 
         [Inject]
-        public void Initialize(SignalBus signalBus, INetworkService networkService)
+        public void Initialize(SignalBus signalBus, INetworkService networkService,
+            ILobbyService lobbyService)
         {
             _signalBus = signalBus;
-            _networkService = networkService;
+            _lobbyService = lobbyService;
         }
 
         private void Start()
         {
-            _signalBus.Subscribe<OnPlayerListUpdatedSignal>(HandlePlayerListUpdated);
-            _signalBus.Subscribe<OnAllPlayersReadySignal>(HandleAllPlayersReady);
-            
+            _signalBus.Subscribe<OnLobbyStateUiChangedSignal>(HandleLobbyStateChanged);
+
             DeactivateAllButtons();
             HideAllPlayerSlotViews();
             ShowWaitingToJoinPlayer(true);
@@ -45,20 +42,17 @@ namespace BoardAdventures.UI.Lobby
 
         public void ReadyToPlayClicked()
         {
-            _networkService.SetPlayerReady(true);
+            _lobbyService.ToggleReady();
         }
 
         public void StartMatchClicked()
         {
-            if (!_networkService.IsMasterClient)
-                return;
-
-            _networkService.LoadLevel(matchLevelName);
+            _lobbyService.StartMatch(levelName);
         }
 
         private void HideAllPlayerSlotViews()
         {
-            foreach (var slotView in playerUIList)
+            foreach (var slotView in playerSlots)
             {
                 slotView.gameObject.SetActive(false);
             }
@@ -69,108 +63,58 @@ namespace BoardAdventures.UI.Lobby
             waitingToJoin.gameObject.SetActive(isActive);
         }
 
-        private void HandleAllPlayersReady()
+        private void HandleLobbyStateChanged(OnLobbyStateUiChangedSignal signal)
         {
-            startButton.interactable = true;
+            UpdateButtons(signal);
+            UpdatePlayerList();
+            UpdateLobbyMessages(signal);
         }
 
-        private void HandlePlayerListUpdated(OnPlayerListUpdatedSignal signal)
+
+        private void UpdatePlayerList()
         {
-            ShowWaitingToJoinPlayer(false);
+            var players = _lobbyService.Players;
 
-            for (var i = 0; i < signal.Players.Count; i++)
+            HideAllPlayerSlotViews();
+            ShowWaitingToJoinPlayer(players.Count == 0);
+            
+            for (var i = 0; i < players.Count; i++)
             {
-                var playerData = signal.Players.ElementAt(i).Value;
-                playerUIList[i].gameObject.SetActive(true);
-
-                var nickname = playerData.NickName;
-
-                var isReady = false;
-
-                if (playerData.CustomProperties.TryGetValue(NetworkKeys.ReadyToPlayKey, out var value))
-                {
-                    if (value is bool ready)
-                        isReady = ready;
-                }
-
-                UpdateLobbyUI(_networkService.GetPlayers(), _networkService.MaxPlayers);
-                playerUIList[i].SetPlayerSlot(nickname, isReady);
+                UpdatePlayerSlots(players[i], playerSlots[i]);
             }
         }
 
-        private LobbyState EvaluateLobbyState(List<Player> players, byte maxPlayer)
+        private void UpdatePlayerSlots(Photon.Realtime.Player player, LobbyPlayerSlotView playerSlot)
         {
-            if (players.Count < maxPlayer)
-                return LobbyState.WaitingForPlayers;
+                var nickname = player.IsMasterClient ? $"{player.NickName} (Master)" : player.NickName;
+                var isReady = player.IsMasterClient || _lobbyService.IsPlayerReady(player);
 
-            if (!_networkService.CheckAllPlayersReady())
-                return LobbyState.WaitingForReady;
-
-            if (!_networkService.IsMasterClient)
-                return LobbyState.WaitingForHost;
-
-            return LobbyState.ReadyToStart;
+                playerSlot.gameObject.SetActive(true);
+                playerSlot.SetPlayerSlot(nickname, isReady);
         }
 
         private void DeactivateAllButtons()
         {
-            roomStatus.gameObject.SetActive(false);
-            readyButton.gameObject.SetActive(false);
+            startButton.interactable = false;
             readyButton.interactable = false;
             startButton.gameObject.SetActive(false);
-            startButton.interactable = false;
+            readyButton.gameObject.SetActive(false);
         }
-        
-        private void UpdateLobbyUI(List<Player> players, byte maxPlayer)
+
+
+        private void UpdateButtons(OnLobbyStateUiChangedSignal signal)
         {
-            var state = EvaluateLobbyState(players, maxPlayer);
-            roomStatus.gameObject.SetActive(true);
-
-            UpdateButtons(state);
-            UpdateLobbyMessages(state);
+            readyButton.gameObject.SetActive(!signal.IsMaster);
+            startButton.gameObject.SetActive(signal.IsMaster);
+            startButton.interactable = signal.State == LobbyState.ReadyToStart;
         }
 
-        private void UpdateButtons(LobbyState state)
-        {
-            var isMaster = _networkService.IsMasterClient;
-            var isLocalReady = false;
-
-            if (_networkService.GetPlayerCustomProperties()
-                .TryGetValue(NetworkKeys.ReadyToPlayKey, out var value))
-            {
-                if (value is bool ready)
-                    isLocalReady = ready;
-            }
-
-            readyButton.gameObject.SetActive(true);
-            readyButton.interactable = !isLocalReady;
-
-            switch (state)
-            {
-                case LobbyState.WaitingForPlayers:
-                    startButton.gameObject.SetActive(false);
-                    break;
-
-                case LobbyState.WaitingForReady:
-                    startButton.gameObject.SetActive(isMaster);
-                    startButton.interactable = false;
-                    break;
-
-                case LobbyState.WaitingForHost:
-                    startButton.gameObject.SetActive(false);
-                    break;
-
-                case LobbyState.ReadyToStart:
-                    startButton.gameObject.SetActive(isMaster);
-                    startButton.interactable = true;
-                    break;
-            }
-        }
-        
-        private void UpdateLobbyMessages(LobbyState state)
+        private void UpdateLobbyMessages(OnLobbyStateUiChangedSignal signal)
         {
             var msg = "";
-            switch (state)
+            roomStatus.text = msg;
+
+            switch (signal.State)
             {
                 case LobbyState.WaitingForPlayers:
                     msg = "Waiting for players to join";

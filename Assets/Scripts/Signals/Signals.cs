@@ -2,6 +2,7 @@
 using BoardAdventures.Core.Players;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
 using BoardAdventures.Network;
+using UI.Menu;
 
 namespace Signals
 {
@@ -23,10 +24,6 @@ namespace Signals
     {
         public IPawn Pawn;
     }
-
-    // public class OnFirstSixRolledSignal
-    // {
-    // }
 
     public class OnDiceRolledSignal
     {
@@ -57,7 +54,6 @@ namespace Signals
 
     public class OnStartMatchSignal
     {
-        public int PlayerCount;
     }
 
 
@@ -67,29 +63,28 @@ namespace Signals
         public ConnectionState State;
     }
 
-    public class OnPlayerListUpdatedSignal
-    {
-        public byte MaxPlayer;
-        public Dictionary<int,Photon.Realtime.Player> Players;
-    }
-    
-    public class OnAllPlayersReadySignal
+    public class OnLobbyStateChangedSignal
     {
     }
+
+    public class OnLobbyStateUiChangedSignal
+    {
+        public LobbyState State { get; set; }
+        public bool IsMaster { get; set; }
+    }
     
-    
+
     // Auth
     public class OnRegisterRequestedSignal
     {
         public string Nickname;
     }
-    
+
     public class OnShowRegistrationUISignal
     {
     }
-    
+
     public class OnPlayerLoggedInSignal
     {
     }
-    
 }
