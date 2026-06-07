@@ -24,8 +24,20 @@ namespace BoardAdventures.Network
             _networkService = networkService;
 
             _signalBus.Subscribe<OnLobbyStateChangedSignal>(EvaluateLobbyState);
+            _signalBus.Subscribe<OnConnectionRequestSignal>(HandleConnectToServer);
+            _signalBus.Subscribe<OnJoinToRoomRequestSignal>(HandleJoinToRoom);
         }
 
+        private void HandleConnectToServer()
+        {
+            _networkService.Connect();
+        }
+
+        private void HandleJoinToRoom(OnJoinToRoomRequestSignal signal)
+        {
+            _networkService.JoinToRoom(signal.MaxPlayers);
+        }
+        
         public bool IsPlayerReady(Player player) =>
             _networkService.GetPlayerProp<bool>(player, NetworkKeys.ReadyToPlayKey);
 

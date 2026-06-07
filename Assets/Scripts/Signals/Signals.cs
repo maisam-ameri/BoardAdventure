@@ -58,6 +58,16 @@ namespace Signals
 
 
     // network
+
+    public class OnConnectionRequestSignal
+    {
+        
+    }
+
+    public class OnJoinToRoomRequestSignal
+    {
+        public byte MaxPlayers;
+    }
     public class OnConnectionStatusChangedSignal
     {
         public ConnectionState State;

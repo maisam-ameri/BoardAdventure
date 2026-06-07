@@ -18,6 +18,8 @@ namespace Installers
             Container.DeclareSignal<OnPlayerLoggedInSignal>();
             Container.DeclareSignal<OnLobbyStateChangedSignal>();
             Container.DeclareSignal<OnLobbyStateUiChangedSignal>();
+            Container.DeclareSignal<OnConnectionRequestSignal>();
+            Container.DeclareSignal<OnJoinToRoomRequestSignal>();
 
             // Services
             Container.Bind<IAccountService>().To<LocalAccountService>().AsSingle();

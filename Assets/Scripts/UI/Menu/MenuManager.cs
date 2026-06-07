@@ -15,16 +15,13 @@ namespace BoardAdventures.UI.Menu
 
         private CanvasGroup _lastPanel;
         private SignalBus _signalBus;
-        private INetworkService _networkService;
         private IAccountService _accountService;
 
-        
+
         [Inject]
-        public void Initialize(SignalBus signalBus, INetworkService networkService
-            , IAccountService accountService)
+        public void Initialize(SignalBus signalBus, IAccountService accountService)
         {
             _signalBus = signalBus;
-            _networkService = networkService;
             _accountService = accountService;
         }
 
@@ -32,10 +29,9 @@ namespace BoardAdventures.UI.Menu
         {
             _signalBus.Subscribe<OnShowRegistrationUISignal>(HandleShowRegistrationUI);
             _signalBus.Subscribe<OnPlayerLoggedInSignal>(HandleLoggedInUI);
-            
+
             HideAllPanels();
             _accountService.CheckAuth();
-
         }
 
         public void ShowPanel(CanvasGroup panel)
@@ -76,19 +72,21 @@ namespace BoardAdventures.UI.Menu
 
         private void HandleLoggedInUI()
         {
+            _signalBus.Fire(new OnConnectionRequestSignal());
+
             ShowPanel(mainPanel);
-            _networkService.Connect();
         }
-        
+
         public void OnSelectMatchClicked(int maxPlayer)
         {
-            _networkService.JoinToRoom((byte)maxPlayer);
+            _signalBus.Fire(new OnJoinToRoomRequestSignal {MaxPlayers = (byte) maxPlayer});
+
             ShowPanel(lobbyPanel);
         }
 
         public void OnRegisterClicked(TMP_InputField inputField)
         {
-            _signalBus.Fire(new OnRegisterRequestedSignal{Nickname =inputField.text});
+            _signalBus.Fire(new OnRegisterRequestedSignal {Nickname = inputField.text});
         }
     }
 }
