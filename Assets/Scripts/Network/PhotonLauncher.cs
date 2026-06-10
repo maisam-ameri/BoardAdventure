@@ -17,6 +17,7 @@ namespace BoardAdventures.Network
 
         private SignalBus _signalBus;
         private IAccountService _accountService;
+        
 
         [Inject]
         private void Initialize(SignalBus signalBus, IAccountService accountService)
@@ -30,21 +31,16 @@ namespace BoardAdventures.Network
             PhotonNetwork.AutomaticallySyncScene = true;
         }
 
-        public T GetPlayerProp<T>(Player player, string key, T defaultValue = default)
+        public T GetPlayerProp<T>(string key,Player player = null, T defaultValue = default)
         {
             player ??= PhotonNetwork.LocalPlayer;
 
-            if (player.CustomProperties.TryGetValue(key, out var value)
-                && value is T typedValue)
-                return typedValue;
-
-            return defaultValue;
+            return NetworkHelper.GetPlayerCustomProperty<T>(key, player);
         }
 
         public void SetPlayerReady<T>(string key, T prop = default)
         {
-            Hashtable props = new() {{key, prop}};
-            PhotonNetwork.LocalPlayer.SetCustomProperties(props);
+            NetworkHelper.SetPlayerCustomProperty(key,prop);
         }
 
         public void Connect()
@@ -69,12 +65,10 @@ namespace BoardAdventures.Network
             _signalBus.Fire(new OnConnectionStatusChangedSignal {State = ConnectionState.Connecting});
         }
 
-
         public void JoinToRoom(byte maxPlayer)
         {
             PhotonNetwork.JoinRandomOrCreateRoom(roomOptions: new RoomOptions {MaxPlayers = maxPlayer});
         }
-
 
         public override void OnJoinedRoom()
         {
@@ -102,7 +96,6 @@ namespace BoardAdventures.Network
             _signalBus.Fire(new OnLobbyStateChangedSignal());
         }
 
-
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
             Debug.Log(changedProps.ContainsKey(NetworkKeys.ReadyToPlayKey));
@@ -116,7 +109,7 @@ namespace BoardAdventures.Network
             {
                 if(player.IsMasterClient) continue;
                 
-                var value = GetPlayerProp<bool>(player, NetworkKeys.ReadyToPlayKey);
+                var value = GetPlayerProp<bool>(NetworkKeys.ReadyToPlayKey, player);
 
                 if (value is false)
                     return false;

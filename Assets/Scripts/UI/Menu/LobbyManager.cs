@@ -95,12 +95,9 @@ namespace BoardAdventures.UI.Lobby
 
         private void DeactivateAllButtons()
         {
-            startButton.interactable = false;
-            readyButton.interactable = false;
             startButton.gameObject.SetActive(false);
             readyButton.gameObject.SetActive(false);
         }
-
 
         private void UpdateButtons(OnLobbyStateUiChangedSignal signal)
         {

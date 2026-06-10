@@ -10,7 +10,7 @@ namespace BoardAdventures.Abstractions
         void Connect();
         void JoinToRoom(byte maxPlayer);
         public void SetPlayerReady<T>(string key, T prop = default);
-        public T GetPlayerProp<T>(Player player, string key, T defaultValue = default);
+        public T GetPlayerProp<T>(string key,Player player = null, T defaultValue = default);
         List<Player>  GetPlayers();
         bool CheckAllPlayersReady();
         void LoadLevel(string levelName);

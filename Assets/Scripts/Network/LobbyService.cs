@@ -37,9 +37,9 @@ namespace BoardAdventures.Network
         {
             _networkService.JoinToRoom(signal.MaxPlayers);
         }
-        
+
         public bool IsPlayerReady(Player player) =>
-            _networkService.GetPlayerProp<bool>(player, NetworkKeys.ReadyToPlayKey);
+            _networkService.GetPlayerProp<bool>(NetworkKeys.ReadyToPlayKey, player);
 
         private void EvaluateLobbyState()
         {
