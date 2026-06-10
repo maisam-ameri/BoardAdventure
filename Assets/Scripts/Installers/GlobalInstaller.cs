@@ -24,6 +24,7 @@ namespace Installers
             // Services
             Container.Bind<IAccountService>().To<LocalAccountService>().AsSingle();
             Container.Bind<ILobbyService>().To<LobbyService>().AsSingle();
+            Container.Bind<INetworkTime>().To<PhotonTimeProvider>().AsSingle();
 
             // MonoBehaviours
             //Container.Bind<INetworkService>().To<NetworkMockProvider>().FromNewComponentOnNewGameObject().AsSingle();
