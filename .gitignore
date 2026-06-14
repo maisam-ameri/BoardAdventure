@@ -81,3 +81,8 @@ mono_crash.*
 # ===================== #
 *.blend1
 *.blend1.meta
+
+# ===================== #
+# Config files  #
+# ===================== #
+[Ss]ecrets/network_config.json

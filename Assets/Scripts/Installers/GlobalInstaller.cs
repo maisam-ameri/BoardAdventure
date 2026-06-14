@@ -1,6 +1,7 @@
 ﻿using BoardAdventures.Abstractions;
 using BoardAdventures.Authentication;
 using BoardAdventures.Network;
+using Config;
 using Signals;
 using Zenject;
 
@@ -25,6 +26,7 @@ namespace Installers
             Container.Bind<IAccountService>().To<LocalAccountService>().AsSingle();
             Container.Bind<ILobbyService>().To<LobbyService>().AsSingle();
             Container.Bind<INetworkTime>().To<PhotonTimeProvider>().AsSingle();
+            Container.Bind<INetworkConfigProvider>().To<PhotonConfigProvider>().AsSingle();
 
             // MonoBehaviours
             //Container.Bind<INetworkService>().To<NetworkMockProvider>().FromNewComponentOnNewGameObject().AsSingle();

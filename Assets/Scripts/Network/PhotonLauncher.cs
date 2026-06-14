@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BoardAdventures.Abstractions;
+using Config;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
@@ -17,13 +18,15 @@ namespace BoardAdventures.Network
 
         private SignalBus _signalBus;
         private IAccountService _accountService;
+        private INetworkConfigProvider _networkConfigProvider;
         
 
         [Inject]
-        private void Initialize(SignalBus signalBus, IAccountService accountService)
+        private void Initialize(SignalBus signalBus, IAccountService accountService, INetworkConfigProvider networkConfigProvider)
         {
             _signalBus = signalBus;
             _accountService = accountService;
+            _networkConfigProvider = networkConfigProvider;
         }
 
         private void Awake()
@@ -59,8 +62,8 @@ namespace BoardAdventures.Network
                 return;
             }
 
-            PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion = "asia";
-            PhotonNetwork.ConnectUsingSettings();
+            var settings = _networkConfigProvider.GetConfig();
+            PhotonNetwork.ConnectUsingSettings(settings);
 
             _signalBus.Fire(new OnConnectionStatusChangedSignal {State = ConnectionState.Connecting});
         }
