@@ -23,6 +23,7 @@ namespace BoardAdventures.Core.GameLogic
         private readonly SignalBus _signalBus;
         private readonly IPlayerSetupService _playerSetupService;
         private readonly INetworkService _networkService;
+        private float _turnDuration;
 
         public MatchFlowService(IUIMessageManager uiMessageManager
             , ITurnFlowService turnFlowService
@@ -66,6 +67,8 @@ namespace BoardAdventures.Core.GameLogic
             _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, null);
             _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, null);
             _diceManager.Reset();
+            _turnDuration = matchSignal.TurnDuration;
+            StartTurn();
         }
 
         private List<Player> MapPlayersNetModel(List<Photon.Realtime.Player> players)=>
@@ -92,7 +95,7 @@ namespace BoardAdventures.Core.GameLogic
         {
             _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, LastPlayer);
             _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, LastPlayer);
-            CurrentPlayer.UI.StartTurnTimer(10);
+            CurrentPlayer.UI.StartTurnTimer(_turnDuration);
         }
 
         public void SwitchTurn()
@@ -115,7 +118,7 @@ namespace BoardAdventures.Core.GameLogic
         {
             _uiMessageManager.ShowRewardMessage(player.Nickname);
             _diceManager.SetActivateDice(true);
-            CurrentPlayer.UI.StartTurnTimer(10);
+            CurrentPlayer.UI.StartTurnTimer(_turnDuration);
         }
 
         private void HandleDiceRolled(OnDiceRolledSignal signal)
@@ -137,7 +140,7 @@ namespace BoardAdventures.Core.GameLogic
             {
                 case TurnDecision.WaitForAction:
                     _uiMessageManager.ShowActionAvailableMessage(CurrentPlayer.Nickname, step.Value);
-                    CurrentPlayer.UI.StartTurnTimer(10);
+                    CurrentPlayer.UI.StartTurnTimer(_turnDuration);
                     break;
                 case TurnDecision.RollReward:
                     _uiMessageManager.ShowRewardMessage(CurrentPlayer.Nickname);

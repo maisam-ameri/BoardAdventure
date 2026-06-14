@@ -54,6 +54,7 @@ namespace Signals
 
     public class OnStartMatchSignal
     {
+        public float TurnDuration;
     }
 
 
@@ -82,6 +83,11 @@ namespace Signals
         public LobbyState State { get; set; }
         public bool IsMaster { get; set; }
     }
+    
+    // public class OnTurnChangedSignal
+    // {
+    //
+    // }
     
 
     // Auth

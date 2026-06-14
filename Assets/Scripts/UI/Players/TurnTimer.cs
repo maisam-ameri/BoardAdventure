@@ -43,8 +43,8 @@ namespace BoardAdventures.UI.Players
         {
             var isRunning = true;
 
-            timerUI.maxValue = (float) _endTime;
-            timerUI.value = (float) _duration;
+            timerUI.maxValue = 1;// (float) _endTime;
+            timerUI.value = 1;
 
             while (isRunning)
             {
