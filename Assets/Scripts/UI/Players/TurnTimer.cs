@@ -61,7 +61,7 @@ namespace BoardAdventures.UI.Players
                 yield return null;
             }
 
-            _signalBus.Fire(new OnTurnTimerExpiredSignal());
+            _signalBus.Fire(new OnTurnTimerExpiredSignal {TurnEndTime = _timeProvider.GetCurrentTime()});
             IsRunning = false;
         }
 

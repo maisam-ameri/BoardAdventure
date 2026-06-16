@@ -21,6 +21,7 @@ namespace Installers
             Container.DeclareSignal<OnLobbyStateUiChangedSignal>();
             Container.DeclareSignal<OnConnectionRequestSignal>();
             Container.DeclareSignal<OnJoinToRoomRequestSignal>();
+            Container.DeclareSignal<OnTurnEndTimeChangedSignal>();
 
             // Services
             Container.Bind<IAccountService>().To<LocalAccountService>().AsSingle();

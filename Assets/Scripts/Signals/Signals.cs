@@ -8,6 +8,7 @@ namespace Signals
 {
     public class OnTurnTimerExpiredSignal
     {
+        public double TurnEndTime;
     }
 
     public class OnCapturedSignal
@@ -84,10 +85,10 @@ namespace Signals
         public bool IsMaster { get; set; }
     }
     
-    // public class OnTurnChangedSignal
-    // {
-    //
-    // }
+    public class OnTurnEndTimeChangedSignal
+    {
+       
+    }
     
 
     // Auth
