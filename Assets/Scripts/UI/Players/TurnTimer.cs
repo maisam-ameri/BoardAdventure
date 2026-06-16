@@ -43,8 +43,8 @@ namespace BoardAdventures.UI.Players
         {
             var isRunning = true;
 
-            timerUI.maxValue = (float) _endTime;
-            timerUI.value = (float) _duration;
+            timerUI.maxValue = 1;// (float) _endTime;
+            timerUI.value = 1;
 
             while (isRunning)
             {
@@ -61,7 +61,7 @@ namespace BoardAdventures.UI.Players
                 yield return null;
             }
 
-            _signalBus.Fire(new OnTurnTimerExpiredSignal());
+            _signalBus.Fire(new OnTurnTimerExpiredSignal {TurnEndTime = _timeProvider.GetCurrentTime()});
             IsRunning = false;
         }
 

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BoardAdventures.Abstractions;
 using BoardAdventures.Core.Players;
+using BoardAdventures.Network;
 using Signals;
 using UnityEngine;
 using Zenject;
@@ -23,6 +24,7 @@ namespace BoardAdventures.Core.GameLogic
         private readonly SignalBus _signalBus;
         private readonly IPlayerSetupService _playerSetupService;
         private readonly INetworkService _networkService;
+        private float _turnDuration;
 
         public MatchFlowService(IUIMessageManager uiMessageManager
             , ITurnFlowService turnFlowService
@@ -44,7 +46,8 @@ namespace BoardAdventures.Core.GameLogic
             _networkService = networkService;
             _signalBus = signalBus;
 
-            _signalBus.Subscribe<OnTurnTimerExpiredSignal>(SwitchTurn);
+            _signalBus.Subscribe<OnTurnTimerExpiredSignal>(HandleTurnExpired);
+            _signalBus.Subscribe<OnTurnEndTimeChangedSignal>(SwitchTurn);
             _signalBus.Subscribe<OnDiceRolledSignal>(HandleDiceRolled);
             _signalBus.Subscribe<OnDiceRollRequestedSignal>(OnDiceButtonClicked);
             _signalBus.Subscribe<OnPlayerActionStartedSignal>(HandlePlayerActionStarted);
@@ -58,7 +61,7 @@ namespace BoardAdventures.Core.GameLogic
             var playerNetModels = _networkService.GetPlayers();
             var playerGameModels = MapPlayersNetModel(playerNetModels);
             _playerSetupService.Setup(playerGameModels);
-            
+
             var players = _playerSetupService.Players;
             _turnVisualizer.Initial(players);
             _turnVisualizer.DeactivateTurnVisuals();
@@ -66,10 +69,14 @@ namespace BoardAdventures.Core.GameLogic
             _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, null);
             _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, null);
             _diceManager.Reset();
+            _turnDuration = matchSignal.TurnDuration;
+
+            HandleTurnExpired(null);
+            //StartNewTurn();
         }
 
-        private List<Player> MapPlayersNetModel(List<Photon.Realtime.Player> players)=>
-             players.Select(p => new Core.Players.Player {Nickname = p.NickName}).ToList();
+        private List<Player> MapPlayersNetModel(List<Photon.Realtime.Player> players) =>
+            players.Select(p => new Core.Players.Player {Nickname = p.NickName}).ToList();
 
         private void HandleEndMatch(OnGameOverSignal signal)
         {
@@ -82,40 +89,51 @@ namespace BoardAdventures.Core.GameLogic
             _diceManager.RollDice();
         }
 
-        private void StartTurn()
+        private void StartNewTurn()
+        {
+            HandleStartTurn();
+            _isTurnBeginning = false;
+        }
+
+        private bool _isTurnBeginning = true;
+
+        private void HandleStartTurn()
         {
             _uiMessageManager.ShowPlayerTurnMessage(CurrentPlayer.Nickname);
-            HandleTurnStarted();
-        }
-
-        private void HandleTurnStarted()
-        {
             _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, LastPlayer);
             _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, LastPlayer);
-            CurrentPlayer.UI.StartTurnTimer(10);
+            CurrentPlayer.UI.StartTurnTimer(_turnDuration);
         }
 
-        public void SwitchTurn()
+        private void HandleTurnExpired(OnTurnTimerExpiredSignal signal)
         {
-            HandleSwitchTurn();
+            if (_networkService.IsMasterClient)
+                _networkService.SetPlayerReady(NetworkKeys.TurnEndTime, signal?.TurnEndTime ?? 0);
         }
 
-        private async void HandleSwitchTurn()
+        public async void SwitchTurn()
         {
+            if (_isTurnBeginning)
+            {
+                StartNewTurn();
+                return;
+            }
+
             CurrentPlayer.UI.PauseTimer();
             await Task.Delay(1000);
             _diceManager.Reset();
             _diceManager.SetActivateDice(true);
             CurrentPlayer.UI.StopTimer();
             _turnFlowService.NextPlayer();
-            StartTurn();
+
+            HandleStartTurn();
         }
 
         public void GrantReward(Player player)
         {
             _uiMessageManager.ShowRewardMessage(player.Nickname);
             _diceManager.SetActivateDice(true);
-            CurrentPlayer.UI.StartTurnTimer(10);
+            CurrentPlayer.UI.StartTurnTimer(_turnDuration);
         }
 
         private void HandleDiceRolled(OnDiceRolledSignal signal)
@@ -137,7 +155,7 @@ namespace BoardAdventures.Core.GameLogic
             {
                 case TurnDecision.WaitForAction:
                     _uiMessageManager.ShowActionAvailableMessage(CurrentPlayer.Nickname, step.Value);
-                    CurrentPlayer.UI.StartTurnTimer(10);
+                    CurrentPlayer.UI.StartTurnTimer(_turnDuration);
                     break;
                 case TurnDecision.RollReward:
                     _uiMessageManager.ShowRewardMessage(CurrentPlayer.Nickname);

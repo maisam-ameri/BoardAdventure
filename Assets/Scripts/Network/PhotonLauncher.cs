@@ -101,9 +101,11 @@ namespace BoardAdventures.Network
 
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
-            Debug.Log(changedProps.ContainsKey(NetworkKeys.ReadyToPlayKey));
             if (changedProps.ContainsKey(NetworkKeys.ReadyToPlayKey))
                 _signalBus.Fire(new OnLobbyStateChangedSignal());
+            
+            if (changedProps.ContainsKey(NetworkKeys.TurnEndTime))
+                _signalBus.Fire(new OnTurnEndTimeChangedSignal());
         }
 
         public bool CheckAllPlayersReady()

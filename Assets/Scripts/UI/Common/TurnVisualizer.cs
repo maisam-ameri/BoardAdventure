@@ -25,7 +25,7 @@ namespace BoardAdventures.UI.Common
         {
             lastPlayer?.UI.SetActivate(false);
             currentPlayer.UI.SetActivate(true);
-            currentPlayer.UI.StartTurnTimer(5);
+            //currentPlayer.UI.StartTurnTimer(5);
         }
         
         public void DeactivateTurnVisuals()

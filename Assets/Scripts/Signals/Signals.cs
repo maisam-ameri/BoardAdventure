@@ -8,6 +8,7 @@ namespace Signals
 {
     public class OnTurnTimerExpiredSignal
     {
+        public double TurnEndTime;
     }
 
     public class OnCapturedSignal
@@ -54,6 +55,7 @@ namespace Signals
 
     public class OnStartMatchSignal
     {
+        public float TurnDuration;
     }
 
 
@@ -81,6 +83,11 @@ namespace Signals
     {
         public LobbyState State { get; set; }
         public bool IsMaster { get; set; }
+    }
+    
+    public class OnTurnEndTimeChangedSignal
+    {
+       
     }
     
 

@@ -7,7 +7,9 @@ namespace Managers
 {
     public class MatchManager : MonoBehaviour, IMatchManager
     {
+        [SerializeField] private float turnDuration = 10;
         private SignalBus _signalBus;
+        
         [Inject]
         private void Initialize(SignalBus signalBus)
         {
@@ -15,7 +17,7 @@ namespace Managers
         }
         private void Start()
         {
-            _signalBus.Fire(new OnStartMatchSignal());
+            _signalBus.Fire(new OnStartMatchSignal{TurnDuration = turnDuration});
         }
     }
 }
