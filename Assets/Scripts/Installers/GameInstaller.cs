@@ -33,9 +33,9 @@ namespace Installers
             // Services
             Container.Bind<IMatchFlowService>().To<MatchFlowService>().AsSingle();
             Container.Bind<IGameRulesService>().To<GameRulesService>().AsSingle().NonLazy();
-            Container.Bind<TurnFlowService>().AsSingle();
-            Container.Bind<ITurnFlowService>().To<TurnFlowService>().FromResolve();
-            Container.Bind<ICurrentPlayerProvider>().To<TurnFlowService>().FromResolve();
+            Container.BindInterfacesTo<TurnFlowService>().AsSingle();
+            // Container.Bind<ITurnFlowService>().To<TurnFlowService>().AsSingle();
+            // Container.Bind<IActivePlayerProvider>().To<TurnFlowService>().FromResolve();
             Container.Bind<ITurnLogicService>().To<TurnLogicService>().AsSingle();
             Container.Bind<IPlayerActionValidator>().To<PlayerActionValidator>().AsSingle();
             Container.Bind<IPlayerActionService>().To<PlayerActionService>().AsSingle().NonLazy();

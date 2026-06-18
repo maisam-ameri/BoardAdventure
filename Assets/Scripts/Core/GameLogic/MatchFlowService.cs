@@ -12,8 +12,8 @@ namespace BoardAdventures.Core.GameLogic
 {
     public class MatchFlowService : IMatchFlowService
     {
-        public Player CurrentPlayer => _turnFlowService.CurrentPlayer;
-        private Player LastPlayer => _turnFlowService.LastPlayer;
+        public Player ActivePlayer => _turnFlowService.ActivePlayer;
+        private Player LastPlayer => _turnFlowService.PreviousPlayer;
 
         private readonly IUIMessageManager _uiMessageManager;
         private readonly ITurnFlowService _turnFlowService;
@@ -24,7 +24,9 @@ namespace BoardAdventures.Core.GameLogic
         private readonly SignalBus _signalBus;
         private readonly IPlayerSetupService _playerSetupService;
         private readonly INetworkService _networkService;
+        
         private float _turnDuration;
+        private bool _isTurnBeginning = true;
 
         public MatchFlowService(IUIMessageManager uiMessageManager
             , ITurnFlowService turnFlowService
@@ -66,21 +68,24 @@ namespace BoardAdventures.Core.GameLogic
             _turnVisualizer.Initial(players);
             _turnVisualizer.DeactivateTurnVisuals();
             _turnVisualizer.DeactivatePlayerVisuals();
-            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, null);
-            _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, null);
+            _turnVisualizer.UpdatePlayerPanels(ActivePlayer, null);
+            _turnVisualizer.UpdatePawnHighlights(ActivePlayer, null);
             _diceManager.Reset();
             _turnDuration = matchSignal.TurnDuration;
 
             HandleTurnExpired(null);
-            //StartNewTurn();
         }
 
         private List<Player> MapPlayersNetModel(List<Photon.Realtime.Player> players) =>
-            players.Select(p => new Core.Players.Player {Nickname = p.NickName}).ToList();
+            players.Select(p => new Core.Players.Player
+            {
+                Id = p.ActorNumber,
+                Nickname = p.NickName
+            }).ToList();
 
         private void HandleEndMatch(OnGameOverSignal signal)
         {
-            CurrentPlayer.UI.StopTimer();
+            ActivePlayer.UI.StopTimer();
             Debug.Log($"{signal.Winner.Nickname} won");
         }
 
@@ -92,17 +97,19 @@ namespace BoardAdventures.Core.GameLogic
         private void StartNewTurn()
         {
             HandleStartTurn();
+
             _isTurnBeginning = false;
         }
 
-        private bool _isTurnBeginning = true;
 
         private void HandleStartTurn()
         {
-            _uiMessageManager.ShowPlayerTurnMessage(CurrentPlayer.Nickname);
-            _turnVisualizer.UpdatePlayerPanels(CurrentPlayer, LastPlayer);
-            _turnVisualizer.UpdatePawnHighlights(CurrentPlayer, LastPlayer);
-            CurrentPlayer.UI.StartTurnTimer(_turnDuration);
+            _uiMessageManager.ShowPlayerTurnMessage(ActivePlayer.Nickname);
+            _turnVisualizer.UpdatePlayerPanels(ActivePlayer, LastPlayer);
+            _turnVisualizer.UpdatePawnHighlights(ActivePlayer, LastPlayer);
+            ActivePlayer.UI.StartTurnTimer(_turnDuration);
+            _diceManager.SetActivateDice(_turnFlowService.IsActivePlayerTurn());
+
         }
 
         private void HandleTurnExpired(OnTurnTimerExpiredSignal signal)
@@ -119,11 +126,14 @@ namespace BoardAdventures.Core.GameLogic
                 return;
             }
 
-            CurrentPlayer.UI.PauseTimer();
+            ActivePlayer.UI.PauseTimer();
             await Task.Delay(1000);
             _diceManager.Reset();
-            _diceManager.SetActivateDice(true);
-            CurrentPlayer.UI.StopTimer();
+            
+            // if(_turnFlowService.IsActivePlayerTurn())
+            //     _diceManager.SetActivateDice(true);
+            
+            ActivePlayer.UI.StopTimer();
             _turnFlowService.NextPlayer();
 
             HandleStartTurn();
@@ -132,8 +142,11 @@ namespace BoardAdventures.Core.GameLogic
         public void GrantReward(Player player)
         {
             _uiMessageManager.ShowRewardMessage(player.Nickname);
-            _diceManager.SetActivateDice(true);
-            CurrentPlayer.UI.StartTurnTimer(_turnDuration);
+            
+            if(_turnFlowService.IsActivePlayerTurn())
+                _diceManager.SetActivateDice(true);
+            
+            ActivePlayer.UI.StartTurnTimer(_turnDuration);
         }
 
         private void HandleDiceRolled(OnDiceRolledSignal signal)
@@ -146,19 +159,19 @@ namespace BoardAdventures.Core.GameLogic
             _diceManager.SetActivateDice(false);
 
 
-            var canEnter = _playerActionValidator.CheckToEnterPawn(CurrentPlayer, step);
-            var canMove = _playerActionValidator.CheckToMovePawn(CurrentPlayer, step);
+            var canEnter = _playerActionValidator.CheckToEnterPawn(ActivePlayer, step);
+            var canMove = _playerActionValidator.CheckToMovePawn(ActivePlayer, step);
 
             var decision = _turnLogicService.ProcessRoll(step, canEnter, canMove);
 
             switch (decision)
             {
                 case TurnDecision.WaitForAction:
-                    _uiMessageManager.ShowActionAvailableMessage(CurrentPlayer.Nickname, step.Value);
-                    CurrentPlayer.UI.StartTurnTimer(_turnDuration);
+                    _uiMessageManager.ShowActionAvailableMessage(ActivePlayer.Nickname, step.Value);
+                    ActivePlayer.UI.StartTurnTimer(_turnDuration);
                     break;
                 case TurnDecision.RollReward:
-                    _uiMessageManager.ShowRewardMessage(CurrentPlayer.Nickname);
+                    _uiMessageManager.ShowRewardMessage(ActivePlayer.Nickname);
                     _diceManager.SetActivateDice(true);
                     break;
 
@@ -174,7 +187,7 @@ namespace BoardAdventures.Core.GameLogic
 
             if (_turnLogicService.HasReward)
             {
-                GrantReward(CurrentPlayer);
+                GrantReward(ActivePlayer);
             }
             else
             {
@@ -184,7 +197,7 @@ namespace BoardAdventures.Core.GameLogic
 
         public void HandlePlayerActionStarted()
         {
-            CurrentPlayer.UI.PauseTimer();
+            ActivePlayer.UI.PauseTimer();
         }
     }
 }

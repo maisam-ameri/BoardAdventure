@@ -3,22 +3,26 @@ using System.Collections.Generic;
 using BoardAdventures.Abstractions;
 using BoardAdventures.Core.Players;
 using Signals;
+using UnityEngine;
 using Zenject;
 
 namespace BoardAdventures.Core.GameLogic
 {
-    public class TurnFlowService : ITurnFlowService, ICurrentPlayerProvider
+    public class TurnFlowService : ITurnFlowService, IActivePlayerProvider
     {
-        public Player CurrentPlayer => _players[_currentPlayerIndex];
-        public Player LastPlayer => _lastPlayer;
+        private readonly INetworkService _networkService;
+        private readonly IActivePlayerProvider _activePlayerProvider;
+        public Player ActivePlayer => _players[_activePlayerIndex];
+        public Player PreviousPlayer => _previousPlayer;
 
-        private Player _lastPlayer;
-        private int _currentPlayerIndex;
+        private Player _previousPlayer;
+        private int _activePlayerIndex;
         private List<Player> _players;
 
 
-        public TurnFlowService(SignalBus signalBus)
+        public TurnFlowService(SignalBus signalBus, INetworkService networkService)
         {
+            _networkService = networkService;
             signalBus.Subscribe<OnPlayersCreatedSignal>(HandlePlayersCreated);
         }
 
@@ -28,13 +32,18 @@ namespace BoardAdventures.Core.GameLogic
                 throw new InvalidOperationException("TurnFlowService already initialized.");
 
             _players = signal.Players ?? throw new ArgumentNullException(nameof(signal.Players));
-            _currentPlayerIndex = 0;
+            _activePlayerIndex = 0;
         }
 
         public void NextPlayer()
         {
-            _lastPlayer = CurrentPlayer;
-            _currentPlayerIndex = (_currentPlayerIndex + 1) % _players.Count;
+            _previousPlayer = ActivePlayer;
+            _activePlayerIndex = (_activePlayerIndex + 1) % _players.Count;
+        }
+
+        public bool IsActivePlayerTurn()
+        {
+            return _networkService.LocalPlayer.ActorNumber == ActivePlayer.Id;
         }
     }
 }

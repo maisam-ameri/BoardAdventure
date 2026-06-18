@@ -13,7 +13,7 @@ namespace BoardAdventures.Core.Movement
     {
         private int _delay = 500;
         private readonly SignalBus _signalBus;
-        private readonly ICurrentPlayerProvider _playerProvider;
+        private readonly IActivePlayerProvider _playerProvider;
 
         public int Delay
         {
@@ -21,9 +21,9 @@ namespace BoardAdventures.Core.Movement
         }
 
 
-        public Mover(ICurrentPlayerProvider currentPlayerProvider, SignalBus signalBus)
+        public Mover(IActivePlayerProvider activePlayerProvider, SignalBus signalBus)
         {
-            _playerProvider = currentPlayerProvider;
+            _playerProvider = activePlayerProvider;
             _signalBus = signalBus;
         }
 
@@ -52,7 +52,7 @@ namespace BoardAdventures.Core.Movement
             pawn.CurrentNode = path[^1];
             pawn.CurrentNode.Pawn = pawn;
             pawn.CurrentNode.IsEmpty = false;
-            _signalBus.Fire(new OnPawnMoveCompletedSignal{Player = _playerProvider.CurrentPlayer});
+            _signalBus.Fire(new OnPawnMoveCompletedSignal{Player = _playerProvider.ActivePlayer});
         }
     }
 }

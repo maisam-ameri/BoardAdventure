@@ -15,6 +15,7 @@ namespace BoardAdventures.Network
     {
         public byte MaxPlayers => PhotonNetwork.CurrentRoom.MaxPlayers;
         public bool IsMasterClient => PhotonNetwork.IsMasterClient;
+        public Player LocalPlayer => PhotonNetwork.LocalPlayer;
 
         private SignalBus _signalBus;
         private IAccountService _accountService;

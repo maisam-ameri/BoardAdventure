@@ -2,8 +2,8 @@
 
 namespace BoardAdventures.Abstractions
 {
-    public interface ICurrentPlayerProvider
+    public interface IActivePlayerProvider
     {
-        public Player CurrentPlayer { get; }
+        public Player ActivePlayer { get; }
     }
 }

@@ -4,7 +4,7 @@ namespace BoardAdventures.Abstractions
 {
     public interface IMatchFlowService
     {
-        public Player CurrentPlayer { get; }
+        public Player ActivePlayer { get; }
 
         public void SwitchTurn();
         public void GrantReward(Player player);

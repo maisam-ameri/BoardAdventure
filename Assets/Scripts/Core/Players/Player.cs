@@ -6,6 +6,7 @@ namespace BoardAdventures.Core.Players
 {
     public  class Player
     {
+        public int Id { get; set; }
         public string Nickname { get; set; }
         public bool IsActive { get; set; }
         public PlayerUI UI { get; set; }

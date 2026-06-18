@@ -4,8 +4,9 @@ namespace BoardAdventures.Abstractions
 {
     public interface ITurnFlowService
     {
-        public  Player CurrentPlayer { get; }
-        public  Player LastPlayer { get; }
+        public  Player ActivePlayer { get; }
+        public  Player PreviousPlayer { get; }
         void NextPlayer();
+        bool IsActivePlayerTurn();
     }
 }

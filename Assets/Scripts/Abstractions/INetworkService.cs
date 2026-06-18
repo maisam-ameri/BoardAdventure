@@ -7,6 +7,7 @@ namespace BoardAdventures.Abstractions
     {
         public byte MaxPlayers { get; }
         public bool IsMasterClient { get; }
+        public Player LocalPlayer { get; }
         void Connect();
         void JoinToRoom(byte maxPlayer);
         public void SetPlayerReady<T>(string key, T prop = default);

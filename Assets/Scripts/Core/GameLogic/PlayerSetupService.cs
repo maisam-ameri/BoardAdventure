@@ -46,6 +46,7 @@ namespace BoardAdventures.Core.GameLogic
             {
                 var player = new Player()
                 {
+                    Id = players[i].Id,
                     Nickname = players[i].Nickname,
                     IsActive = true,
                     Factions = playerFactions[i]

@@ -42,7 +42,7 @@ namespace BoardAdventures.Core.GameLogic
 
             if (pawn.State == PawnState.InBase && _diceManager.Step == 6)
             {
-                if (_matchFlowService.CurrentPlayer.Factions.All(f => f != faction)) return;
+                if (_matchFlowService.ActivePlayer.Factions.All(f => f != faction)) return;
 
                 if (!faction.StartNode.IsEmpty)
                 {
@@ -60,7 +60,7 @@ namespace BoardAdventures.Core.GameLogic
 
         private async Task HandleSelectedPawnAsync(IPawn pawn)
         {
-            await _pawnMovementService.MovePawn(_matchFlowService.CurrentPlayer, pawn, _diceManager.Step);
+            await _pawnMovementService.MovePawn(_matchFlowService.ActivePlayer, pawn, _diceManager.Step);
         }
     }
 }
