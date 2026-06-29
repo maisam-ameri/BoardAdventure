@@ -33,6 +33,7 @@ namespace Signals
 
     public class OnDiceRollRequestedSignal
     {
+        
     }
 
     public class OnPlayerActionStartedSignal
@@ -87,7 +88,10 @@ namespace Signals
     
     public class OnTurnEndTimeChangedSignal
     {
-       
+    }
+    
+    public class OnDiceRollRequestedNetSignal
+    {
     }
     
 

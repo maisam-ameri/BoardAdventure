@@ -74,7 +74,7 @@ namespace BoardAdventures.Network
         public void ToggleReady()
         {
             var isReady = IsPlayerReady(null);
-            _networkService.SetPlayerReady(NetworkKeys.ReadyToPlayKey, !isReady);
+            _networkService.SetPlayerCustomProperty(NetworkKeys.ReadyToPlayKey, !isReady);
         }
 
         public void StartMatch(string levelName)

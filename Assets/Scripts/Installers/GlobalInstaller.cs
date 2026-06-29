@@ -22,6 +22,8 @@ namespace Installers
             Container.DeclareSignal<OnConnectionRequestSignal>();
             Container.DeclareSignal<OnJoinToRoomRequestSignal>();
             Container.DeclareSignal<OnTurnEndTimeChangedSignal>();
+            Container.DeclareSignal<OnDiceRollRequestedNetSignal>();
+            Container.DeclareSignal<OnDiceRolledSignal>();
 
             // Services
             Container.Bind<IAccountService>().To<LocalAccountService>().AsSingle();

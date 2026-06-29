@@ -20,10 +20,11 @@ namespace BoardAdventures.Network
         private SignalBus _signalBus;
         private IAccountService _accountService;
         private INetworkConfigProvider _networkConfigProvider;
-        
+
 
         [Inject]
-        private void Initialize(SignalBus signalBus, IAccountService accountService, INetworkConfigProvider networkConfigProvider)
+        private void Initialize(SignalBus signalBus, IAccountService accountService,
+            INetworkConfigProvider networkConfigProvider)
         {
             _signalBus = signalBus;
             _accountService = accountService;
@@ -35,16 +36,26 @@ namespace BoardAdventures.Network
             PhotonNetwork.AutomaticallySyncScene = true;
         }
 
-        public T GetPlayerProp<T>(string key,Player player = null, T defaultValue = default)
+        public T GetRoomProp<T>(string key, T defaultValue = default)
+        {
+            return NetworkHelper.GetCustomProperty<T>(key);
+        }
+
+        public T GetPlayerProp<T>(string key, Player player = null, T defaultValue = default)
         {
             player ??= PhotonNetwork.LocalPlayer;
 
             return NetworkHelper.GetPlayerCustomProperty<T>(key, player);
         }
 
-        public void SetPlayerReady<T>(string key, T prop = default)
+        public void SetPlayerCustomProperty<T>(string key, T prop = default)
         {
-            NetworkHelper.SetPlayerCustomProperty(key,prop);
+            NetworkHelper.SetPlayerCustomProperty(key, prop);
+        }
+
+        public void SetCustomProperty<T>(string key, T prop = default)
+        {
+            NetworkHelper.SetCustomProperty(key, prop);
         }
 
         public void Connect()
@@ -100,12 +111,21 @@ namespace BoardAdventures.Network
             _signalBus.Fire(new OnLobbyStateChangedSignal());
         }
 
+        public override void OnRoomPropertiesUpdate(Hashtable changedProps)
+        {
+            if (changedProps.ContainsKey(NetworkKeys.DiceRollRequestedKey))
+                _signalBus.Fire(new OnDiceRollRequestedNetSignal());
+
+            if (changedProps.ContainsKey(NetworkKeys.StepKey))
+                _signalBus.Fire(new OnDiceRolledSignal {Step = (int?) changedProps[NetworkKeys.StepKey]});
+        }
+
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
             if (changedProps.ContainsKey(NetworkKeys.ReadyToPlayKey))
                 _signalBus.Fire(new OnLobbyStateChangedSignal());
-            
-            if (changedProps.ContainsKey(NetworkKeys.TurnEndTime))
+
+            if (changedProps.ContainsKey(NetworkKeys.TurnEndTimeKey))
                 _signalBus.Fire(new OnTurnEndTimeChangedSignal());
         }
 
@@ -113,8 +133,8 @@ namespace BoardAdventures.Network
         {
             foreach (var player in PhotonNetwork.CurrentRoom.Players.Values)
             {
-                if(player.IsMasterClient) continue;
-                
+                if (player.IsMasterClient) continue;
+
                 var value = GetPlayerProp<bool>(NetworkKeys.ReadyToPlayKey, player);
 
                 if (value is false)

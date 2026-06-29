@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Threading.Tasks;
 using BoardAdventures.Abstractions;
 using BoardAdventures.Core.Dices;
+using BoardAdventures.Network;
 using BoardAdventures.UI.Dices;
 using Signals;
 using UnityEngine;
@@ -13,38 +15,46 @@ namespace BoardAdventures.Managers
         [SerializeField] private DiceUI diceUI;
         private Dice _dice;
         private SignalBus _signalBus;
+        private INetworkService _networkService;
 
         public int? Step { get; private set; }
         public bool IsRolled { get; set; }
 
 
         [Inject]
-        public void Initialize(SignalBus signalBus)
+        public void Initialize(SignalBus signalBus, INetworkService networkService)
         {
             _signalBus = signalBus;
+            _networkService = networkService;
         }
 
         private void Start()
         {
             _dice = new Dice();
+            _signalBus.Subscribe<OnDiceRollRequestedNetSignal>(RollDice);
         }
 
         public void RollDice()
         {
+            if (!_networkService.IsMasterClient) return;
+            
             Step = _dice.Roll();
-            diceUI.ShowRoll(Step.Value);
+            _networkService.SetCustomProperty(NetworkKeys.StepKey, Step);
 
-            // if (Step == 6)
-            //     _signalBus.Fire(new OnFirstSixRolledSignal());
+            // for debug
+            //if (Step == 6) Step = 1;
+        }
 
-            _signalBus.Fire(new OnDiceRolledSignal {Step = Step});
+        public void UpdateDiceUI(int step)
+        {
+            diceUI.Roll(step);
         }
 
         // for debugging
         public void RollDice(int step)
         {
             Step = step;
-            diceUI.ShowRoll(Step.Value);
+            diceUI.Roll(Step.Value);
 
             // if (Step == 6)
             //     _signalBus.Fire(new OnFirstSixRolledSignal());

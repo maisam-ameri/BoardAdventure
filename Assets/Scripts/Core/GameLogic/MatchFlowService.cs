@@ -89,11 +89,15 @@ namespace BoardAdventures.Core.GameLogic
             Debug.Log($"{signal.Winner.Nickname} won");
         }
 
+        // private void OnDiceButtonClicked()
+        // {
+        //     _diceManager.RollDice();
+        // }
         private void OnDiceButtonClicked()
         {
-            _diceManager.RollDice();
+            _diceManager.SetActivateDice(false);
+            _networkService.SetCustomProperty(NetworkKeys.DiceRollRequestedKey,ActivePlayer.Id);
         }
-
         private void StartNewTurn()
         {
             HandleStartTurn();
@@ -115,7 +119,7 @@ namespace BoardAdventures.Core.GameLogic
         private void HandleTurnExpired(OnTurnTimerExpiredSignal signal)
         {
             if (_networkService.IsMasterClient)
-                _networkService.SetPlayerReady(NetworkKeys.TurnEndTime, signal?.TurnEndTime ?? 0);
+                _networkService.SetPlayerCustomProperty(NetworkKeys.TurnEndTimeKey, signal?.TurnEndTime ?? 0);
         }
 
         public async void SwitchTurn()
@@ -156,7 +160,8 @@ namespace BoardAdventures.Core.GameLogic
             if (step is null) return;
 
             _diceManager.IsRolled = true;
-            _diceManager.SetActivateDice(false);
+            _diceManager.UpdateDiceUI(step.Value);
+            // _diceManager.SetActivateDice(false);
 
 
             var canEnter = _playerActionValidator.CheckToEnterPawn(ActivePlayer, step);

@@ -5,14 +5,16 @@ namespace BoardAdventures.Abstractions
 {
     public interface INetworkService
     {
-        public byte MaxPlayers { get; }
-        public bool IsMasterClient { get; }
-        public Player LocalPlayer { get; }
+        byte MaxPlayers { get; }
+        bool IsMasterClient { get; }
+        Player LocalPlayer { get; }
         void Connect();
         void JoinToRoom(byte maxPlayer);
-        public void SetPlayerReady<T>(string key, T prop = default);
-        public T GetPlayerProp<T>(string key,Player player = null, T defaultValue = default);
-        List<Player>  GetPlayers();
+        void SetCustomProperty<T>(string key, T prop = default);
+        void SetPlayerCustomProperty<T>(string key, T prop = default);
+        T GetRoomProp<T>(string key, T defaultValue = default);
+        T GetPlayerProp<T>(string key, Player player = null, T defaultValue = default);
+        List<Player> GetPlayers();
         bool CheckAllPlayersReady();
         void LoadLevel(string levelName);
     }

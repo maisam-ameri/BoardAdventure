@@ -9,7 +9,7 @@ namespace BoardAdventures.UI.Dices
         [SerializeField] private TextMeshProUGUI stepTxt;
         [SerializeField] private Button rollButton;
         [SerializeField] private CanvasGroup canvas;
-        public void ShowRoll(int step)
+        public void Roll(int step)
         {
             stepTxt.text = step.ToString();
         }
