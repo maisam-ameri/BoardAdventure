@@ -6,7 +6,7 @@ namespace BoardAdventures.GameObjects.Nodes
 {
     public abstract class Node : MonoBehaviour, INode
     {
-        public int Index { get; set; }
+        public int NodeId { get; set; }
         public bool IsEmpty { get; set; } = true;
         public INode PrevNode { get; set; }
         public INode NextNode { get; set; }

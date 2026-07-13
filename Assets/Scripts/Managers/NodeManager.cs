@@ -11,6 +11,7 @@ namespace BoardAdventures.Managers
     {
         [SerializeField] private PathNode firstNode;
         [SerializeField] private LayerMask layerMask;
+        [SerializeField] private Transform nodesRoot;
         private INode _blueStartNode;
         private INode _redStartNode;
         private INode _yellowStartNode;
@@ -24,14 +25,27 @@ namespace BoardAdventures.Managers
 
         private void Start()
         {
-            SetupNodes();
-            SetupGoalNodes();
+            InitializeNodes();
         }
 
-        private void SetupNodes()
+        private void InitializeNodes()
+        {
+            AssignNodeIds();
+            LinkPathNodes();
+            LinkGoalNodes();
+        }
+        private void AssignNodeIds()
+        {
+            for (int i = 0; i < nodesRoot.childCount; i++)
+            {
+               var node = nodesRoot.GetChild(i).GetComponent<INode>();
+               node.NodeId = i;
+            }
+        }
+
+        private void LinkPathNodes()
         {
             _nodes = new List<INode> {firstNode};
-            firstNode.Index = 0;
 
             var allNodes = FindObjectsOfType<Node>()
                 .Where(n => n is not BaseNode)
@@ -62,7 +76,6 @@ namespace BoardAdventures.Managers
 
 
                 _nodes.Add(nextNode);
-                nextNode.Index = _nodes.Count - 1;
             }
 
             _nodes.ForEach(n => n.Collider2D.enabled = false);
@@ -89,7 +102,7 @@ namespace BoardAdventures.Managers
             return null;
         }
 
-        private void SetupGoalNodes()
+        private void LinkGoalNodes()
         {
             var factions = FindObjectsOfType<Faction>();
 

@@ -40,7 +40,7 @@ namespace BoardAdventures.Core.GameLogic
 
             var faction = pawn.Faction;
 
-            if (pawn.State == PawnState.InBase && _diceManager.Step == 6)
+            if (pawn.LocationState == PawnLocationState.InBase && _diceManager.Step == 6)
             {
                 if (_matchFlowService.ActivePlayer.Factions.All(f => f != faction)) return;
 
@@ -52,7 +52,7 @@ namespace BoardAdventures.Core.GameLogic
 
                 _pawnManager.EnterPawnToGame(pawn);
             }
-            else if (pawn.State == PawnState.InGame)
+            else if (pawn.LocationState == PawnLocationState.InGame)
             {
                 _ = HandleSelectedPawnAsync(pawn);
             }

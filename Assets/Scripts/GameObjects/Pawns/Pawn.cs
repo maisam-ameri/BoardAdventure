@@ -9,7 +9,7 @@ namespace BoardAdventures.GameObjects.Pawns
 {
     public class Pawn : MonoBehaviour, IPawn
     {
-        public PawnState State { get; set; } = PawnState.InBase;
+        public PawnLocationState LocationState { get; set; } = PawnLocationState.InBase;
         public Color Color
         {
             get => GetComponent<SpriteRenderer>().color;

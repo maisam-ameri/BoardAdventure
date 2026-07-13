@@ -5,7 +5,7 @@ namespace BoardAdventures.GameObjects.Nodes.Abstractions
 {
     public interface INode
     {
-        int Index { get; set; }
+        int NodeId { get; set; }
         bool IsEmpty { get; set; }
         INode PrevNode { get; set; }
         INode NextNode { get; set; }

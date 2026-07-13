@@ -27,7 +27,7 @@ namespace BoardAdventures.Core.GameLogic
             pawn.CurrentNode.Pawn = null;
             pawn.CurrentNode = pawn.Faction.StartNode;
             pawn.Faction.StartNode.IsEmpty = false;
-            pawn.State = PawnState.InGame;
+            pawn.LocationState = PawnLocationState.InGame;
             
             _signalBus.Fire(new OnPlayerActionCompletedSignal());
         }
@@ -45,7 +45,7 @@ namespace BoardAdventures.Core.GameLogic
             pawn.CurrentNode = emptyBaseNode;
             emptyBaseNode.Pawn = pawn;
             emptyBaseNode.IsEmpty = false;
-            pawn.State = PawnState.InBase;
+            pawn.LocationState = PawnLocationState.InBase;
         }
         
         private static INode GetEmptyBaseNode(Faction faction) =>
