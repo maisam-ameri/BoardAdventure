@@ -40,7 +40,6 @@ namespace Installers
             Container.Bind<IPawnManager>().To<PawnManager>().AsSingle();
             Container.Bind<IPawnStateService>().To<PawnStateService>().AsSingle();
             Container.Bind<IPawnMovementService>().To<PawnMovementService>().AsSingle();
-            Container.Bind<IPathCalculator>().To<PathCalculator>().AsSingle();
             Container.Bind<IMovement>().To<Mover>().AsSingle();
             
             // MonoBehaviours

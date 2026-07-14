@@ -7,9 +7,9 @@ using BoardAdventures.GameObjects.Pawns.Abstractions;
 
 namespace BoardAdventures.Core.Path
 {
-    public class PathCalculator: IPathCalculator
+    public static class PathCalculator
     {
-        public List<INode> DefinePath(int? step, IPawn pawn)
+        public static List<INode> DefinePath(int? step, IPawn pawn)
         {
             if (step == null) return null;
 
@@ -66,7 +66,5 @@ namespace BoardAdventures.Core.Path
             return path.Distinct().ToList();
 
         }
-        
-        
     }
 }

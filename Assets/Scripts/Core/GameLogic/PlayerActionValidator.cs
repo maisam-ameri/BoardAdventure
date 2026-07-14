@@ -11,13 +11,6 @@ namespace BoardAdventures.Core.GameLogic
 {
     public class PlayerActionValidator: IPlayerActionValidator
     {
-        private readonly IPathCalculator _pathCalculator;
-
-        public PlayerActionValidator(IPathCalculator pathCalculator)
-        {
-            _pathCalculator = pathCalculator;
-        }
-
         public bool CheckToMovePawn(Player player, int? step)
         {
             return player.Factions
@@ -33,7 +26,7 @@ namespace BoardAdventures.Core.GameLogic
         {
             if (player.Factions.All(f => f != pawn.Faction)) return null;
 
-            var path = _pathCalculator.DefinePath(step, pawn);
+            var path = PathCalculator.DefinePath(step, pawn);
 
             return path.Count != 0 && PathValidator.CanMoveToNode(path[^1], player) ? path : null;
         }
