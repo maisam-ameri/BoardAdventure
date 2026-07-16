@@ -1,4 +1,4 @@
-﻿using BoardAdventures.Abstractions;
+﻿using BoardAdventures.Authentication;
 using Signals;
 using TMPro;
 using UnityEngine;
@@ -6,7 +6,7 @@ using Zenject;
 
 namespace BoardAdventures.UI.Menu
 {
-    public class MenuManager : MonoBehaviour, IMenuManager
+    public class MenuManager : MonoBehaviour
     {
         [SerializeField] private CanvasGroup mainPanel;
         [SerializeField] private CanvasGroup matchPanel;

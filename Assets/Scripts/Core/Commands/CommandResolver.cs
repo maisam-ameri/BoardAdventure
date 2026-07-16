@@ -1,9 +1,7 @@
-﻿using BoardAdventures.Abstractions;
-using BoardAdventures.Core.Commands;
-using BoardAdventures.Core.Rules;
-using Core.State;
+﻿using BoardAdventures.Core.Rules;
+using BoardAdventures.Core.State;
 
-namespace BoardAdventures.Core.GameLogic
+namespace BoardAdventures.Core.Commands
 {
     public class MatchEngine: IMatchEngine
     {
@@ -16,7 +14,7 @@ namespace BoardAdventures.Core.GameLogic
             _movePawnRule = movePawnRule;
         }
 
-        public void HandleCommand(ICommand command)
+        public void ResolveCommand(ICommand command)
         {
             switch (command)
             {

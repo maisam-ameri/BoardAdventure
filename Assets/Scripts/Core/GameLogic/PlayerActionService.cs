@@ -2,22 +2,23 @@
 using System.Threading.Tasks;
 using BoardAdventures.Abstractions;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
+using BoardAdventures.Managers;
 using Signals;
 using Zenject;
 
 namespace BoardAdventures.Core.GameLogic
 {
-    public class PlayerActionService: IPlayerActionService
+    public class PlayerActionService
     {
-        private readonly IDiceManager _diceManager;
+        private readonly DiceManager _diceManager;
         private readonly IUIMessageManager _uiMessageManager;
         private readonly IMatchFlowService _matchFlowService;
-        private readonly IPawnManager _pawnManager;
+        private readonly PawnManager _pawnManager;
         private readonly IPawnMovementService _pawnMovementService;
 
 
-        public PlayerActionService(IDiceManager diceManager, IUIMessageManager uiMessageManager,
-            IMatchFlowService matchFlowService, IPawnManager pawnManager, IPawnMovementService pawnMovementService
+        public PlayerActionService(DiceManager diceManager, IUIMessageManager uiMessageManager,
+            IMatchFlowService matchFlowService, PawnManager pawnManager, IPawnMovementService pawnMovementService
             , SignalBus signalBus)
         {
             _diceManager = diceManager;

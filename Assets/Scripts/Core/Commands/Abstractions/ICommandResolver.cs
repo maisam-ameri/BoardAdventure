@@ -1,4 +1,4 @@
-﻿namespace BoardAdventures.Abstractions
+﻿namespace BoardAdventures.Core.Commands
 {
     public interface IMatchEngine
     {

@@ -1,6 +1,6 @@
 ﻿using Photon.Realtime;
 
-namespace BoardAdventures.Abstractions
+namespace BoardAdventures.Config
 {
     public interface INetworkConfigProvider
     {

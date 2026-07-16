@@ -3,7 +3,7 @@ using System.IO;
 using BoardAdventures.Config;
 using UnityEngine;
 
-namespace Config
+namespace BoardAdventures.Config
 {
     public static class NetworkConfigLoader
     {

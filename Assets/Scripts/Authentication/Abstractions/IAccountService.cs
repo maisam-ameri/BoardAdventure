@@ -1,4 +1,4 @@
-﻿namespace BoardAdventures.Abstractions
+﻿namespace BoardAdventures.Authentication
 {
     public interface IAccountService
     {

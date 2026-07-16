@@ -1,6 +1,6 @@
 ﻿using BoardAdventures.Core.Players;
 
-namespace BoardAdventures.Abstractions
+namespace BoardAdventures.Core.GameLogic
 {
     public interface IActivePlayerProvider
     {

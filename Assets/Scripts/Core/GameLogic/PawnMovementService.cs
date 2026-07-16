@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using BoardAdventures.Abstractions;
+using BoardAdventures.Core.Movement;
 using BoardAdventures.Core.Players;
 using BoardAdventures.GameObjects.Nodes.Abstractions;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
@@ -10,12 +10,12 @@ namespace BoardAdventures.Core.GameLogic
 {
     public class PawnMovementService: IPawnMovementService
     {
-        private readonly IPlayerActionValidator _actionValidator;
+        private readonly PlayerActionValidator _actionValidator;
         private readonly IMovement _movement;
         private readonly IUIMessageManager _uiMessageManager;
 
 
-        public PawnMovementService(IPlayerActionValidator actionValidator, IMovement movement,
+        public PawnMovementService(PlayerActionValidator actionValidator, IMovement movement,
             IUIMessageManager uiMessageManager)
         {
             _actionValidator = actionValidator;

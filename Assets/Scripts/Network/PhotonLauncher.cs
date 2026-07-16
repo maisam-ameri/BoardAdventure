@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BoardAdventures.Abstractions;
-using Config;
+using BoardAdventures.Authentication;
+using BoardAdventures.Config;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;

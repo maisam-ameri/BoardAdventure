@@ -8,7 +8,7 @@ using Zenject;
 
 namespace BoardAdventures.Core.GameLogic
 {
-    public class PawnStateService: IPawnStateService
+    public class PawnStateService
     {
 
         private readonly SignalBus _signalBus;

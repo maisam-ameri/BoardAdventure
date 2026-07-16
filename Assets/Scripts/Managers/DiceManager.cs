@@ -10,7 +10,7 @@ using Zenject;
 
 namespace BoardAdventures.Managers
 {
-    public class DiceManager : MonoBehaviour, IDiceManager
+    public class DiceManager : MonoBehaviour
     {
         [SerializeField] private DiceUI diceUI;
         private Dice _dice;

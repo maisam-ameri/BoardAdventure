@@ -5,7 +5,7 @@ using Zenject;
 
 namespace Managers
 {
-    public class MatchManager : MonoBehaviour, IMatchManager
+    public class MatchManager : MonoBehaviour
     {
         [SerializeField] private float turnDuration = 10;
         private SignalBus _signalBus;

@@ -1,6 +1,4 @@
-﻿using BoardAdventures.Core.GameLogic;
-
-namespace BoardAdventures.Abstractions
+﻿namespace BoardAdventures.Core.GameLogic
 {
     public interface ITurnLogicService
     {

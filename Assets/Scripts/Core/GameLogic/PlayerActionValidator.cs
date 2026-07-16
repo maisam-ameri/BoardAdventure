@@ -9,7 +9,7 @@ using BoardAdventures.GameObjects.Pawns.Abstractions;
 
 namespace BoardAdventures.Core.GameLogic
 {
-    public class PlayerActionValidator: IPlayerActionValidator
+    public class PlayerActionValidator
     {
         public bool CheckToMovePawn(Player player, int? step)
         {

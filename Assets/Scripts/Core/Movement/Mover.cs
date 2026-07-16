@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using BoardAdventures.Abstractions;
+using BoardAdventures.Core.GameLogic;
 using BoardAdventures.Core.Path;
 using BoardAdventures.GameObjects.Nodes.Abstractions;
 using BoardAdventures.GameObjects.Pawns.Abstractions;

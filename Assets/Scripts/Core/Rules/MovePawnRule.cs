@@ -1,7 +1,6 @@
-﻿using System;
-using BoardAdventures.Core.Commands;
+﻿using BoardAdventures.Core.Commands;
 using BoardAdventures.Core.Results;
-using Core.State;
+using BoardAdventures.Core.State;
 
 namespace BoardAdventures.Core.Rules
 {

@@ -10,7 +10,7 @@ namespace Installers
         public override void InstallBindings()
         {
             
-            Container.Bind<IMenuManager>().To<MenuManager>().FromComponentInHierarchy().AsSingle();
+            Container.Bind<MenuManager>().FromComponentInHierarchy().AsSingle();
             Container.Bind<ILobbyManager>().To<LobbyManager>().FromComponentInHierarchy().AsSingle();
 
         }

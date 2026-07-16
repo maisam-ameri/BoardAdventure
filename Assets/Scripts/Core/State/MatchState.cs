@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Core.State
+namespace BoardAdventures.Core.State
 {
     public class MatchState
     {

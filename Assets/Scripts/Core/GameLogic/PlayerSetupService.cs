@@ -11,14 +11,14 @@ namespace BoardAdventures.Core.GameLogic
 {
     public class PlayerSetupService : IPlayerSetupService
     {
-        private readonly IPawnManager _pawnManager;
+        private readonly PawnManager _pawnManager;
         private readonly IPlayerUIFactory _playerUIFactory;
         private readonly SignalBus _signalBus;
 
         public List<Player> Players { get; private set; }
 
 
-        public PlayerSetupService(IPawnManager pawnManager, IPlayerUIFactory playerUIFactory
+        public PlayerSetupService(PawnManager pawnManager, IPlayerUIFactory playerUIFactory
              , SignalBus signalBus)
         {
             _pawnManager = pawnManager;

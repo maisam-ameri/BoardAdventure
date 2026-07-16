@@ -1,7 +1,7 @@
 ﻿using BoardAdventures.Abstractions;
 using BoardAdventures.Authentication;
+using BoardAdventures.Config;
 using BoardAdventures.Network;
-using Config;
 using Signals;
 using Zenject;
 

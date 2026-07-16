@@ -6,6 +6,7 @@ using BoardAdventures.Core.Players;
 using BoardAdventures.Managers;
 using BoardAdventures.UI.Common;
 using BoardAdventures.UI.Players;
+using Managers;
 using Signals;
 using Zenject;
 
@@ -34,22 +35,22 @@ namespace Installers
             Container.Bind<IGameRulesService>().To<GameRulesService>().AsSingle().NonLazy();
             Container.BindInterfacesTo<TurnFlowService>().AsSingle();
             Container.Bind<ITurnLogicService>().To<TurnLogicService>().AsSingle();
-            Container.Bind<IPlayerActionValidator>().To<PlayerActionValidator>().AsSingle();
-            Container.Bind<IPlayerActionService>().To<PlayerActionService>().AsSingle().NonLazy();
+            Container.Bind<PlayerActionValidator>().AsSingle();
+            Container.Bind<PlayerActionService>().AsSingle().NonLazy();
             Container.Bind<IPlayerSetupService>().To<PlayerSetupService>().AsSingle();
-            Container.Bind<IPawnManager>().To<PawnManager>().AsSingle();
-            Container.Bind<IPawnStateService>().To<PawnStateService>().AsSingle();
+            Container.Bind<PawnManager>().AsSingle();
+            Container.Bind<PawnStateService>().AsSingle();
             Container.Bind<IPawnMovementService>().To<PawnMovementService>().AsSingle();
             Container.Bind<IMovement>().To<Mover>().AsSingle();
             
             // MonoBehaviours
             Container.Bind<IUIMessageManager>().To<UIMessageManager>().FromComponentInHierarchy().AsSingle();
-            Container.Bind<IDiceManager>().To<DiceManager>().FromComponentInHierarchy().AsSingle();
+            Container.Bind<DiceManager>().FromComponentInHierarchy().AsSingle();
             Container.Bind<ITurnVisualizer>().To<TurnVisualizer>().FromComponentInHierarchy().AsSingle();
             Container.Bind<IGameInputHandler>().To<GameInputHandler>().FromComponentInHierarchy().AsSingle();
             Container.Bind<IPlayerUIFactory>().To<PlayerUIFactory>().FromComponentInHierarchy().AsSingle();
             Container.Bind<IPawnFactory>().To<PawnFactory>().FromComponentInHierarchy().AsSingle();
-            Container.Bind<IMatchManager>().To<IMatchManager>().FromComponentInHierarchy().AsSingle();
+            Container.Bind<MatchManager>().FromComponentInHierarchy().AsSingle();
             
             
         }

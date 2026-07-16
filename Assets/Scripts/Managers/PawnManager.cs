@@ -7,12 +7,12 @@ using Zenject;
 
 namespace BoardAdventures.Core.GameLogic
 {
-    public class PawnManager : IPawnManager
+    public class PawnManager
     {
         private readonly IPawnFactory _pawnFactory;
-        private readonly IPawnStateService _pawnStateService;
+        private readonly PawnStateService _pawnStateService;
 
-        public PawnManager(IPawnFactory pawnFactory, IPawnStateService pawnStateService, SignalBus signalBus)
+        public PawnManager(IPawnFactory pawnFactory, PawnStateService pawnStateService, SignalBus signalBus)
         {
             _pawnFactory = pawnFactory;
             _pawnStateService = pawnStateService;

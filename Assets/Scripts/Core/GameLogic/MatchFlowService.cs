@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BoardAdventures.Abstractions;
 using BoardAdventures.Core.Players;
+using BoardAdventures.Managers;
 using BoardAdventures.Network;
 using Signals;
 using UnityEngine;
@@ -17,9 +18,9 @@ namespace BoardAdventures.Core.GameLogic
 
         private readonly IUIMessageManager _uiMessageManager;
         private readonly ITurnFlowService _turnFlowService;
-        private readonly IDiceManager _diceManager;
+        private readonly DiceManager _diceManager;
         private readonly ITurnVisualizer _turnVisualizer;
-        private readonly IPlayerActionValidator _playerActionValidator;
+        private readonly PlayerActionValidator _playerActionValidator;
         private readonly ITurnLogicService _turnLogicService;
         private readonly SignalBus _signalBus;
         private readonly IPlayerSetupService _playerSetupService;
@@ -30,9 +31,9 @@ namespace BoardAdventures.Core.GameLogic
 
         public MatchFlowService(IUIMessageManager uiMessageManager
             , ITurnFlowService turnFlowService
-            , IDiceManager diceManager
+            , DiceManager diceManager
             , ITurnVisualizer turnVisualizer
-            , IPlayerActionValidator playerActionValidator
+            , PlayerActionValidator playerActionValidator
             , ITurnLogicService turnLogicService
             , IPlayerSetupService playerSetupService
             , INetworkService networkService

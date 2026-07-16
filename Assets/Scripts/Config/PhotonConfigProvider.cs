@@ -1,9 +1,9 @@
-﻿using BoardAdventures.Abstractions;
+﻿using BoardAdventures.Config;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 
-namespace Config
+namespace BoardAdventures.Config
 {
     public class PhotonConfigProvider : INetworkConfigProvider
     {

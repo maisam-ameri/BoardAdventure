@@ -2,7 +2,7 @@
 using BoardAdventures.GameObjects.Nodes.Abstractions;
 using BoardAdventures.GameObjects.Pawns.Abstractions;
 
-namespace BoardAdventures.Abstractions
+namespace BoardAdventures.Core.Path
 {
     public interface IPathCalculator
     {
