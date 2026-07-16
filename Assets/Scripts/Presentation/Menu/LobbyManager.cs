@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
-using BoardAdventures.Abstractions;
-using BoardAdventures.UI.Players;
-using Signals;
+using BoardAdventures.Network;
+using BoardAdventures.Presentation.Menu;
+using BoardAdventures.Presentation.Players;
+using BoardAdventures.Signals;
 using TMPro;
-using UI.Menu;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-namespace BoardAdventures.UI.Lobby
+namespace BoardAdventures.Presentation.Lobby
 {
     public class LobbyManager : MonoBehaviour, ILobbyManager
     {

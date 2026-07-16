@@ -1,11 +1,11 @@
 ﻿using System.Collections;
-using BoardAdventures.Abstractions;
-using Signals;
+using BoardAdventures.Network;
+using BoardAdventures.Signals;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-namespace BoardAdventures.UI.Players
+namespace BoardAdventures.Presentation.Players
 {
     public class TurnTimer : MonoBehaviour
     {

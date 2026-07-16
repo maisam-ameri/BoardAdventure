@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BoardAdventures.GameObjects.Factions;
-using BoardAdventures.GameObjects.Nodes;
-using BoardAdventures.GameObjects.Nodes.Abstractions;
+using BoardAdventures.Board;
+using BoardAdventures.Board.Nodes;
 using UnityEngine;
 
 namespace BoardAdventures.Managers

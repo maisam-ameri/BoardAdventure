@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using BoardAdventures.GameObjects.Factions;
-using BoardAdventures.UI.Players;
+using BoardAdventures.Board;
+using BoardAdventures.Presentation.Players;
 
 namespace BoardAdventures.Core.Players
 {

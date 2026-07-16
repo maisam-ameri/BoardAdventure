@@ -1,4 +1,4 @@
-﻿namespace BoardAdventures.GameObjects.Pawns.Abstractions
+﻿namespace BoardAdventures.Board.Pawns
 {
     public enum PawnLocationState: byte
     {

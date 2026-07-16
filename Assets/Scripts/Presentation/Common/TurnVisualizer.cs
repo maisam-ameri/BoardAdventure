@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using BoardAdventures.Abstractions;
 using BoardAdventures.Core.Players;
 using UnityEngine;
 
-namespace BoardAdventures.UI.Common
+namespace BoardAdventures.Presentation.Common
 {
     public class TurnVisualizer : MonoBehaviour,ITurnVisualizer
     {

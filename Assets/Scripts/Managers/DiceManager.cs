@@ -1,10 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using BoardAdventures.Abstractions;
-using BoardAdventures.Core.Dices;
+﻿using BoardAdventures.Board;
 using BoardAdventures.Network;
-using BoardAdventures.UI.Dices;
-using Signals;
+using BoardAdventures.Presentation.Dices;
+using BoardAdventures.Signals;
 using UnityEngine;
 using Zenject;
 

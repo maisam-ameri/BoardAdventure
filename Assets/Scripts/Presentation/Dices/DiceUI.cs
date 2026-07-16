@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace BoardAdventures.UI.Dices
+namespace BoardAdventures.Presentation.Dices
 {
     public class DiceUI : MonoBehaviour
     {

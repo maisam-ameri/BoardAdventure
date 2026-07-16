@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
+using BoardAdventures.Board.Pawns;
 using BoardAdventures.Core.Players;
-using BoardAdventures.GameObjects.Pawns.Abstractions;
 using BoardAdventures.Network;
-using UI.Menu;
+using BoardAdventures.Presentation.Menu;
 
-namespace Signals
+namespace BoardAdventures.Signals
 {
     public class OnTurnTimerExpiredSignal
     {
@@ -33,7 +33,6 @@ namespace Signals
 
     public class OnDiceRollRequestedSignal
     {
-        
     }
 
     public class OnPlayerActionStartedSignal
@@ -64,13 +63,13 @@ namespace Signals
 
     public class OnConnectionRequestSignal
     {
-        
     }
 
     public class OnJoinToRoomRequestSignal
     {
         public byte MaxPlayers;
     }
+
     public class OnConnectionStatusChangedSignal
     {
         public ConnectionState State;
@@ -85,15 +84,15 @@ namespace Signals
         public LobbyState State { get; set; }
         public bool IsMaster { get; set; }
     }
-    
+
     public class OnTurnEndTimeChangedSignal
     {
     }
-    
+
     public class OnDiceRollRequestedNetSignal
     {
     }
-    
+
 
     // Auth
     public class OnRegisterRequestedSignal

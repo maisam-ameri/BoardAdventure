@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using BoardAdventures.Abstractions;
 using BoardAdventures.Core.Players;
-using Signals;
+using BoardAdventures.Network;
+using BoardAdventures.Signals;
 using Zenject;
 
 namespace BoardAdventures.Core.GameLogic

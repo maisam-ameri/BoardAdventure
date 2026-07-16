@@ -1,11 +1,9 @@
-﻿using BoardAdventures.GameObjects.Factions;
-using BoardAdventures.GameObjects.Nodes.Abstractions;
-using BoardAdventures.GameObjects.Pawns.Abstractions;
-using Signals;
+﻿using BoardAdventures.Board.Nodes;
+using BoardAdventures.Signals;
 using UnityEngine;
 using Zenject;
 
-namespace BoardAdventures.GameObjects.Pawns
+namespace BoardAdventures.Board.Pawns
 {
     public class Pawn : MonoBehaviour, IPawn
     {

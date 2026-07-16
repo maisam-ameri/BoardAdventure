@@ -1,10 +1,10 @@
 ﻿using BoardAdventures.Authentication;
-using Signals;
+using BoardAdventures.Signals;
 using TMPro;
 using UnityEngine;
 using Zenject;
 
-namespace BoardAdventures.UI.Menu
+namespace BoardAdventures.Presentation.Menu
 {
     public class MenuManager : MonoBehaviour
     {

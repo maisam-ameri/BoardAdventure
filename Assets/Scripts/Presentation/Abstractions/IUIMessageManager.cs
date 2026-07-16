@@ -1,4 +1,4 @@
-﻿namespace BoardAdventures.Abstractions
+﻿namespace BoardAdventures.Presentation
 {
     public interface IUIMessageManager
     {

@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using BoardAdventures.Abstractions;
-using BoardAdventures.GameObjects.Pawns.Abstractions;
+using BoardAdventures.Board.Pawns;
 using BoardAdventures.Managers;
-using Signals;
+using BoardAdventures.Presentation;
+using BoardAdventures.Signals;
 using Zenject;
 
 namespace BoardAdventures.Core.GameLogic

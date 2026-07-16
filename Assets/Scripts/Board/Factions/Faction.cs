@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BoardAdventures.GameObjects.Nodes;
-using BoardAdventures.GameObjects.Pawns.Abstractions;
+using BoardAdventures.Board.Nodes;
+using BoardAdventures.Board.Pawns;
 using UnityEngine;
 
-namespace BoardAdventures.GameObjects.Factions
+namespace BoardAdventures.Board
 {
     public class Faction : MonoBehaviour
     {

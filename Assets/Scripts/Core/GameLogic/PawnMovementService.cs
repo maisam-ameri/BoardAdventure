@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using BoardAdventures.Abstractions;
+using BoardAdventures.Board.Nodes;
+using BoardAdventures.Board.Pawns;
 using BoardAdventures.Core.Movement;
 using BoardAdventures.Core.Players;
-using BoardAdventures.GameObjects.Nodes.Abstractions;
-using BoardAdventures.GameObjects.Pawns.Abstractions;
+using BoardAdventures.Managers;
+using BoardAdventures.Presentation;
 
 namespace BoardAdventures.Core.GameLogic
 {

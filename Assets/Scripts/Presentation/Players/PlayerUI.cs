@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace BoardAdventures.UI.Players
+namespace BoardAdventures.Presentation.Players
 {
     public class PlayerUI : MonoBehaviour
     {

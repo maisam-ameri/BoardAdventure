@@ -1,10 +1,10 @@
 ﻿using BoardAdventures.Network;
-using Signals;
+using BoardAdventures.Signals;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-namespace BoardAdventures.UI.Common
+namespace BoardAdventures.Presentation.Common
 {
     public class UINetworkStateManager : MonoBehaviour
     {

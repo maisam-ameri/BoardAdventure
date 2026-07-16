@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using BoardAdventures.GameObjects.Nodes.Abstractions;
-using BoardAdventures.GameObjects.Pawns.Abstractions;
+using BoardAdventures.Board.Nodes;
+using BoardAdventures.Board.Pawns;
 
 namespace BoardAdventures.Core.Path
 {

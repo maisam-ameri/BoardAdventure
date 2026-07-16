@@ -1,9 +1,8 @@
-﻿using BoardAdventures.Abstractions;
-using Signals;
+﻿using BoardAdventures.Signals;
 using UnityEngine;
 using Zenject;
 
-namespace Managers
+namespace BoardAdventures.Managers
 {
     public class MatchManager : MonoBehaviour
     {

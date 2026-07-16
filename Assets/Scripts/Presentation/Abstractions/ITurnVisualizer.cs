@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using BoardAdventures.Core.Players;
 
-namespace BoardAdventures.Abstractions
+namespace BoardAdventures.Presentation
 {
     public interface ITurnVisualizer
     {

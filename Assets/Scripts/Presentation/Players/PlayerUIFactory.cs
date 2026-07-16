@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using BoardAdventures.Abstractions;
 using UnityEngine;
 using Zenject;
 
-namespace BoardAdventures.UI.Players
+namespace BoardAdventures.Presentation.Players
 {
     public class PlayerUIFactory : MonoBehaviour, IPlayerUIFactory
     {

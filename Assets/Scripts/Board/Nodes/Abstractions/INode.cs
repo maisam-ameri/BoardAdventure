@@ -1,7 +1,7 @@
-﻿using BoardAdventures.GameObjects.Pawns.Abstractions;
+﻿using BoardAdventures.Board.Pawns;
 using UnityEngine;
 
-namespace BoardAdventures.GameObjects.Nodes.Abstractions
+namespace BoardAdventures.Board.Nodes
 {
     public interface INode
     {

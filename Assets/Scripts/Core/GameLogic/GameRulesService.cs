@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Signals;
+using BoardAdventures.Signals;
 using Zenject;
 
 namespace BoardAdventures.Core.GameLogic

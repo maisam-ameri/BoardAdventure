@@ -1,8 +1,7 @@
-﻿using BoardAdventures.GameObjects.Factions;
-using BoardAdventures.GameObjects.Nodes.Abstractions;
+﻿using BoardAdventures.Board.Nodes;
 using UnityEngine;
 
-namespace BoardAdventures.GameObjects.Pawns.Abstractions
+namespace BoardAdventures.Board.Pawns
 {
     public interface IPawn
     {

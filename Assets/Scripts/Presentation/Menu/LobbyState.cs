@@ -1,4 +1,4 @@
-﻿namespace UI.Menu
+﻿namespace BoardAdventures.Presentation.Menu
 {
     public enum LobbyState
     {

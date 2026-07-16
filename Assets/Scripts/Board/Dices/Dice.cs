@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace BoardAdventures.Core.Dices
+namespace BoardAdventures.Board
 {
     public class Dice
     {

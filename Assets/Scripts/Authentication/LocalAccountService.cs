@@ -1,4 +1,4 @@
-﻿using Signals;
+﻿using BoardAdventures.Signals;
 using UnityEngine;
 using Zenject;
 

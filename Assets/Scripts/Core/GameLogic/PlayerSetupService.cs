@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BoardAdventures.Abstractions;
+using BoardAdventures.Board;
+using BoardAdventures.Board.Pawns;
 using BoardAdventures.Core.Players;
-using BoardAdventures.GameObjects.Factions;
-using BoardAdventures.GameObjects.Pawns.Abstractions;
-using Signals;
+using BoardAdventures.Presentation;
+using BoardAdventures.Signals;
 using Zenject;
 
 namespace BoardAdventures.Core.GameLogic

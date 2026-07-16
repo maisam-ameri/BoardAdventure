@@ -1,7 +1,7 @@
 ﻿using System.Linq;
+using BoardAdventures.Board.Nodes;
+using BoardAdventures.Board.Pawns;
 using BoardAdventures.Core.Players;
-using BoardAdventures.GameObjects.Nodes.Abstractions;
-using BoardAdventures.GameObjects.Pawns.Abstractions;
 
 namespace BoardAdventures.Core.Path
 {

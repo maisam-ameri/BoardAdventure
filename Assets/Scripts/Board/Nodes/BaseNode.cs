@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace BoardAdventures.GameObjects.Nodes
+namespace BoardAdventures.Board.Nodes
 {
     public class BaseNode: Node
     {

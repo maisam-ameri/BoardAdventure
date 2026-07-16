@@ -1,5 +1,4 @@
-﻿using BoardAdventures.Abstractions;
-using Signals;
+﻿using BoardAdventures.Signals;
 using UnityEngine;
 using Zenject;
 

@@ -1,5 +1,4 @@
-﻿using BoardAdventures.Abstractions;
-using Photon.Pun;
+﻿using Photon.Pun;
 
 namespace BoardAdventures.Network
 {

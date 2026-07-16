@@ -1,8 +1,7 @@
-﻿using BoardAdventures.GameObjects.Nodes.Abstractions;
-using BoardAdventures.GameObjects.Pawns.Abstractions;
+﻿using BoardAdventures.Board.Pawns;
 using UnityEngine;
 
-namespace BoardAdventures.GameObjects.Nodes
+namespace BoardAdventures.Board.Nodes
 {
     public abstract class Node : MonoBehaviour, INode
     {

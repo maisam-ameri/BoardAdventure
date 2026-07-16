@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using BoardAdventures.Abstractions;
 using BoardAdventures.Core.Players;
 using BoardAdventures.Managers;
 using BoardAdventures.Network;
-using Signals;
+using BoardAdventures.Presentation;
+using BoardAdventures.Signals;
 using UnityEngine;
 using Zenject;
 

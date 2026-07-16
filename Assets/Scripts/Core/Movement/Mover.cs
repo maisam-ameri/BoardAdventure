@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using BoardAdventures.Board.Nodes;
+using BoardAdventures.Board.Pawns;
 using BoardAdventures.Core.GameLogic;
 using BoardAdventures.Core.Path;
-using BoardAdventures.GameObjects.Nodes.Abstractions;
-using BoardAdventures.GameObjects.Pawns.Abstractions;
-using Signals;
+using BoardAdventures.Signals;
 using Zenject;
 
 namespace BoardAdventures.Core.Movement

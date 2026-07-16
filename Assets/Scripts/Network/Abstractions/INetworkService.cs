@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Photon.Realtime;
 
-namespace BoardAdventures.Abstractions
+namespace BoardAdventures.Network
 {
     public interface INetworkService
     {

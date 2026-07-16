@@ -1,4 +1,4 @@
-﻿namespace BoardAdventures.Abstractions
+﻿namespace BoardAdventures.Network
 {
     public interface INetworkTime
     {

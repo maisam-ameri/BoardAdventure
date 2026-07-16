@@ -1,9 +1,9 @@
-﻿using BoardAdventures.Abstractions;
-using BoardAdventures.UI.Lobby;
-using BoardAdventures.UI.Menu;
+﻿using BoardAdventures.Network;
+using BoardAdventures.Presentation.Lobby;
+using BoardAdventures.Presentation.Menu;
 using Zenject;
 
-namespace Installers
+namespace BoardAdventures.Installers
 {
     public class MenuInstaller: MonoInstaller
     {

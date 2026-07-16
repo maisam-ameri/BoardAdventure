@@ -1,16 +1,13 @@
-﻿using BoardAdventures.Abstractions;
-using BoardAdventures.Core.GameLogic;
+﻿using BoardAdventures.Core.GameLogic;
 using BoardAdventures.Core.Movement;
-using BoardAdventures.Core.Path;
-using BoardAdventures.Core.Players;
 using BoardAdventures.Managers;
-using BoardAdventures.UI.Common;
-using BoardAdventures.UI.Players;
-using Managers;
-using Signals;
+using BoardAdventures.Presentation;
+using BoardAdventures.Presentation.Common;
+using BoardAdventures.Presentation.Players;
+using BoardAdventures.Signals;
 using Zenject;
 
-namespace Installers
+namespace BoardAdventures.Installers
 {
     public class GameInstaller: MonoInstaller
     {

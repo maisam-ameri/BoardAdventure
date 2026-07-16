@@ -1,6 +1,4 @@
-﻿using BoardAdventures.Abstractions;
-using BoardAdventures.GameObjects.Pawns;
-using BoardAdventures.GameObjects.Pawns.Abstractions;
+﻿using BoardAdventures.Board.Pawns;
 using UnityEngine;
 using Zenject;
 

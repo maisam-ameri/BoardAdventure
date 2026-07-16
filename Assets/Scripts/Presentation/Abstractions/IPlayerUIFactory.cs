@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using BoardAdventures.UI.Players;
+using BoardAdventures.Presentation.Players;
 using UnityEngine;
 
-namespace BoardAdventures.Abstractions
+namespace BoardAdventures.Presentation
 {
     public interface IPlayerUIFactory
     {

@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using BoardAdventures.Abstractions;
+using BoardAdventures.Presentation.Menu;
+using BoardAdventures.Signals;
 using Photon.Realtime;
-using Signals;
-using UI.Menu;
 using Zenject;
 
 namespace BoardAdventures.Network

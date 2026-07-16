@@ -1,7 +1,6 @@
-﻿using BoardAdventures.Abstractions;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace BoardAdventures.UI.Common
+namespace BoardAdventures.Presentation.Common
 {
     public class UIMessageManager : MonoBehaviour, IUIMessageManager
     {

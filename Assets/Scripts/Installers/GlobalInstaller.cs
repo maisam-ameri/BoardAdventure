@@ -1,11 +1,10 @@
-﻿using BoardAdventures.Abstractions;
-using BoardAdventures.Authentication;
+﻿using BoardAdventures.Authentication;
 using BoardAdventures.Config;
 using BoardAdventures.Network;
-using Signals;
+using BoardAdventures.Signals;
 using Zenject;
 
-namespace Installers
+namespace BoardAdventures.Installers
 {
     public class GlobalInstaller : MonoInstaller
     {
