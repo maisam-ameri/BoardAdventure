@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using BoardAdventures.Board.Pawns;
-using BoardAdventures.Core.Players;
+using Gameplay.Players;
 
 namespace BoardAdventures.Managers
 {

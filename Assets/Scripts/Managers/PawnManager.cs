@@ -3,6 +3,7 @@ using BoardAdventures.Board.Nodes;
 using BoardAdventures.Board.Pawns;
 using BoardAdventures.Managers;
 using BoardAdventures.Signals;
+using Gameplay.GameLogic;
 using Zenject;
 
 namespace BoardAdventures.Core.GameLogic

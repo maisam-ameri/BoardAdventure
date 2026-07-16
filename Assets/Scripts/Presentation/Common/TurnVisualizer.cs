@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using BoardAdventures.Core.Players;
+using Gameplay.Players;
 using UnityEngine;
 
 namespace BoardAdventures.Presentation.Common
