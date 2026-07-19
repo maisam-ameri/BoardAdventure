@@ -1,8 +1,16 @@
-﻿namespace BoardAdventures.Core.Results
+﻿using System.Collections.Generic;
+
+namespace BoardAdventures.Core.Results
 {
     public class MovePawnResult
     {
-        public bool IsMoveValid { get; set; }
-        public bool IsCapture { get; set; }
+        public MoveFailReason FailReason { get; }
+        public IReadOnlyList<int> Path { get; }
+
+        public MovePawnResult(MoveFailReason failReason, IReadOnlyList<int> path = null)
+        {
+            FailReason = failReason;
+            Path = path;
+        }
     }
 }

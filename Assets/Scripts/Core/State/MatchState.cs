@@ -19,6 +19,7 @@ namespace BoardAdventures.Core.State
 
     public class PawnState
     {
+        public string OwnerPlayerId { get; set; }
         public byte PawnId { get; set; }
         public int NodeId { get; set; }
     }

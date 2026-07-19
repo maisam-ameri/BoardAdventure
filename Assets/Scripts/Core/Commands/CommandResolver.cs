@@ -3,7 +3,7 @@ using BoardAdventures.Core.State;
 
 namespace BoardAdventures.Core.Commands
 {
-    public class MatchEngine: IMatchEngine
+    public class MatchEngine : IMatchEngine
     {
         private readonly MatchState _matchState;
         private readonly MovePawnRule _movePawnRule;
@@ -14,21 +14,21 @@ namespace BoardAdventures.Core.Commands
             _movePawnRule = movePawnRule;
         }
 
-        public void ResolveCommand(ICommand command)
+        public void ResolveCommand(ICommand command, CommandContext context)
         {
             switch (command)
             {
                 case MovePawnCommand moveCommand:
-                    Handle(moveCommand);
+                    Handle(moveCommand, context);
                     // TODO
-                break;
+                    break;
             }
         }
 
-        private void Handle(MovePawnCommand moveCommand)
+        private void Handle(MovePawnCommand command, CommandContext context)
         {
-            var result =_movePawnRule.Execute(_matchState, moveCommand);
-            
+            var result = _movePawnRule.Execute(_matchState, command, context);
+
             // TODO:
             // Apply result to MatchState
             // Publish signals
