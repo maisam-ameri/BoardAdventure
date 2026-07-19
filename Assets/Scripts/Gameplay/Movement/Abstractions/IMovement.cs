@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using BoardAdventures.Board.Nodes;
 using BoardAdventures.Board.Pawns;
 
-namespace Gameplay.Movement.Abstractions
+namespace BoardAdventures.Gameplay.Movement
 {
     public interface IMovement
     {

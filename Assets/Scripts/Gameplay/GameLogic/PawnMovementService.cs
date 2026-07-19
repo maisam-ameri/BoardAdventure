@@ -2,12 +2,12 @@
 using System.Threading.Tasks;
 using BoardAdventures.Board.Nodes;
 using BoardAdventures.Board.Pawns;
+using BoardAdventures.Gameplay.Movement;
+using BoardAdventures.Gameplay.Players;
 using BoardAdventures.Managers;
 using BoardAdventures.Presentation;
-using Gameplay.Movement.Abstractions;
-using Gameplay.Players;
 
-namespace Gameplay.GameLogic
+namespace BoardAdventures.Gameplay.GameLogic
 {
     public class PawnMovementService: IPawnMovementService
     {

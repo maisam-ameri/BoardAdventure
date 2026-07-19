@@ -1,9 +1,9 @@
 ﻿using BoardAdventures.Board;
 using BoardAdventures.Board.Nodes;
 using BoardAdventures.Board.Pawns;
+using BoardAdventures.Gameplay.GameLogic;
 using BoardAdventures.Managers;
 using BoardAdventures.Signals;
-using Gameplay.GameLogic;
 using Zenject;
 
 namespace BoardAdventures.Core.GameLogic

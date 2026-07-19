@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Gameplay.Players;
+using BoardAdventures.Gameplay.Players;
 
-namespace Gameplay.GameLogic.Abstractions
+namespace BoardAdventures.Gameplay.GameLogic.Abstractions
 {
     public interface IPlayerSetupService
     {

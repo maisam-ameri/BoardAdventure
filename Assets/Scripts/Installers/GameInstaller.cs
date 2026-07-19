@@ -1,13 +1,13 @@
 ﻿using BoardAdventures.Core.GameLogic;
+using BoardAdventures.Gameplay.GameLogic;
+using BoardAdventures.Gameplay.GameLogic.Abstractions;
 using BoardAdventures.Managers;
 using BoardAdventures.Presentation;
 using BoardAdventures.Presentation.Common;
 using BoardAdventures.Presentation.Players;
 using BoardAdventures.Signals;
 using Gameplay.GameLogic;
-using Gameplay.GameLogic.Abstractions;
-using Gameplay.Movement;
-using Gameplay.Movement.Abstractions;
+using BoardAdventures.Gameplay.Movement;
 using Zenject;
 
 namespace BoardAdventures.Installers

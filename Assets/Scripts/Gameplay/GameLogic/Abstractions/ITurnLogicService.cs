@@ -1,4 +1,4 @@
-﻿namespace Gameplay.GameLogic.Abstractions
+﻿namespace BoardAdventures.Gameplay.GameLogic.Abstractions
 {
     public interface ITurnLogicService
     {

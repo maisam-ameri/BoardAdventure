@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using BoardAdventures.Gameplay.GameLogic.Abstractions;
+using BoardAdventures.Gameplay.Players;
 using BoardAdventures.Network;
 using BoardAdventures.Signals;
-using Gameplay.GameLogic.Abstractions;
-using Gameplay.Players;
 using Zenject;
 
-namespace Gameplay.GameLogic
+namespace BoardAdventures.Gameplay.GameLogic
 {
     public class TurnFlowService : ITurnFlowService, IActivePlayerProvider
     {

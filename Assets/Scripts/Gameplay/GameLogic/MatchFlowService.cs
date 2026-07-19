@@ -1,16 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BoardAdventures.Gameplay.GameLogic.Abstractions;
+using BoardAdventures.Gameplay.Players;
 using BoardAdventures.Managers;
 using BoardAdventures.Network;
 using BoardAdventures.Presentation;
 using BoardAdventures.Signals;
-using Gameplay.GameLogic.Abstractions;
-using Gameplay.Players;
+using Gameplay.GameLogic;
 using UnityEngine;
 using Zenject;
 
-namespace Gameplay.GameLogic
+namespace BoardAdventures.Gameplay.GameLogic
 {
     public class MatchFlowService : IMatchFlowService
     {

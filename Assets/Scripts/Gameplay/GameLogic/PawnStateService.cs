@@ -5,7 +5,7 @@ using BoardAdventures.Board.Pawns;
 using BoardAdventures.Signals;
 using Zenject;
 
-namespace Gameplay.GameLogic
+namespace BoardAdventures.Gameplay.GameLogic
 {
     public class PawnStateService
     {

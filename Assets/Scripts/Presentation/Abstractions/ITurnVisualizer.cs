@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Gameplay.Players;
+using BoardAdventures.Gameplay.Players;
 
 namespace BoardAdventures.Presentation
 {

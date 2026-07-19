@@ -1,7 +1,6 @@
-﻿
-using Gameplay.GameLogic.Abstractions;
+﻿using BoardAdventures.Gameplay.GameLogic.Abstractions;
 
-namespace Gameplay.GameLogic
+namespace BoardAdventures.Gameplay.GameLogic
 {
     public enum TurnDecision
     {

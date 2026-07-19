@@ -1,6 +1,7 @@
-﻿using Gameplay.Players;
+﻿
+using BoardAdventures.Gameplay.Players;
 
-namespace Gameplay.GameLogic.Abstractions
+namespace Gameplay.GameLogic
 {
     public interface IMatchFlowService
     {

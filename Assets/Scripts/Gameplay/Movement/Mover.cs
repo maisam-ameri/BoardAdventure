@@ -2,13 +2,12 @@
 using System.Threading.Tasks;
 using BoardAdventures.Board.Nodes;
 using BoardAdventures.Board.Pawns;
+using BoardAdventures.Gameplay.GameLogic.Abstractions;
+using BoardAdventures.Gameplay.Path;
 using BoardAdventures.Signals;
-using Gameplay.GameLogic.Abstractions;
-using Gameplay.Movement.Abstractions;
-using Gameplay.Path;
 using Zenject;
 
-namespace Gameplay.Movement
+namespace BoardAdventures.Gameplay.Movement
 {
     public class Mover : IMovement
     {

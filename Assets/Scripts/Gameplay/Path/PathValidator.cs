@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using BoardAdventures.Board.Nodes;
 using BoardAdventures.Board.Pawns;
-using Gameplay.Players;
+using BoardAdventures.Gameplay.Players;
 
-namespace Gameplay.Path
+namespace BoardAdventures.Gameplay.Path
 {
     public static class PathValidator
     {

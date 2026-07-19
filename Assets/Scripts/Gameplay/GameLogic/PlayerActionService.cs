@@ -5,10 +5,10 @@ using BoardAdventures.Core.GameLogic;
 using BoardAdventures.Managers;
 using BoardAdventures.Presentation;
 using BoardAdventures.Signals;
-using Gameplay.GameLogic.Abstractions;
+using Gameplay.GameLogic;
 using Zenject;
 
-namespace Gameplay.GameLogic
+namespace BoardAdventures.Gameplay.GameLogic
 {
     public class PlayerActionService
     {

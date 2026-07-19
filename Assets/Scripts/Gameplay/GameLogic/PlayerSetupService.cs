@@ -3,13 +3,13 @@ using System.Linq;
 using BoardAdventures.Board;
 using BoardAdventures.Board.Pawns;
 using BoardAdventures.Core.GameLogic;
+using BoardAdventures.Gameplay.GameLogic.Abstractions;
+using BoardAdventures.Gameplay.Players;
 using BoardAdventures.Presentation;
 using BoardAdventures.Signals;
-using Gameplay.GameLogic.Abstractions;
-using Gameplay.Players;
 using Zenject;
 
-namespace Gameplay.GameLogic
+namespace BoardAdventures.Gameplay.GameLogic
 {
     public class PlayerSetupService : IPlayerSetupService
     {

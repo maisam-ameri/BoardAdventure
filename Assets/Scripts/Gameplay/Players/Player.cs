@@ -2,7 +2,7 @@
 using BoardAdventures.Board;
 using BoardAdventures.Presentation.Players;
 
-namespace Gameplay.Players
+namespace BoardAdventures.Gameplay.Players
 {
     public  class Player
     {

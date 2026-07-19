@@ -3,10 +3,10 @@ using System.Linq;
 using BoardAdventures.Board;
 using BoardAdventures.Board.Nodes;
 using BoardAdventures.Board.Pawns;
-using Gameplay.Path;
-using Gameplay.Players;
+using BoardAdventures.Gameplay.Path;
+using BoardAdventures.Gameplay.Players;
 
-namespace Gameplay.GameLogic
+namespace BoardAdventures.Gameplay.GameLogic
 {
     public class PlayerActionValidator
     {

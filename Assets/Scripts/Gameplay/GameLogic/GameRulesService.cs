@@ -1,9 +1,9 @@
 ﻿using System.Linq;
+using BoardAdventures.Gameplay.GameLogic.Abstractions;
 using BoardAdventures.Signals;
-using Gameplay.GameLogic.Abstractions;
 using Zenject;
 
-namespace Gameplay.GameLogic
+namespace BoardAdventures.Gameplay.GameLogic
 {
     public class GameRulesService : IGameRulesService
     {

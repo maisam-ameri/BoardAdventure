@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using BoardAdventures.Board.Pawns;
+using BoardAdventures.Gameplay.Players;
 using BoardAdventures.Network;
 using BoardAdventures.Presentation.Menu;
-using Gameplay.Players;
 
 namespace BoardAdventures.Signals
 {
