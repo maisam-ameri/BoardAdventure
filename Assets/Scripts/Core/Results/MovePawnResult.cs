@@ -4,13 +4,15 @@ namespace BoardAdventures.Core.Results
 {
     public class MovePawnResult
     {
+        public byte PawnId { get;  }
         public MoveFailReason FailReason { get; }
         public IReadOnlyList<int> Path { get; }
 
-        public MovePawnResult(MoveFailReason failReason, IReadOnlyList<int> path = null)
+        public MovePawnResult(byte pawnId, MoveFailReason failReason, IReadOnlyList<int> path = null)
         {
-            FailReason = failReason;
+            PawnId = pawnId;
             Path = path;
+            FailReason = failReason;
         }
     }
 }

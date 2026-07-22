@@ -1,36 +1,38 @@
-﻿using BoardAdventures.Core.Rules;
+﻿using System.Linq;
+using BoardAdventures.Core.Rules;
 using BoardAdventures.Core.State;
+using UnityEngine;
 
 namespace BoardAdventures.Core.Commands
 {
-    public class MatchEngine : IMatchEngine
+    public class CommandResolver : IMatchEngine
     {
         private readonly MatchState _matchState;
-        private readonly MovePawnRule _movePawnRule;
 
-        public MatchEngine(MatchState matchState, MovePawnRule movePawnRule)
+        public CommandResolver(MatchState matchState)
         {
             _matchState = matchState;
-            _movePawnRule = movePawnRule;
         }
 
-        public void ResolveCommand(ICommand command, CommandContext context)
+        public void Resolve(ICommand command, CommandContext context)
         {
             switch (command)
             {
                 case MovePawnCommand moveCommand:
-                    Handle(moveCommand, context);
+                    Handle(moveCommand, new MovePawnRule(), context);
                     // TODO
                     break;
             }
         }
 
-        private void Handle(MovePawnCommand command, CommandContext context)
+        private void Handle(MovePawnCommand command, MovePawnRule rule, CommandContext context)
         {
-            var result = _movePawnRule.Execute(_matchState, command, context);
-
+            var result = rule.Execute(_matchState, command, context);
+ 
+            _matchState.BoardState.PawnsState
+                .First(p => p.PawnId == command.PawnId).NodeId = result.Path.Last();
+            
             // TODO:
-            // Apply result to MatchState
             // Publish signals
             // Send network messages
         }
