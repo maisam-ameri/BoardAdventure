@@ -1,9 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
 using BoardAdventures.Core.Commands;
 using BoardAdventures.Core.Rules;
 using BoardAdventures.Core.Results;
 using BoardAdventures.Core.State;
 using NUnit.Framework;
+using UnityEngine;
 
 namespace Tests.EditMode.Core.Rules
 {
@@ -106,7 +108,6 @@ namespace Tests.EditMode.Core.Rules
 
             // Assert
             Assert.AreNotEqual(MoveFailReason.PawnDoesNotBelongToPlayer, result.FailReason);
-
         }
 
         [Test]
@@ -128,9 +129,32 @@ namespace Tests.EditMode.Core.Rules
 
             // Assert
             CollectionAssert.AreEqual(
-                new[] {1, 2, 3, 4 ,5}, result.Path
+                new[] {1, 2, 3, 4, 5}, result.Path
             );
+        }
 
+        [Test]
+        public void Execute_Should_ReturnDestinationOccupied_When_LastNodeContainsFriendlyPawn()
+        {
+            // Arrange
+            var OccupiedNodeId = 5;
+            var command = new MovePawnCommand(1);
+            var pawnState = new List<PawnState>
+            {
+                new PawnState {NodeId = 0, PawnId = 1, OwnerPlayerId = "player_1"},
+                new PawnState {NodeId = OccupiedNodeId, PawnId = 2, OwnerPlayerId = "player_1"},
+                
+            };
+
+            // Act
+            _matchState.BoardState.PawnsState = pawnState;
+            _matchState.TurnState.CurrentPlayerId = "player_1";
+            _matchState.DiceState.Step = 5;
+
+            var result = _rule.Execute(_matchState, command, _commandContext);
+
+            // Assert
+            Assert.AreEqual( MoveFailReason.DestinationOccupied, result.FailReason);
         }
     }
 }
