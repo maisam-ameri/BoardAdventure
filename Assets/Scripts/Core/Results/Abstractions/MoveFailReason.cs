@@ -7,7 +7,7 @@
         PawnDoesNotBelongToPlayer,
         NotPlayersTurn,
         InvalidPath,
-        ContinueValidate,
+        DestinationOccupied,
 
     }
 }
