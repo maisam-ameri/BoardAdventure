@@ -11,7 +11,7 @@ namespace BoardAdventures.Core.State
         public BoardState BoardState { get; set; }
         public string WinnerId { get; set; }
     }
-
+    
     public class BoardState
     {
         public List<PawnState> PawnsState { get; set; }
@@ -21,7 +21,8 @@ namespace BoardAdventures.Core.State
     {
         public string OwnerPlayerId { get; set; }
         public byte PawnId { get; set; }
-        public int NodeId { get; set; }
+        public int? NodeId { get; set; }
+        public PawnLocationState PawnLocationState { get; set; }
     }
 
     public class PlayerState
@@ -49,7 +50,7 @@ namespace BoardAdventures.Core.State
         public TurnPhase Phase { get; set; }
     }
 
-    public enum TurnPhase
+    public enum TurnPhase: byte
     {
         WaitingForRoll,
         WaitingForPawnSelection,
@@ -62,10 +63,17 @@ namespace BoardAdventures.Core.State
         public MatchPhase Phase { get; set; }
     }
 
-    public enum MatchPhase
+    public enum MatchPhase : byte
     {
         WaitingForPlayers,
         Playing,
         Finished
+    }
+
+    public enum PawnLocationState: byte
+    {
+        InBase,
+        OnBoard,
+        InGoal
     }
 }

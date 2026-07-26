@@ -32,7 +32,12 @@ namespace BoardAdventures.Core.Commands
             _matchState.BoardState.PawnsState
                 .First(p => p.PawnId == command.PawnId).NodeId = result.Path.Last();
             
-            // TODO:
+
+            // TODO: Check Capture
+            // TODO: Check Finish
+            // TODO: Check Win
+            // TODO: Check Extra Turn
+            
             // Publish signals
             // Send network messages
         }
