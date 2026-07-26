@@ -1,11 +1,9 @@
 using System.Collections.Generic;
-using System.Linq;
 using BoardAdventures.Core.Commands;
 using BoardAdventures.Core.Rules;
 using BoardAdventures.Core.Results;
 using BoardAdventures.Core.State;
 using NUnit.Framework;
-using UnityEngine;
 
 namespace Tests.EditMode.Core.Rules
 {
@@ -156,5 +154,7 @@ namespace Tests.EditMode.Core.Rules
             // Assert
             Assert.AreEqual( MoveFailReason.DestinationOccupied, result.FailReason);
         }
+        
+        
     }
 }
