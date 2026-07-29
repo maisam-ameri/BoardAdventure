@@ -1,17 +1,22 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using BoardAdventures.Core.Consequences;
 using BoardAdventures.Core.Rules;
 using BoardAdventures.Core.State;
-using UnityEngine;
 
 namespace BoardAdventures.Core.Commands
 {
     public class CommandResolver : IMatchEngine
     {
         private readonly MatchState _matchState;
-
-        public CommandResolver(MatchState matchState)
+        private readonly CaptureConsequence _captureConsequence;
+        private readonly FinalGoalReachedConsequence _finalGoalReachedConsequence;
+        private readonly IEnumerable<IMoveConsequence> _consequences;
+        
+        public CommandResolver(MatchState matchState, IEnumerable<IMoveConsequence> consequences)
         {
             _matchState = matchState;
+            _consequences = consequences.OrderBy(c => c.Order);
         }
 
         public void Resolve(ICommand command, CommandContext context)
@@ -20,24 +25,25 @@ namespace BoardAdventures.Core.Commands
             {
                 case MovePawnCommand moveCommand:
                     Handle(moveCommand, new MovePawnRule(), context);
-                    // TODO
                     break;
             }
         }
 
         private void Handle(MovePawnCommand command, MovePawnRule rule, CommandContext context)
         {
-            var result = rule.Execute(_matchState, command, context);
- 
-            _matchState.BoardState.PawnsState
-                .First(p => p.PawnId == command.PawnId).NodeId = result.Path.Last();
+            var movePawnResult = rule.Execute(_matchState, command, context);
             
+            _matchState.BoardState.PawnsState
+                .First(p => p.PawnId == command.PawnId).NodeId = movePawnResult.Path.Last();
 
-            // TODO: Check Capture
-            // TODO: Check Finish
+            foreach (var consequence in _consequences)
+            {
+                consequence.Execute(_matchState,movePawnResult);
+            }
+            
             // TODO: Check Win
             // TODO: Check Extra Turn
-            
+
             // Publish signals
             // Send network messages
         }

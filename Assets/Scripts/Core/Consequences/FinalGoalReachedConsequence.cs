@@ -5,8 +5,9 @@ using BoardAdventures.Core.State;
 
 namespace BoardAdventures.Core.Consequences
 {
-    public class FinalGoalReachedConsequence
+    public class FinalGoalReachedConsequence: IMoveConsequence
     {
+        public int Order { get; } = ConsequenceOrder.FinalGoal;
         private readonly IBoardDefinition _boardDefinition;
 
 
@@ -15,16 +16,15 @@ namespace BoardAdventures.Core.Consequences
             _boardDefinition = boardDefinition;
         }
 
-        public bool Execute(MatchState state, MovePawnResult movePawnResult)
+
+        public void Execute(MatchState state, MovePawnResult movePawnResult)
         {
             var pawn = state.BoardState.PawnsState.First(p => p.PawnId == movePawnResult.PawnId);
             var isFinalGoalNode = _boardDefinition.IsFinalGoalNode(movePawnResult.Path[^1], pawn.FactionType);
 
-            if (!isFinalGoalNode) return false;
-            
-            pawn.PawnLocationState = PawnLocationState.InFinalGoal;
-            return true;
+            if (!isFinalGoalNode) return;
 
+            pawn.PawnLocationState = PawnLocationState.InFinalGoal;
         }
     }
 }

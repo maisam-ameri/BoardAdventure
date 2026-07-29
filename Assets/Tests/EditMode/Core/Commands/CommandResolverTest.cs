@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using BoardAdventures.Core.Commands;
+using BoardAdventures.Core.Consequences;
 using BoardAdventures.Core.State;
+using Core.Board;
 using NUnit.Framework;
 
 namespace Tests.EditMode.Core.Commands
@@ -8,11 +11,21 @@ namespace Tests.EditMode.Core.Commands
     public class CommandResolverTest
     {
         private MatchState _matchState;
+        private CommandResolver _resolver;
 
         [SetUp]
         public void SetUp()
         {
             _matchState = TestHelper.CreateMatchState();
+            var boardDefinition = new FakeBoardDefinition();
+            var consequences = new List<IMoveConsequence>
+            {
+                new CaptureConsequence(),
+                new FinalGoalReachedConsequence(boardDefinition)
+            };
+            
+            _resolver = new CommandResolver(_matchState, consequences);
+
         }
 
         [Test]
@@ -27,11 +40,10 @@ namespace Tests.EditMode.Core.Commands
             );
             _matchState.TurnState.CurrentPlayerId = playerId;
             var command = new MovePawnCommand(pawnId);
-            var resolver = new CommandResolver(_matchState);
             var pawn = _matchState.BoardState.PawnsState.First(p => p.PawnId == pawnId);
 
             // Act
-            resolver.Resolve(command, new CommandContext(playerId));
+            _resolver.Resolve(command, new CommandContext(playerId));
 
             // Assert
             Assert.AreNotEqual(nodeId, pawn.NodeId);
@@ -52,11 +64,10 @@ namespace Tests.EditMode.Core.Commands
             _matchState.TurnState.CurrentPlayerId = playerId;
 
             var command = new MovePawnCommand(pawnId);
-            var resolver = new CommandResolver(_matchState);
             var pawn = _matchState.BoardState.PawnsState.First(p => p.PawnId == pawnId);
 
             // Act
-            resolver.Resolve(command, new CommandContext(playerId));
+            _resolver.Resolve(command, new CommandContext(playerId));
 
             // Assert
             Assert.AreEqual(nodeId, pawn.NodeId);

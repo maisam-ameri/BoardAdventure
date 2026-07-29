@@ -13,13 +13,13 @@ namespace Tests.EditMode.Core.Consequences
     {
         private MatchState _matchState;
         private IBoardDefinition _boardDefinition;
-        
-        
+
+
         [SetUp]
         public void Setup()
         {
             _matchState = TestHelper.CreateMatchState();
-            _boardDefinition = new FakeBoardDefinition{IsFinalGoal = true};
+            _boardDefinition = new FakeBoardDefinition {IsFinalGoal = true};
         }
 
         [Test]
@@ -31,22 +31,24 @@ namespace Tests.EditMode.Core.Consequences
             var ownerPlayerId = "player_1";
             var factionType = FactionType.Blue;
             var locationState = PawnLocationState.OnBoard;
-            
+
             _matchState.BoardState.PawnsState = new List<PawnState>
             {
-                new PawnState {NodeId = nodeId, PawnId = pawnId,OwnerPlayerId = ownerPlayerId 
-                    , FactionType = factionType,PawnLocationState = locationState},
+                new PawnState
+                {
+                    NodeId = nodeId, PawnId = pawnId, OwnerPlayerId = ownerPlayerId, FactionType = factionType,
+                    PawnLocationState = locationState
+                },
             };
-            
+
             var finalGoalReachedConsequence = new FinalGoalReachedConsequence(_boardDefinition);
-            var movePawnResult = new MovePawnResult(pawnId,MoveFailReason.None,new []{1});
-            
+            var movePawnResult = new MovePawnResult(pawnId, MoveFailReason.None, new[] {1});
+
             // Act
-            var reachedFinalGoal = finalGoalReachedConsequence.Execute(_matchState, movePawnResult);
-            var pawn = _matchState.BoardState.PawnsState.First(p => p.PawnId == pawnId); 
-            
+            finalGoalReachedConsequence.Execute(_matchState, movePawnResult);
+            var pawn = _matchState.BoardState.PawnsState.First(p => p.PawnId == pawnId);
+
             // Assert
-            Assert.IsTrue(reachedFinalGoal);
             Assert.AreEqual(PawnLocationState.InFinalGoal, pawn.PawnLocationState);
         }
     }

@@ -4,9 +4,11 @@ using BoardAdventures.Core.State;
 
 namespace BoardAdventures.Core.Consequences
 {
-    public class CaptureConsequence
+    public class CaptureConsequence: IMoveConsequence
     {
-        public bool Execute(MatchState state, MovePawnResult movePawnResult)
+        public int Order { get; } = ConsequenceOrder.Capture;
+
+        public void Execute(MatchState state, MovePawnResult movePawnResult)
         {
             var currentPlayer = state.TurnState.CurrentPlayerId;
             var destinationNodeId = movePawnResult.Path[^1];
@@ -15,11 +17,10 @@ namespace BoardAdventures.Core.Consequences
                 && p.NodeId == destinationNodeId);
 
 
-            if (enemyPawn == null) return false;
+            if (enemyPawn == null) return;
             
             enemyPawn.PawnLocationState = PawnLocationState.InBase;
             enemyPawn.NodeId = null;
-            return true;
 
         }
     }
