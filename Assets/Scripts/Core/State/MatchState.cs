@@ -19,9 +19,10 @@ namespace BoardAdventures.Core.State
 
     public class PawnState
     {
-        public string OwnerPlayerId { get; set; }
         public byte PawnId { get; set; }
+        public string OwnerPlayerId { get; set; }
         public int? NodeId { get; set; }
+        public FactionType FactionType { get; set; }
         public PawnLocationState PawnLocationState { get; set; }
     }
 
@@ -74,6 +75,6 @@ namespace BoardAdventures.Core.State
     {
         InBase,
         OnBoard,
-        InGoal
+        InFinalGoal
     }
 }
