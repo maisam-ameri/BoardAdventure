@@ -20,8 +20,11 @@ namespace Tests.EditMode.Core.Commands
             var boardDefinition = new FakeBoardDefinition();
             var consequences = new List<IMoveConsequence>
             {
+                new UpdatePawnPositionConsequence(),
                 new CaptureConsequence(),
-                new FinalGoalReachedConsequence(boardDefinition)
+                new FinalGoalReachedConsequence(boardDefinition),
+                new WinConsequence(),
+                
             };
             
             _resolver = new CommandResolver(_matchState, consequences);
@@ -36,7 +39,7 @@ namespace Tests.EditMode.Core.Commands
             int nodeId = 1;
             string playerId = "player_1";
             _matchState.BoardState.PawnsState.Add(
-                new PawnState {NodeId = 1, PawnId = pawnId, OwnerPlayerId = playerId}
+                new PawnState {NodeId = nodeId, PawnId = pawnId, OwnerPlayerId = playerId}
             );
             _matchState.TurnState.CurrentPlayerId = playerId;
             var command = new MovePawnCommand(pawnId);
