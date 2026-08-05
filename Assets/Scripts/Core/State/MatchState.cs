@@ -48,7 +48,6 @@ namespace BoardAdventures.Core.State
     public class TurnState
     {
         public string CurrentPlayerId { get; set; }
-        public bool ExtraTurnGranted { get; set; }
         public TurnPhase Phase { get; set; }
     }
 
