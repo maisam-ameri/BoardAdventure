@@ -12,11 +12,13 @@ namespace Tests
             var dice = new DiceState();
             var turn = new TurnState();
             var pawns = new List<PawnState>();
+            var matchInfo = new MatchInfo();
 
             match.BoardState = board;
             match.TurnState = turn;
             match.DiceState = dice;
             match.BoardState.PawnsState = pawns;
+            match.MatchInfo = matchInfo;
 
             return match;
         }

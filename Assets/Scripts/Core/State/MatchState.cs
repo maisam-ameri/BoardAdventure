@@ -29,6 +29,7 @@ namespace BoardAdventures.Core.State
     public class PlayerState
     {
         public string PlayerId { get; set; }
+        public byte TurnOrder { get; set; }
         public List<FactionType> Factions { get; set; }
     }
 
