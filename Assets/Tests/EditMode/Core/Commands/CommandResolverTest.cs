@@ -2,9 +2,11 @@
 using System.Linq;
 using BoardAdventures.Core.Commands;
 using BoardAdventures.Core.Consequences;
+using BoardAdventures.Core.Rules;
 using BoardAdventures.Core.State;
 using Core.Board;
 using NUnit.Framework;
+using Tests.Mocks;
 
 namespace Tests.EditMode.Core.Commands
 {
@@ -18,17 +20,16 @@ namespace Tests.EditMode.Core.Commands
         {
             _matchState = TestHelper.CreateMatchState();
             var boardDefinition = new FakeBoardDefinition();
-            var consequences = new List<IMoveConsequence>
+            var randomNumberGenerator = new RandomNumberGeneratorMock();
+            var moveConsequences = new List<IMoveConsequence>
             {
                 new UpdatePawnPositionConsequence(),
                 new CaptureConsequence(),
                 new FinalGoalReachedConsequence(boardDefinition),
                 new WinConsequence(),
-                
             };
-            
-            _resolver = new CommandResolver(_matchState, consequences);
 
+            _resolver = new CommandResolver(_matchState, moveConsequences,randomNumberGenerator);
         }
 
         [Test]
@@ -75,8 +76,8 @@ namespace Tests.EditMode.Core.Commands
             // Assert
             Assert.AreEqual(nodeId, pawn.NodeId);
         }
+        
 
         // TODO: After PathCalculator is implemented.
-
     }
 }
