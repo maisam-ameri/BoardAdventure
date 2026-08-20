@@ -5,7 +5,7 @@ namespace BoardAdventures.Core.Turns
 {
     public class TurnResolver
     {
-        public void ResolveTurn(MatchState matchState)
+        public void Resolve(MatchState matchState)
         {
             if (!string.IsNullOrEmpty(matchState.WinnerId))
             {

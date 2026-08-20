@@ -3,7 +3,6 @@ using System.Linq;
 using BoardAdventures.Core.State;
 using BoardAdventures.Core.Turns;
 using NUnit.Framework;
-using UnityEngine;
 
 namespace Tests.EditMode.Core.Turns
 {
@@ -35,7 +34,7 @@ namespace Tests.EditMode.Core.Turns
         {
             // Act
             _matchState.WinnerId = _matchState.TurnState.CurrentPlayerId;
-            _turnResolver.ResolveTurn(_matchState);
+            _turnResolver.Resolve(_matchState);
 
             // Assert
             Assert.AreEqual(MatchPhase.Finished, _matchState.MatchInfo.Phase);
@@ -47,7 +46,7 @@ namespace Tests.EditMode.Core.Turns
         {
             // Act
             _matchState.DiceState.Step = 6;
-            _turnResolver.ResolveTurn(_matchState);
+            _turnResolver.Resolve(_matchState);
 
             // Assert
             Assert.AreEqual(TurnPhase.WaitingForRoll, _matchState.TurnState.Phase);
@@ -60,7 +59,7 @@ namespace Tests.EditMode.Core.Turns
             // Act
             _matchState.WinnerId = string.Empty;
             _matchState.DiceState.Step = 4;
-            _turnResolver.ResolveTurn(_matchState);
+            _turnResolver.Resolve(_matchState);
 
 
             // Assert
@@ -75,7 +74,7 @@ namespace Tests.EditMode.Core.Turns
             _matchState.WinnerId = string.Empty;
             _matchState.DiceState.Step = 4;
             _matchState.TurnState.CurrentPlayerId = _secondPlayerId;
-            _turnResolver.ResolveTurn(_matchState);
+            _turnResolver.Resolve(_matchState);
 
 
             // Assert
