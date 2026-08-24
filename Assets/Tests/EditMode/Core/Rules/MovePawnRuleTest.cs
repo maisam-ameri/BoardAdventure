@@ -135,7 +135,7 @@ namespace Tests.EditMode.Core.Rules
         public void Execute_Should_ReturnDestinationOccupied_When_LastNodeContainsFriendlyPawn()
         {
             // Arrange
-            var OccupiedNodeId = 5;
+            byte OccupiedNodeId = 5;
             var command = new MovePawnCommand(1);
             var pawnState = new List<PawnState>
             {

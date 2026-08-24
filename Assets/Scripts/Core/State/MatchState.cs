@@ -21,7 +21,7 @@ namespace BoardAdventures.Core.State
     {
         public byte PawnId { get; set; }
         public string OwnerPlayerId { get; set; }
-        public int? NodeId { get; set; }
+        public byte? NodeId { get; set; }
         public FactionType FactionType { get; set; }
         public PawnLocationState PawnLocationState { get; set; }
     }

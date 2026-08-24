@@ -6,9 +6,9 @@ namespace BoardAdventures.Core.Results
     {
         public byte PawnId { get;  }
         public MoveFailReason FailReason { get; }
-        public IReadOnlyList<int> Path { get; }
+        public IReadOnlyList<byte> Path { get; }
 
-        public MovePawnResult(byte pawnId, MoveFailReason failReason, IReadOnlyList<int> path = null)
+        public MovePawnResult(byte pawnId, MoveFailReason failReason, IReadOnlyList<byte> path = null)
         {
             PawnId = pawnId;
             Path = path;

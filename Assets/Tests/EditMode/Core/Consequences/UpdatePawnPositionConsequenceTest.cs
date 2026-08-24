@@ -24,8 +24,8 @@ namespace Tests.EditMode.Core.Consequences
             // Arrange
             var currentPlayerId = "player_1";
             byte pawnId = 1;
-            var currentNodeId = 1;
-            var destinationNodeId = 2;
+            byte currentNodeId = 1;
+            byte destinationNodeId = 2;
 
             _matchState.TurnState.CurrentPlayerId = currentPlayerId;
             _matchState.BoardState.PawnsState = new List<PawnState>

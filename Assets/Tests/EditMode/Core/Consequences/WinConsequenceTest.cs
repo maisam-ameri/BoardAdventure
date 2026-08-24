@@ -26,7 +26,7 @@ namespace Tests.EditMode.Core.Consequences
         {
             // Arrange
             byte pawnId = 1;
-            var nodeId = 1;
+            byte nodeId = 1;
             var ownerPlayerId = "player_1";
             var factionType = FactionType.Blue;
             var locationState = PawnLocationState.InFinalGoal;
@@ -46,7 +46,7 @@ namespace Tests.EditMode.Core.Consequences
             };
 
             var winConsequence = new WinConsequence();
-            var movePawnResult = new MovePawnResult(pawnId, MoveFailReason.None, new[] {1});
+            var movePawnResult = new MovePawnResult(pawnId, MoveFailReason.None, new byte[] {1});
             // Act
             winConsequence.Execute(_matchState, movePawnResult);
             
@@ -60,7 +60,7 @@ namespace Tests.EditMode.Core.Consequences
         {
             // Arrange
             byte pawnId = 1;
-            var nodeId = 1;
+            byte nodeId = 1;
             var ownerPlayerId = "player_1";
             var factionType = FactionType.Blue;
             var locationState = PawnLocationState.InFinalGoal;
@@ -80,7 +80,7 @@ namespace Tests.EditMode.Core.Consequences
             };
 
             var winConsequence = new WinConsequence();
-            var movePawnResult = new MovePawnResult(pawnId, MoveFailReason.None, new[] {1});
+            var movePawnResult = new MovePawnResult(pawnId, MoveFailReason.None, new byte[] {1});
             // Act
             winConsequence.Execute(_matchState, movePawnResult);
             

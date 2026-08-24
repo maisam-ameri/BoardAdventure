@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BoardAdventures.Core.Board;
 using BoardAdventures.Core.Commands;
 using BoardAdventures.Core.Consequences;
-using BoardAdventures.Core.Rules;
 using BoardAdventures.Core.State;
 using Core.Board;
 using NUnit.Framework;
@@ -19,7 +19,8 @@ namespace Tests.EditMode.Core.Commands
         public void SetUp()
         {
             _matchState = TestHelper.CreateMatchState();
-            var boardDefinition = new FakeBoardDefinition();
+            var nodes = new List<INode>();
+            var boardDefinition = new FakeBoardDefinition(_matchState, nodes);
             var randomNumberGenerator = new RandomNumberGeneratorMock();
             var moveConsequences = new List<IMoveConsequence>
             {
@@ -37,7 +38,7 @@ namespace Tests.EditMode.Core.Commands
         {
             // Arrange
             byte pawnId = 1;
-            int nodeId = 1;
+            byte nodeId = 1;
             string playerId = "player_1";
             _matchState.BoardState.PawnsState.Add(
                 new PawnState {NodeId = nodeId, PawnId = pawnId, OwnerPlayerId = playerId}
@@ -58,7 +59,7 @@ namespace Tests.EditMode.Core.Commands
         {
             // Arrange
             byte pawnId = 1;
-            int nodeId = 5;
+            byte nodeId = 5;
             string playerId = "player_1";
 
             _matchState.BoardState.PawnsState.Add(

@@ -65,13 +65,13 @@ namespace BoardAdventures.Core.Rules
         }
 
         [CanBeNull]
-        private MovePawnResult ValidatePath(byte pawnId, IReadOnlyList<int> path)
+        private MovePawnResult ValidatePath(byte pawnId, IReadOnlyList<byte> path)
         {
             return path.Count == 0 ? Fail(pawnId, MoveFailReason.InvalidPath) : null;
         }
 
         [CanBeNull]
-        private MovePawnResult ValidateDestination(MatchState state, byte pawnId, IReadOnlyList<int> path,
+        private MovePawnResult ValidateDestination(MatchState state, byte pawnId, IReadOnlyList<byte> path,
             CommandContext context)
         {
             var isDestinationOccupiedByTeammate = state.BoardState.PawnsState
@@ -85,9 +85,9 @@ namespace BoardAdventures.Core.Rules
 
         private MovePawnResult Fail(byte pawnId, MoveFailReason reason) => new(pawnId, reason);
 
-        IReadOnlyList<int> CalculatePath(byte? step)
+        IReadOnlyList<byte> CalculatePath(byte? step)
         {
-            return new[] {1, 2, 3, 4, 5};
+            return new byte[] {1, 2, 3, 4, 5};
         }
     }
 }

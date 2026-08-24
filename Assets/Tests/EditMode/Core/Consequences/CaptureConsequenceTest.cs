@@ -23,7 +23,7 @@ namespace Tests.EditMode.Core.Consequences
             // Arrange
             var currentPlayerId = "player_1";
             var anotherPlayerId = "player_2";
-            var destinationNodeId = 1;
+            byte destinationNodeId = 1;
             byte enemyPawnId = 2;
 
             _matchState.TurnState.CurrentPlayerId = currentPlayerId;
@@ -49,8 +49,8 @@ namespace Tests.EditMode.Core.Consequences
             // Arrange
             var currentPlayerId = "player_1";
             var anotherPlayerId = "player_2";
-            var destinationNodeId = 1;
-            var enemyNodeId = 2;
+            byte destinationNodeId = 1;
+            byte enemyNodeId = 2;
             byte enemyPawnId = 2;
 
 

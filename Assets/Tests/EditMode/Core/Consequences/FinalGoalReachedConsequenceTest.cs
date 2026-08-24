@@ -19,7 +19,8 @@ namespace Tests.EditMode.Core.Consequences
         public void Setup()
         {
             _matchState = TestHelper.CreateMatchState();
-            _boardDefinition = new FakeBoardDefinition {IsFinalGoal = true};
+            var nodes = new List<INode>();
+            _boardDefinition = new FakeBoardDefinition {IsFinalGoal = true, Nodes = nodes};
         }
 
         [Test]
@@ -27,7 +28,7 @@ namespace Tests.EditMode.Core.Consequences
         {
             // Arrange
             byte pawnId = 1;
-            var nodeId = 1;
+            byte nodeId = 1;
             var ownerPlayerId = "player_1";
             var factionType = FactionType.Blue;
             var locationState = PawnLocationState.OnBoard;
@@ -42,7 +43,7 @@ namespace Tests.EditMode.Core.Consequences
             };
 
             var finalGoalReachedConsequence = new FinalGoalReachedConsequence(_boardDefinition);
-            var movePawnResult = new MovePawnResult(pawnId, MoveFailReason.None, new[] {1});
+            var movePawnResult = new MovePawnResult(pawnId, MoveFailReason.None, new byte[] {1});
 
             // Act
             finalGoalReachedConsequence.Execute(_matchState, movePawnResult);

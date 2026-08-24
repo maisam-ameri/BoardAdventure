@@ -25,7 +25,7 @@ namespace Tests.EditMode.Core
             _firstPlayerId = "player_1";
             _secondPlayerId = "player_2";
             byte pawnId = 1;
-            int nodeId = 1;
+            byte nodeId = 1;
 
             _matchState = TestHelper.CreateMatchState();
             var boardDefinition = new FakeBoardDefinition();
