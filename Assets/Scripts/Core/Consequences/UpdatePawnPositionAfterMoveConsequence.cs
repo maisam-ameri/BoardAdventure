@@ -4,7 +4,7 @@ using BoardAdventures.Core.State;
 
 namespace BoardAdventures.Core.Consequences
 {
-    public class UpdatePawnPositionConsequence: IMoveConsequence
+    public class UpdatePawnPositionAfterMoveConsequence: IMoveConsequence
     {
         public int Order { get; } = ConsequenceOrder.UpdatePosition;
         public void Execute(MatchState matchState, MovePawnResult movePawnResult)

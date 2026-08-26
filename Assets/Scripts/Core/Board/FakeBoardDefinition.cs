@@ -2,6 +2,7 @@
 using System.Linq;
 using BoardAdventures.Core.Board;
 using BoardAdventures.Core.State;
+using UnityEngine;
 
 namespace Core.Board
 {
@@ -9,11 +10,10 @@ namespace Core.Board
     {
         public bool IsFinalGoal { get; set; }
         public List<INode> Nodes { get; set; }
-        private readonly MatchState _matchState;
 
-        public FakeBoardDefinition(MatchState matchState, List<INode> nodes)
+        public FakeBoardDefinition( List<INode> nodes)
         {
-            _matchState = matchState;
+            Nodes = new List<INode>();
             Nodes = nodes;
         }
 
@@ -26,17 +26,11 @@ namespace Core.Board
             return IsFinalGoal;
         }
 
-        public byte? GetFreeStartNode(FactionType factionType)
+        public byte GetStartNode(FactionType factionType)
         {
             return Nodes.First(n =>
                 n.NodeType == NodeType.Start
-                && n.FactionType == factionType
-                && !IsNodeOccupied(n.NodeId)).NodeId;
-        }
-
-        private bool IsNodeOccupied(byte nodeId)
-        {
-            return _matchState.BoardState.PawnsState.Any(p => p.NodeId == nodeId);
+                && n.FactionType == factionType).NodeId;
         }
     }
 }

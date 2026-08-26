@@ -5,6 +5,7 @@
         Path,
         Gate,
         Goal,
-        Start
+        Start,
+        Base
     }
 }

@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 namespace Tests.EditMode.Core.Consequences
 {
-    public class UpdatePawnPositionConsequenceTest
+    public class UpdatePawnPositionAfterMoveConsequenceTest
     {
         private MatchState _matchState;
 
@@ -34,7 +34,7 @@ namespace Tests.EditMode.Core.Consequences
             };
 
             var movePawnResult = new MovePawnResult(pawnId, MoveFailReason.None, new[] {destinationNodeId});
-            var updatePawnPositionConsequence = new UpdatePawnPositionConsequence();
+            var updatePawnPositionConsequence = new UpdatePawnPositionAfterMoveConsequence();
 
             // Act
             updatePawnPositionConsequence.Execute(_matchState, movePawnResult);

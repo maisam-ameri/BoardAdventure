@@ -32,13 +32,13 @@ namespace Tests.EditMode.Core
             var randomNumberGenerator = new RandomNumberGeneratorMock();
             var moveConsequences = new List<IMoveConsequence>
             {
-                new UpdatePawnPositionConsequence(),
+                new UpdatePawnPositionAfterMoveConsequence(),
                 new CaptureConsequence(),
                 new FinalGoalReachedConsequence(boardDefinition),
                 new WinConsequence(),
             };
 
-            _commandResolver = new CommandResolver(_matchState, moveConsequences, randomNumberGenerator);
+            _commandResolver = new CommandResolver(_matchState, moveConsequences, randomNumberGenerator,boardDefinition);
             _turnResolver = new TurnResolver();
             _selectPawnResolver = new SelectPawnResolver();
 

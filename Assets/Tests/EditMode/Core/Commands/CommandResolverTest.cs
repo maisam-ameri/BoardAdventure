@@ -20,17 +20,17 @@ namespace Tests.EditMode.Core.Commands
         {
             _matchState = TestHelper.CreateMatchState();
             var nodes = new List<INode>();
-            var boardDefinition = new FakeBoardDefinition(_matchState, nodes);
+            var boardDefinition = new FakeBoardDefinition(nodes);
             var randomNumberGenerator = new RandomNumberGeneratorMock();
             var moveConsequences = new List<IMoveConsequence>
             {
-                new UpdatePawnPositionConsequence(),
+                new UpdatePawnPositionAfterMoveConsequence(),
                 new CaptureConsequence(),
                 new FinalGoalReachedConsequence(boardDefinition),
                 new WinConsequence(),
             };
 
-            _resolver = new CommandResolver(_matchState, moveConsequences,randomNumberGenerator);
+            _resolver = new CommandResolver(_matchState, moveConsequences,randomNumberGenerator, boardDefinition);
         }
 
         [Test]
