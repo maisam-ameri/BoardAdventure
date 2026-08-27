@@ -10,8 +10,11 @@ namespace Core.Consequences
         public int Order { get; } = ConsequenceOrder.UpdatePosition;
         public void Execute(MatchState matchState, PutPawnResult putPawnResult)
         {
-            matchState.BoardState.PawnsState
-                .First(p => p.PawnId == putPawnResult.PawnId).NodeId = putPawnResult.NodeId;
+            var pawn =  matchState.BoardState.PawnsState
+                .First(p => p.PawnId == putPawnResult.PawnId);
+            
+            pawn.NodeId = putPawnResult.NodeId;
+            pawn.PawnLocationState = PawnLocationState.OnBoard;
         }
     }
 }

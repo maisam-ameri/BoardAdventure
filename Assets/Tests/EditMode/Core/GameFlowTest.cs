@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BoardAdventures.Core.Board;
 using BoardAdventures.Core.Commands;
 using BoardAdventures.Core.Consequences;
 using BoardAdventures.Core.State;
 using BoardAdventures.Core.Turns;
 using Core.Board;
+using Core.Consequences;
 using NUnit.Framework;
 using Tests.Mocks;
 
@@ -24,12 +26,28 @@ namespace Tests.EditMode.Core
         {
             _firstPlayerId = "player_1";
             _secondPlayerId = "player_2";
-            byte pawnId = 1;
-            byte nodeId = 1;
 
             _matchState = TestHelper.CreateMatchState();
-            var boardDefinition = new FakeBoardDefinition();
+            var boardDefinition = new FakeBoardDefinition(new List<INode>()
+                {
+                    new Node(
+                        nodeId: 1,
+                        prevNodeId: null,
+                        nextNodeId: null,
+                        nodeType: NodeType.Base,
+                        factionType: FactionType.Red
+                    ),
+                    new Node(
+                        nodeId: 2,
+                        prevNodeId: null,
+                        nextNodeId: 3,
+                        nodeType: NodeType.Start,
+                        factionType: FactionType.Red
+                    )
+                }
+            );
             var randomNumberGenerator = new RandomNumberGeneratorMock();
+            var putConsequence = new UpdatePawnPositionAfterPutConsequence();
             var moveConsequences = new List<IMoveConsequence>
             {
                 new UpdatePawnPositionAfterMoveConsequence(),
@@ -38,7 +56,8 @@ namespace Tests.EditMode.Core
                 new WinConsequence(),
             };
 
-            _commandResolver = new CommandResolver(_matchState, moveConsequences, randomNumberGenerator,boardDefinition);
+            _commandResolver = new CommandResolver(_matchState, moveConsequences, putConsequence,
+                randomNumberGenerator, boardDefinition);
             _turnResolver = new TurnResolver();
             _selectPawnResolver = new SelectPawnResolver();
 
@@ -48,13 +67,6 @@ namespace Tests.EditMode.Core
                 new() {PlayerId = _firstPlayerId, TurnOrder = 0},
                 new() {PlayerId = _secondPlayerId, TurnOrder = 1}
             };
-            _matchState.BoardState.PawnsState.Add(
-                new PawnState
-                {
-                    NodeId = nodeId, PawnId = pawnId, OwnerPlayerId = _firstPlayerId,
-                    PawnLocationState = PawnLocationState.OnBoard
-                }
-            );
         }
 
         [Test]
@@ -62,7 +74,16 @@ namespace Tests.EditMode.Core
         {
             // Arrange
             byte pawnId = 1;
+            byte nodeId = 1;
             var exceptedNodeIdAfterMove = 5;
+            _matchState.BoardState.PawnsState = new List<PawnState>()
+            {
+                new PawnState()
+                {
+                    NodeId = nodeId, PawnId = pawnId, OwnerPlayerId = _firstPlayerId,
+                    PawnLocationState = PawnLocationState.OnBoard
+                }
+            };
             var pawn = _matchState.BoardState.PawnsState.First(p => p.PawnId == pawnId);
             var context = new CommandContext(_firstPlayerId);
             var rollDiceCommand = new RollDiceCommand(_firstPlayerId);
@@ -78,13 +99,60 @@ namespace Tests.EditMode.Core
         }
 
         [Test]
+        public void Resolve_Should_PlayerTurn_From_Roll_To_Put()
+        {
+            // Arrange
+            byte pawnId = 1;
+            byte nodeId = 1;
+            var exceptedNodeIdAfterPut = 2;
+            _matchState.BoardState.PawnsState = new List<PawnState>()
+            {
+                new ()
+                {
+                    NodeId = nodeId, PawnId = pawnId, OwnerPlayerId = _firstPlayerId, FactionType = FactionType.Red,
+                    PawnLocationState = PawnLocationState.InBase
+                }
+            };
+            var pawn = _matchState.BoardState.PawnsState.First(p => p.PawnId == pawnId);
+            var context = new CommandContext(_firstPlayerId);
+            var rollDiceCommand = new RollDiceCommand(_firstPlayerId);
+            var selectPawnCommand = new SelectPawnCommand(pawnId);
+
+            // Act
+            while (_matchState.DiceState.Step != 6)
+            {
+                _commandResolver.Resolve(rollDiceCommand, context);
+            }
+
+            var afterSelectPawnCommand = _selectPawnResolver.Resolve(_matchState, selectPawnCommand, context);
+
+            _commandResolver.Resolve(afterSelectPawnCommand, context);
+            _turnResolver.Resolve(_matchState);
+
+
+            // Assert
+            Assert.AreEqual(exceptedNodeIdAfterPut, pawn.NodeId);
+            Assert.AreEqual(PawnLocationState.OnBoard, pawn.PawnLocationState);
+            Assert.AreEqual(TurnPhase.WaitingForRoll, _matchState.TurnState.Phase);
+        }
+
+        [Test]
         public void Resolve_Should_PlayerTurn_From_Roll_To_SwitchTurn()
         {
             // Arrange
             byte pawnId = 1;
+            byte nodeId = 1;
             var nextPlayerId = _secondPlayerId;
             var context = new CommandContext(_firstPlayerId);
             var selectPawnCommand = new SelectPawnCommand(pawnId);
+            _matchState.BoardState.PawnsState = new List<PawnState>()
+            {
+                new PawnState()
+                {
+                    NodeId = nodeId, PawnId = pawnId, OwnerPlayerId = _firstPlayerId,
+                    PawnLocationState = PawnLocationState.OnBoard
+                }
+            };
 
             // Act
             var afterSelectPawnCommand = _selectPawnResolver.Resolve(_matchState, selectPawnCommand, context);
@@ -95,15 +163,24 @@ namespace Tests.EditMode.Core
             // Assert
             Assert.AreEqual(nextPlayerId, _matchState.TurnState.CurrentPlayerId);
         }
-        
+
         [Test]
         public void Resolve_Should_PlayerTurn_From_Roll_To_KeepTurn()
         {
             // Arrange
             byte pawnId = 1;
+            byte nodeId = 1;
             var currentPlayerId = _firstPlayerId;
             var context = new CommandContext(_firstPlayerId);
             var selectPawnCommand = new SelectPawnCommand(pawnId);
+            _matchState.BoardState.PawnsState = new List<PawnState>()
+            {
+                new PawnState()
+                {
+                    NodeId = nodeId, PawnId = pawnId, OwnerPlayerId = _firstPlayerId,
+                    PawnLocationState = PawnLocationState.OnBoard
+                }
+            };
 
             // Act
             var afterSelectPawnCommand = _selectPawnResolver.Resolve(_matchState, selectPawnCommand, context);
@@ -114,16 +191,25 @@ namespace Tests.EditMode.Core
             // Assert
             Assert.AreEqual(currentPlayerId, _matchState.TurnState.CurrentPlayerId);
         }
-        
+
         [Test]
         public void Resolve_Should_PlayerTurn_From_Roll_To_FinishMatch()
         {
             // Arrange
+
             byte pawnId = 1;
+            byte nodeId = 1;
+            _matchState.BoardState.PawnsState = new List<PawnState>()
+            {
+                new PawnState()
+                {
+                    NodeId = nodeId, PawnId = pawnId, OwnerPlayerId = _firstPlayerId,
+                    PawnLocationState = PawnLocationState.OnBoard
+                }
+            };
             var pawn = _matchState.BoardState.PawnsState.First(p => p.PawnId == pawnId);
             var context = new CommandContext(_firstPlayerId);
             var selectPawnCommand = new SelectPawnCommand(pawnId);
-
             // Act
             var afterSelectPawnCommand = _selectPawnResolver.Resolve(_matchState, selectPawnCommand, context);
             pawn.PawnLocationState = PawnLocationState.InFinalGoal;

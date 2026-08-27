@@ -71,6 +71,8 @@ namespace BoardAdventures.Core.Rules
             var startNodeId = _boardDefinition.GetStartNode(faction);
             nodeId = startNodeId;
 
+            if (nodeId is null) return Fail(pawnId, PutFailReason.PawnNotFound);
+
             return state.BoardState.PawnsState.Any(p => p.NodeId == startNodeId)
                 ? Fail(pawnId, PutFailReason.StartNodeOccupied)
                 : null;

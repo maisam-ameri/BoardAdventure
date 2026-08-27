@@ -13,11 +13,11 @@ namespace BoardAdventures.Core.Commands
 
             if (selectPawnResult.CanMove)
                 return new MovePawnCommand(command.PawnId);
-            
-            //if(selectPawnResult.CanPut)
-                // return new PutPawnCommand(pawnId);
 
-                return null;
+            if (selectPawnResult.CanPut)
+                return new PutPawnCommand(command.PawnId);
+
+            return null;
         }
     }
 }

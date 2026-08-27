@@ -19,11 +19,13 @@ namespace BoardAdventures.Core.Commands
         private readonly IRandomNumberGenerator _randomNumberGenerator;
         private readonly IBoardDefinition _boardDefinition;
 
-        public CommandResolver(MatchState matchState, IEnumerable<IMoveConsequence> consequences,
+        public CommandResolver(MatchState matchState, IEnumerable<IMoveConsequence> consequences
+            , UpdatePawnPositionAfterPutConsequence updatePawnPositionAfterPutConsequence,
             IRandomNumberGenerator randomNumberGenerator, IBoardDefinition boardDefinition)
         {
             _matchState = matchState;
             _moveConsequences = consequences.OrderBy(c => c.Order);
+            _putConsequences = updatePawnPositionAfterPutConsequence;
             _randomNumberGenerator = randomNumberGenerator;
             _boardDefinition = boardDefinition;
         }
@@ -35,7 +37,7 @@ namespace BoardAdventures.Core.Commands
                 case MovePawnCommand moveCommand:
                     MovePawn(moveCommand, new MovePawnRule(), context);
                     break;
-                
+
                 case PutPawnCommand putCommand:
                     PutPawn(putCommand, new PutPawnRule(_boardDefinition), context);
                     break;
@@ -49,10 +51,12 @@ namespace BoardAdventures.Core.Commands
         private void MovePawn(MovePawnCommand command, MovePawnRule rule, CommandContext context)
         {
             var movePawnResult = rule.Execute(_matchState, command, context);
-
-            foreach (var consequence in _moveConsequences)
+            if (movePawnResult.FailReason == MoveFailReason.None)
             {
-                consequence.Execute(_matchState, movePawnResult);
+                foreach (var consequence in _moveConsequences)
+                {
+                    consequence.Execute(_matchState, movePawnResult);
+                }
             }
 
             // TODO: Publish signals
@@ -62,8 +66,10 @@ namespace BoardAdventures.Core.Commands
         private void PutPawn(PutPawnCommand command, PutPawnRule rule, CommandContext context)
         {
             var putPawnResult = rule.Execute(_matchState, command, context);
-            _putConsequences.Execute(_matchState, putPawnResult);
-
+            if (putPawnResult.FailReason == PutFailReason.None)
+            {
+                _putConsequences.Execute(_matchState, putPawnResult);
+            }
 
             // TODO: Publish signals
             // TODO: Send network messages

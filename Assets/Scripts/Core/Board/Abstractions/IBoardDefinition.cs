@@ -8,6 +8,6 @@ namespace BoardAdventures.Core.Board
         public List<INode> Nodes { get; set; }
         
         bool IsFinalGoalNode(int? nodeId, FactionType factionType);
-        byte GetStartNode(FactionType factionType);
+        byte? GetStartNode(FactionType factionType);
     }
 }

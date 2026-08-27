@@ -26,11 +26,12 @@ namespace Core.Board
             return IsFinalGoal;
         }
 
-        public byte GetStartNode(FactionType factionType)
+        public byte? GetStartNode(FactionType factionType)
         {
-            return Nodes.First(n =>
+            return Nodes.FirstOrDefault(n =>
                 n.NodeType == NodeType.Start
-                && n.FactionType == factionType).NodeId;
+                && n.FactionType == factionType)
+                ?.NodeId;
         }
     }
 }
