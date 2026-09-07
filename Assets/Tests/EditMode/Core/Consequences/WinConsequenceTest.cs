@@ -3,7 +3,6 @@ using BoardAdventures.Core.Board;
 using BoardAdventures.Core.Consequences;
 using BoardAdventures.Core.Results;
 using BoardAdventures.Core.State;
-using Core.Board;
 using NUnit.Framework;
 
 namespace Tests.EditMode.Core.Consequences
@@ -17,7 +16,7 @@ namespace Tests.EditMode.Core.Consequences
         [SetUp]
         public void SetUp()
         {
-            _matchState = TestHelper.CreateMatchState();
+            _matchState = TestHelper.BuildMatchState();
             _boardDefinition = new FakeBoardDefinition {IsFinalGoal = true};
         }
 

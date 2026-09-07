@@ -12,7 +12,7 @@ namespace Tests.EditMode.Core.Commands
         [SetUp]
         public void SetUp()
         {
-            _matchState = TestHelper.CreateMatchState();
+            _matchState = TestHelper.BuildMatchState();
             _resolver = new SelectPawnResolver();
         }
 

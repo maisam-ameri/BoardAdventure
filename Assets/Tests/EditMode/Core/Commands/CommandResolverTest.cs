@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BoardAdventures.Core.Board;
 using BoardAdventures.Core.Commands;
 using BoardAdventures.Core.Consequences;
 using BoardAdventures.Core.State;
-using Core.Board;
 using Core.Consequences;
 using NUnit.Framework;
 using Tests.Mocks;
@@ -19,9 +17,8 @@ namespace Tests.EditMode.Core.Commands
         [SetUp]
         public void SetUp()
         {
-            _matchState = TestHelper.CreateMatchState();
-            var nodes = new List<INode>();
-            var boardDefinition = new FakeBoardDefinition(nodes);
+            _matchState = TestHelper.BuildMatchState();
+            var boardDefinition = TestHelper.BuildBoardDefinition();
             var randomNumberGenerator = new RandomNumberGeneratorMock();
             var putConsequence = new UpdatePawnPositionAfterPutConsequence();
             var moveConsequences = new List<IMoveConsequence>
@@ -43,15 +40,19 @@ namespace Tests.EditMode.Core.Commands
             byte pawnId = 1;
             byte nodeId = 1;
             string playerId = "player_1";
+           
             _matchState.BoardState.PawnsState.Add(
                 new PawnState {NodeId = nodeId, PawnId = pawnId, OwnerPlayerId = playerId}
             );
+           
             _matchState.TurnState.CurrentPlayerId = playerId;
-            var command = new MovePawnCommand(pawnId);
+            var rollCommand = new RollDiceCommand(playerId);
+            var moveCommand = new MovePawnCommand(pawnId);
             var pawn = _matchState.BoardState.PawnsState.First(p => p.PawnId == pawnId);
 
             // Act
-            _resolver.Resolve(command, new CommandContext(playerId));
+            _resolver.Resolve(rollCommand, new CommandContext(playerId));
+            _resolver.Resolve(moveCommand, new CommandContext(playerId));
 
             // Assert
             Assert.AreNotEqual(nodeId, pawn.NodeId);
@@ -70,12 +71,14 @@ namespace Tests.EditMode.Core.Commands
             );
 
             _matchState.TurnState.CurrentPlayerId = playerId;
-
-            var command = new MovePawnCommand(pawnId);
+            var commandContext = new CommandContext(playerId);
+            var rollCommand = new RollDiceCommand(playerId);
+            var moveCommand = new MovePawnCommand(pawnId);
             var pawn = _matchState.BoardState.PawnsState.First(p => p.PawnId == pawnId);
 
             // Act
-            _resolver.Resolve(command, new CommandContext(playerId));
+            _resolver.Resolve(rollCommand, commandContext);
+            _resolver.Resolve(moveCommand,commandContext);
 
             // Assert
             Assert.AreEqual(nodeId, pawn.NodeId);

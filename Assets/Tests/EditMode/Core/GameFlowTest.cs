@@ -5,7 +5,6 @@ using BoardAdventures.Core.Commands;
 using BoardAdventures.Core.Consequences;
 using BoardAdventures.Core.State;
 using BoardAdventures.Core.Turns;
-using Core.Board;
 using Core.Consequences;
 using NUnit.Framework;
 using Tests.Mocks;
@@ -27,25 +26,8 @@ namespace Tests.EditMode.Core
             _firstPlayerId = "player_1";
             _secondPlayerId = "player_2";
 
-            _matchState = TestHelper.CreateMatchState();
-            var boardDefinition = new FakeBoardDefinition(new List<INode>()
-                {
-                    new Node(
-                        nodeId: 1,
-                        prevNodeId: null,
-                        nextNodeId: null,
-                        nodeType: NodeType.Base,
-                        factionType: FactionType.Red
-                    ),
-                    new Node(
-                        nodeId: 2,
-                        prevNodeId: null,
-                        nextNodeId: 3,
-                        nodeType: NodeType.Start,
-                        factionType: FactionType.Red
-                    )
-                }
-            );
+            _matchState = TestHelper.BuildMatchState();
+            var boardDefinition = TestHelper.BuildBoardDefinition();
             var randomNumberGenerator = new RandomNumberGeneratorMock();
             var putConsequence = new UpdatePawnPositionAfterPutConsequence();
             var moveConsequences = new List<IMoveConsequence>
@@ -74,11 +56,12 @@ namespace Tests.EditMode.Core
         {
             // Arrange
             byte pawnId = 1;
-            byte nodeId = 1;
-            var exceptedNodeIdAfterMove = 5;
+            byte nodeId = 0;
+            byte step = 3;
+            var exceptedNodeIdAfterMove = 3;
             _matchState.BoardState.PawnsState = new List<PawnState>()
             {
-                new PawnState()
+                new()
                 {
                     NodeId = nodeId, PawnId = pawnId, OwnerPlayerId = _firstPlayerId,
                     PawnLocationState = PawnLocationState.OnBoard
@@ -90,7 +73,11 @@ namespace Tests.EditMode.Core
             var selectPawnCommand = new SelectPawnCommand(pawnId);
 
             // Act
-            _commandResolver.Resolve(rollDiceCommand, context);
+            while (_matchState.DiceState.Step != step)
+            {
+                _commandResolver.Resolve(rollDiceCommand, context);
+            }
+
             var afterSelectPawnCommand = _selectPawnResolver.Resolve(_matchState, selectPawnCommand, context);
             _commandResolver.Resolve(afterSelectPawnCommand, context);
 
@@ -103,14 +90,14 @@ namespace Tests.EditMode.Core
         {
             // Arrange
             byte pawnId = 1;
-            byte nodeId = 1;
-            var exceptedNodeIdAfterPut = 2;
+            byte nodeId = 0;
+            var exceptedNodeIdAfterPut = 6;
             _matchState.BoardState.PawnsState = new List<PawnState>()
             {
-                new ()
+                new()
                 {
-                    NodeId = nodeId, PawnId = pawnId, OwnerPlayerId = _firstPlayerId, FactionType = FactionType.Red,
-                    PawnLocationState = PawnLocationState.InBase
+                    NodeId = nodeId, PawnId = pawnId, OwnerPlayerId = _firstPlayerId
+                    , FactionType = FactionType.Blue, PawnLocationState = PawnLocationState.InBase
                 }
             };
             var pawn = _matchState.BoardState.PawnsState.First(p => p.PawnId == pawnId);
@@ -147,7 +134,7 @@ namespace Tests.EditMode.Core
             var selectPawnCommand = new SelectPawnCommand(pawnId);
             _matchState.BoardState.PawnsState = new List<PawnState>()
             {
-                new PawnState()
+                new()
                 {
                     NodeId = nodeId, PawnId = pawnId, OwnerPlayerId = _firstPlayerId,
                     PawnLocationState = PawnLocationState.OnBoard
@@ -175,7 +162,7 @@ namespace Tests.EditMode.Core
             var selectPawnCommand = new SelectPawnCommand(pawnId);
             _matchState.BoardState.PawnsState = new List<PawnState>()
             {
-                new PawnState()
+                new()
                 {
                     NodeId = nodeId, PawnId = pawnId, OwnerPlayerId = _firstPlayerId,
                     PawnLocationState = PawnLocationState.OnBoard
@@ -196,12 +183,11 @@ namespace Tests.EditMode.Core
         public void Resolve_Should_PlayerTurn_From_Roll_To_FinishMatch()
         {
             // Arrange
-
             byte pawnId = 1;
-            byte nodeId = 1;
+            byte nodeId = 0;
             _matchState.BoardState.PawnsState = new List<PawnState>()
             {
-                new PawnState()
+                new()
                 {
                     NodeId = nodeId, PawnId = pawnId, OwnerPlayerId = _firstPlayerId,
                     PawnLocationState = PawnLocationState.OnBoard
@@ -209,10 +195,13 @@ namespace Tests.EditMode.Core
             };
             var pawn = _matchState.BoardState.PawnsState.First(p => p.PawnId == pawnId);
             var context = new CommandContext(_firstPlayerId);
+            var rollCommand = new RollDiceCommand(_firstPlayerId);
             var selectPawnCommand = new SelectPawnCommand(pawnId);
+
             // Act
             var afterSelectPawnCommand = _selectPawnResolver.Resolve(_matchState, selectPawnCommand, context);
             pawn.PawnLocationState = PawnLocationState.InFinalGoal;
+            _commandResolver.Resolve(rollCommand, context);
             _commandResolver.Resolve(afterSelectPawnCommand, context);
             _turnResolver.Resolve(_matchState);
 

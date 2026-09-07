@@ -16,7 +16,7 @@ namespace Tests.EditMode.Core.Turns
         [SetUp]
         public void SetUp()
         {
-            _matchState = TestHelper.CreateMatchState();
+            _matchState = TestHelper.BuildMatchState();
             _turnResolver = new TurnResolver();
             _firstPlayerId = "player_1";
             _secondPlayerId = "player_2";

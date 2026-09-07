@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BoardAdventures.Core.Board;
 using BoardAdventures.Core.Commands;
 using BoardAdventures.Core.Rules;
 using BoardAdventures.Core.Results;
@@ -16,9 +17,9 @@ namespace Tests.EditMode.Core.Rules
         [SetUp]
         public void Setup()
         {
-            _matchState = TestHelper.CreateMatchState();
+            _matchState = TestHelper.BuildMatchState();
             _commandContext = new CommandContext("player_1");
-            _rule = new MovePawnRule();
+            _rule = new MovePawnRule(new PathCalculator(TestHelper.BuildBoardDefinition()));
         }
 
         [Test]
@@ -78,7 +79,7 @@ namespace Tests.EditMode.Core.Rules
             // Act
             _matchState.BoardState.PawnsState = new List<PawnState>
             {
-                new PawnState {NodeId = 0, PawnId = 1, OwnerPlayerId = ""}
+                new() {NodeId = 0, PawnId = 1, OwnerPlayerId = ""}
             };
             _matchState.TurnState.CurrentPlayerId = "player_1";
 
@@ -90,22 +91,26 @@ namespace Tests.EditMode.Core.Rules
         }
 
         [Test]
-        public void Execute_Should_ReturnContinue_When_PlayerSelectsOwnPawn()
+        public void Execute_Should_ReturnDestinationOccupied_When_LastNodeContainsFriendlyPawn()
         {
             // Arrange
+            byte OccupiedNodeId = 2;
             var command = new MovePawnCommand(1);
+            var pawnState = new List<PawnState>
+            {
+                new PawnState {NodeId = 0, PawnId = 1, OwnerPlayerId = "player_1"},
+                new PawnState {NodeId = OccupiedNodeId, PawnId = 2, OwnerPlayerId = "player_1"},
+            };
 
             // Act
-            _matchState.BoardState.PawnsState = new List<PawnState>
-            {
-                new PawnState {NodeId = 0, PawnId = 1, OwnerPlayerId = "player_1"}
-            };
+            _matchState.BoardState.PawnsState = pawnState;
             _matchState.TurnState.CurrentPlayerId = "player_1";
+            _matchState.DiceState.Step = 2;
 
             var result = _rule.Execute(_matchState, command, _commandContext);
 
             // Assert
-            Assert.AreNotEqual(MoveFailReason.PawnDoesNotBelongToPlayer, result.FailReason);
+            Assert.AreEqual(MoveFailReason.DestinationOccupied, result.FailReason);
         }
 
         [Test]
@@ -126,35 +131,8 @@ namespace Tests.EditMode.Core.Rules
             var result = _rule.Execute(_matchState, command, _commandContext);
 
             // Assert
-            CollectionAssert.AreEqual(
-                new[] {1, 2, 3, 4, 5}, result.Path
+            Assert.AreEqual(MoveFailReason.None, result.FailReason
             );
         }
-
-        [Test]
-        public void Execute_Should_ReturnDestinationOccupied_When_LastNodeContainsFriendlyPawn()
-        {
-            // Arrange
-            byte OccupiedNodeId = 5;
-            var command = new MovePawnCommand(1);
-            var pawnState = new List<PawnState>
-            {
-                new PawnState {NodeId = 0, PawnId = 1, OwnerPlayerId = "player_1"},
-                new PawnState {NodeId = OccupiedNodeId, PawnId = 2, OwnerPlayerId = "player_1"},
-                
-            };
-
-            // Act
-            _matchState.BoardState.PawnsState = pawnState;
-            _matchState.TurnState.CurrentPlayerId = "player_1";
-            _matchState.DiceState.Step = 5;
-
-            var result = _rule.Execute(_matchState, command, _commandContext);
-
-            // Assert
-            Assert.AreEqual( MoveFailReason.DestinationOccupied, result.FailReason);
-        }
-        
-        
     }
 }

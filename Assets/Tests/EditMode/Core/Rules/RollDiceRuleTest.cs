@@ -20,7 +20,7 @@ namespace Tests.EditMode.Core.Rules
         [SetUp]
         public void SetUp()
         {
-            _matchState = TestHelper.CreateMatchState();
+            _matchState = TestHelper.BuildMatchState();
             _numberGenerator = new RandomNumberGeneratorMock();
             _playerId = "player_1";
             _rollDiceCommand = new RollDiceCommand(_playerId);

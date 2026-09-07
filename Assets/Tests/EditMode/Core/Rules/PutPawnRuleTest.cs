@@ -4,7 +4,6 @@ using BoardAdventures.Core.Commands;
 using BoardAdventures.Core.Results;
 using BoardAdventures.Core.Rules;
 using BoardAdventures.Core.State;
-using Core.Board;
 using NUnit.Framework;
 
 namespace Tests.EditMode.Core.Rules
@@ -19,7 +18,7 @@ namespace Tests.EditMode.Core.Rules
         [SetUp]
         public void Setup()
         {
-            _matchState = TestHelper.CreateMatchState();
+            _matchState = TestHelper.BuildMatchState();
             _commandContext = new CommandContext("player_1");
             _boardDefinition = new FakeBoardDefinition(new List<INode>()
                 {

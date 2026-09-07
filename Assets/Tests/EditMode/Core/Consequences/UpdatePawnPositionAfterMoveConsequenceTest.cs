@@ -15,7 +15,7 @@ namespace Tests.EditMode.Core.Consequences
         [SetUp]
         public void Setup()
         {
-            _matchState = TestHelper.CreateMatchState();
+            _matchState = TestHelper.BuildMatchState();
         }
 
         [Test]

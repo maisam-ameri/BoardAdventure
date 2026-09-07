@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using BoardAdventures.Core.Board;
-using BoardAdventures.Core.Consequences;
 using BoardAdventures.Core.Results;
 using BoardAdventures.Core.State;
-using Core.Board;
 using Core.Consequences;
 using NUnit.Framework;
 
@@ -19,7 +15,7 @@ namespace Tests.EditMode.Core.Consequences
         [SetUp]
         public void Setup()
         {
-            _matchState = TestHelper.CreateMatchState();
+            _matchState = TestHelper.BuildMatchState();
         }
 
         [Test]
