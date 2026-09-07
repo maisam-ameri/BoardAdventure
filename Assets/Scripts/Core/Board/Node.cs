@@ -1,7 +1,6 @@
-﻿using BoardAdventures.Core.Board;
-using BoardAdventures.Core.State;
+﻿using BoardAdventures.Core.State;
 
-namespace Core.Board
+namespace BoardAdventures.Core.Board
 {
     public class Node: INode
     {

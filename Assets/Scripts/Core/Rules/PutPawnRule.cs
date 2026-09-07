@@ -4,6 +4,7 @@ using BoardAdventures.Core.Commands;
 using BoardAdventures.Core.Results;
 using BoardAdventures.Core.State;
 using JetBrains.Annotations;
+using UnityEngine;
 
 namespace BoardAdventures.Core.Rules
 {
@@ -37,7 +38,6 @@ namespace BoardAdventures.Core.Rules
             result = ValidateStartNode(state, pawnId, out nodeId);
             if (result != null)
                 return result;
-
 
             return new PutPawnResult(pawnId, PutFailReason.None, nodeId);
         }

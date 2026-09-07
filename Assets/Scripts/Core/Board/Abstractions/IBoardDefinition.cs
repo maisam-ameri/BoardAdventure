@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using BoardAdventures.Core.State;
 
 namespace BoardAdventures.Core.Board
@@ -9,5 +10,9 @@ namespace BoardAdventures.Core.Board
         
         bool IsFinalGoalNode(int? nodeId, FactionType factionType);
         byte? GetStartNode(FactionType factionType);
+        List<INode> GetGoalNodes(FactionType faction);
+
+        INode GetNodeById(byte? id);
+
     }
 }

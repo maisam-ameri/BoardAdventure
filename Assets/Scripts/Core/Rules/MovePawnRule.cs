@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BoardAdventures.Core.Board;
 using BoardAdventures.Core.Commands;
 using BoardAdventures.Core.Results;
 using BoardAdventures.Core.State;
@@ -9,13 +10,18 @@ namespace BoardAdventures.Core.Rules
 {
     public class MovePawnRule
     {
+        private readonly IPathCalculator _pathCalculator;
+
+        public MovePawnRule(IPathCalculator pathCalculator)
+        {
+            _pathCalculator = pathCalculator;
+        }
+
         public MovePawnResult Execute(MatchState state, MovePawnCommand command, CommandContext context)
         {
             var pawn = state.BoardState.PawnsState.FirstOrDefault(p => p.PawnId == command.PawnId);
             var pawnId = command.PawnId;
-
-            // TODO: calculate path
-            var path = CalculatePath(state.DiceState.Step);
+            var path = _pathCalculator.Calculate(pawn, state.DiceState.Step);
 
             var result = ValidatePawnExist(pawn, pawnId);
             if (result != null)
@@ -84,10 +90,6 @@ namespace BoardAdventures.Core.Rules
         }
 
         private MovePawnResult Fail(byte pawnId, MoveFailReason reason) => new(pawnId, reason);
-
-        IReadOnlyList<byte> CalculatePath(byte? step)
-        {
-            return new byte[] {1, 2, 3, 4, 5};
-        }
+   
     }
 }

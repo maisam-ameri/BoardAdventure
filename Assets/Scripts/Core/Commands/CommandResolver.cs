@@ -18,6 +18,7 @@ namespace BoardAdventures.Core.Commands
         private readonly UpdatePawnPositionAfterPutConsequence _putConsequences;
         private readonly IRandomNumberGenerator _randomNumberGenerator;
         private readonly IBoardDefinition _boardDefinition;
+        private readonly IPathCalculator _pathCalculator;
 
         public CommandResolver(MatchState matchState, IEnumerable<IMoveConsequence> consequences
             , UpdatePawnPositionAfterPutConsequence updatePawnPositionAfterPutConsequence,
@@ -28,6 +29,7 @@ namespace BoardAdventures.Core.Commands
             _putConsequences = updatePawnPositionAfterPutConsequence;
             _randomNumberGenerator = randomNumberGenerator;
             _boardDefinition = boardDefinition;
+            _pathCalculator = new PathCalculator(_boardDefinition);
         }
 
         public void Resolve(ICommand command, CommandContext context)
@@ -35,7 +37,7 @@ namespace BoardAdventures.Core.Commands
             switch (command)
             {
                 case MovePawnCommand moveCommand:
-                    MovePawn(moveCommand, new MovePawnRule(), context);
+                    MovePawn(moveCommand, new MovePawnRule(_pathCalculator), context);
                     break;
 
                 case PutPawnCommand putCommand:
